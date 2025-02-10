@@ -1,6 +1,7 @@
 # Core Django and DRF
 Django==5.1
 djangorestframework
+djangorestframework-simplejwt
 
 # PostgreSQL Database Support
 dj-database-url
