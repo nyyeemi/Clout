@@ -1,6 +1,7 @@
 import {login} from '../../../src/services/auth/login';
 import {refreshAccessToken} from '../../../src/services/auth/refreshToken';
 import {register} from '../../../src/services/auth/register';
+import {deleteUser} from '../../../src/services/user/users';
 
 describe('API integration tests', () => {
   let testUser = {
@@ -11,6 +12,7 @@ describe('API integration tests', () => {
 
   let accessToken = '';
   let refreshToken = '';
+  let id: number;
 
   it('should register a user successfully (real API call)', async () => {
     const response = await register(
@@ -20,6 +22,7 @@ describe('API integration tests', () => {
     );
 
     expect(response).toHaveProperty('id');
+    id = response.id;
     expect(response.username).toBe(testUser.username);
     expect(response.email).toBe(testUser.email);
   });
@@ -51,5 +54,15 @@ describe('API integration tests', () => {
     await expect(
       refreshAccessToken('invalid_refresh_token'),
     ).rejects.toHaveProperty('detail');
+  });
+
+  afterAll(async () => {
+    if (id) {
+      try {
+        await deleteUser(id, accessToken);
+      } catch (error: any) {
+        console.error(error.response?.data || error.message);
+      }
+    }
   });
 });
