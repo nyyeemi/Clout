@@ -68,7 +68,6 @@ describe('API calls', () => {
     mock.onPost(`${API_URL}token/refresh/`).reply(200, mockData);
 
     const response = await refreshAccessToken('mock_refresh_token');
-    console.log(response);
     expect(response).toEqual(mockData);
   });
 
