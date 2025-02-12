@@ -18,10 +18,15 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:8000/api/users/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM5MjYzMzE3LCJpYXQiOjE3MzkyNjE1MTcsImp0aSI6IjRhNGVjY2Y5NmE4MjRkYjI5NGMwNDllOTE4N2RhYzIzIiwidXNlcl9pZCI6Mn0.zyfCboSb3lT7j7Dxjqw6Z7wFVxpYPjBLEYp6KLVMGJE
+GET http://localhost:8000/api/images/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM5MzY2OTYwLCJpYXQiOjE3MzkzNjUxNjAsImp0aSI6ImZiNjFhOWViNzY0NjRmMGY4NTU0MGM1MDM1Njg3MGJlIiwidXNlcl9pZCI6Mn0.b16QouwjeJLm8DIchsiJdTYMecyKZsqmhWuyFk_eJ-U
+Content-Type: application/json
+
+{
+  "image_url": "https://www.paramountshop.com/cdn/shop/files/spongebob-squarepants-life-sized-cardboard-cutout-standee-725187.jpg?v=1718292084"
+}
 
 #user should not be able to delete other user
 ###
-DELETE http://localhost:8000/api/users/1/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM5MjYyNjg5LCJpYXQiOjE3MzkyNjA4ODksImp0aSI6IjM0MTE0YWU4NzA4MjQwN2E5YTJhMTQ4ZmY5ZWY4ZDBiIiwidXNlcl9pZCI6MX0.QOuTdc1Q24dE_BhbYtmzFHAut1WXXvwETE2gdWEjyyg
+GET http://localhost:8000/api/users/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM5MzY2OTYwLCJpYXQiOjE3MzkzNjUxNjAsImp0aSI6ImZiNjFhOWViNzY0NjRmMGY4NTU0MGM1MDM1Njg3MGJlIiwidXNlcl9pZCI6Mn0.b16QouwjeJLm8DIchsiJdTYMecyKZsqmhWuyFk_eJ-U
