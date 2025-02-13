@@ -3,13 +3,13 @@ import {API_URL, ErrorResponse} from './utils';
 
 export const refreshAccessToken = async (
   refreshToken: string,
-): Promise<{access: string}> => {
+): Promise<{accessToken: string}> => {
   try {
     if (!refreshToken) {
       throw new Error('No refresh token found');
     }
 
-    const response = await axios.post<{access: string}>(
+    const response = await axios.post<{accessToken: string}>(
       `${API_URL}token/refresh/`,
       {refresh: refreshToken},
     );

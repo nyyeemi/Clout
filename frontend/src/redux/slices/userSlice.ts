@@ -9,15 +9,15 @@ type User = {
 
 type AuthState = {
   user: User | null;
-  access: string | null;
-  refresh: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
 };
 
 const initialState: AuthState = {
   user: null,
-  access: null,
-  refresh: null,
+  accessToken: null,
+  refreshToken: null,
   isAuthenticated: false,
 };
 
@@ -29,25 +29,25 @@ const userSlice = createSlice({
       state,
       action: PayloadAction<{
         user: User;
-        access: string;
-        refresh: string;
+        accessToken: string;
+        refreshToken: string;
       }>,
     ) => {
       state.user = action.payload.user;
-      state.access = action.payload.access;
-      state.refresh = action.payload.refresh;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
     },
 
     logoutUser: state => {
       state.user = null;
-      state.access = null;
-      state.refresh = null;
+      state.accessToken = null;
+      state.refreshToken = null;
       state.isAuthenticated = false;
     },
 
     updateAccessToken: (state, action: PayloadAction<string>) => {
-      state.access = action.payload;
+      state.accessToken = action.payload;
     },
   },
 });

@@ -18,9 +18,9 @@ export const loginHandler = async (
   try {
     setLoading(true);
     const data = await login(username, password);
-
-    await AsyncStorage.setItem('accessToken', data.access);
-    await AsyncStorage.setItem('refreshToken', data.refresh);
+    console.log(data);
+    await AsyncStorage.setItem('accessToken', data.accessToken);
+    await AsyncStorage.setItem('refreshToken', data.refreshToken);
 
     dispatch(loginUser(data));
 

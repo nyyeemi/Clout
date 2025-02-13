@@ -15,7 +15,7 @@ const refreshTokenHandler = async (dispatch: AppDispatch): Promise<void> => {
 
     const data = await refreshAccessToken(refreshToken);
 
-    await AsyncStorage.setItem('accessToken', data.access);
+    await AsyncStorage.setItem('accessToken', data.accessToken);
   } catch (error) {
     console.error('Error refreshing token:', error);
     dispatch(logoutUser());
