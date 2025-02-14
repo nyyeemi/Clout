@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {API_URL, ErrorResponse} from './utils';
+import {API_URL} from './utils';
 
 export const refreshAccessToken = async (
   refreshToken: string,
@@ -15,7 +15,7 @@ export const refreshAccessToken = async (
     );
 
     return response.data;
-  } catch (error: any) {
-    throw (error.response?.data as ErrorResponse) || error.message;
+  } catch (error: unknown) {
+    throw error;
   }
 };

@@ -9,19 +9,14 @@ export type User = {
   bio?: string;
 };
 
-type ErrorResponse = {
-  detail?: string;
-  [key: string]: any;
-};
-
 export const getUsers = async (token: string): Promise<User[]> => {
   try {
     const response = await axios.get<User[]>(API_URL, {
       headers: {Authorization: `Bearer ${token}`},
     });
     return response.data;
-  } catch (error: any) {
-    throw (error.response?.data as ErrorResponse) || error.message;
+  } catch (error: unknown) {
+    throw error;
   }
 };
 
@@ -31,8 +26,8 @@ export const getUserById = async (id: number, token: string): Promise<User> => {
       headers: {Authorization: `Bearer ${token}`},
     });
     return response.data;
-  } catch (error: any) {
-    throw (error.response?.data as ErrorResponse) || error.message;
+  } catch (error: unknown) {
+    throw error;
   }
 };
 
@@ -46,8 +41,8 @@ export const updateUser = async (
       headers: {Authorization: `Bearer ${token}`},
     });
     return response.data;
-  } catch (error: any) {
-    throw (error.response?.data as ErrorResponse) || error.message;
+  } catch (error: unknown) {
+    throw error;
   }
 };
 
@@ -56,7 +51,7 @@ export const deleteUser = async (id: number, token: string): Promise<void> => {
     await axios.delete(`${API_URL}${id}/`, {
       headers: {Authorization: `Bearer ${token}`},
     });
-  } catch (error: any) {
-    throw (error.response?.data as ErrorResponse) || error.message;
+  } catch (error: unknown) {
+    throw error;
   }
 };

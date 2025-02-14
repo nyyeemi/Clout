@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {login} from '../../../services/auth/login';
 import {loginUser} from '../../../redux/slices/userSlice';
 import {AppDispatch} from '../../../redux/store/store';
+import {errorHandler} from './errorHandler';
 
 export const loginHandler = async (
   username: string,
@@ -25,8 +26,9 @@ export const loginHandler = async (
     dispatch(loginUser(data));
 
     Alert.alert('Login Successful', 'Welcome back!');
-  } catch (error: any) {
-    Alert.alert('Error', error.message || 'Login failed.');
+  } catch (error: unknown) {
+    errorHandler(error, 'LoginHandler error');
+    Alert.alert('Login failed.');
   } finally {
     setLoading(false);
   }

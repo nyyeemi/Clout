@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {API_URL, ErrorResponse} from './utils';
+import {API_URL} from './utils';
 
 type RegisterResponse = {
   id: number;
@@ -19,7 +19,7 @@ export const register = async (
       password,
     });
     return response.data;
-  } catch (error: any) {
-    throw (error.response?.data as ErrorResponse) || error.message;
+  } catch (error: unknown) {
+    throw error;
   }
 };

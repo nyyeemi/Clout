@@ -13,8 +13,8 @@ POST http://localhost:8000/api/auth/login/
 Content-Type: application/json
 
 {
-  "username": "testaaja2",
-  "password": "salainen"
+  "username": "admin",
+  "password": "0000"
 }
 
 ###

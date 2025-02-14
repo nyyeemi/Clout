@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {API_URL, ErrorResponse} from './utils';
+import {API_URL} from './utils';
 import {User} from '../user/users';
 
 type AuthResponse = {
@@ -28,7 +28,7 @@ export const login = async (
       refreshToken: response.data.refresh,
       user: response.data.user,
     };
-  } catch (error: any) {
-    throw (error.response?.data as ErrorResponse) || error.message;
+  } catch (error: unknown) {
+    throw error;
   }
 };

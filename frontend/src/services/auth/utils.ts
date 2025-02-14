@@ -7,8 +7,3 @@ export const API_URL =
   Platform.OS === 'ios'
     ? 'http://localhost:8000/api/auth/'
     : `http://${HOST}:8000/api/auth/`;
-
-export type ErrorResponse = {
-  detail?: string;
-  [key: string]: any;
-};
