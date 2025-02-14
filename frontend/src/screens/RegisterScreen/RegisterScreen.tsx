@@ -4,10 +4,16 @@ import Input from '../../components/Input/Input'; // Oletan että käytät omaa 
 import Button from '../../components/Button/Button'; // Oletan että käytät omaa Button-komponenttia
 import style from './style';
 import globalStyle from '../../assets/styles/globalStyle';
-import {Routes} from '../../navigation/Routes';
+import {RootStackParamList, Routes} from '../../navigation/Routes';
 import {register} from '../../services/auth/register';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-export const RegisterScreen = ({navigation}: any) => {
+type RegisterScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Register'
+>;
+
+export const RegisterScreen = ({navigation}: RegisterScreenProps) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
