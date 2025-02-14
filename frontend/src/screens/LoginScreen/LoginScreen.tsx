@@ -5,10 +5,13 @@ import Input from '../../components/Input/Input'; // Omat Input-komponentit
 import Button from '../../components/Button/Button'; // Omat Button-komponentit
 import style from './style';
 import globalStyle from '../../assets/styles/globalStyle';
-import {Routes} from '../../navigation/Routes';
+import {RootStackParamList, Routes} from '../../navigation/Routes';
 import {loginHandler} from '../../services/auth/handlers/loginHandler';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-export const LoginScreen = ({navigation}: any): JSX.Element => {
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+export const LoginScreen = ({navigation}: LoginScreenProps): JSX.Element => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
