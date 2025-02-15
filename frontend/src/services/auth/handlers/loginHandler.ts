@@ -1,6 +1,6 @@
 import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {login} from '../../../services/auth/login';
+import loginService from '../../../services/auth/login';
 import {loginUser} from '../../../redux/slices/userSlice';
 import {AppDispatch} from '../../../redux/store/store';
 import {loginErrorHandler} from './errorHandlers/loginErrorHandler';
@@ -18,8 +18,7 @@ export const loginHandler = async (
 
   try {
     setLoading(true);
-    const data = await login(username, password);
-    console.log(data);
+    const data = await loginService.login(username, password);
     await AsyncStorage.setItem('accessToken', data.accessToken);
     await AsyncStorage.setItem('refreshToken', data.refreshToken);
 

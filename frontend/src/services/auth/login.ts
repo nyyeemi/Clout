@@ -14,21 +14,19 @@ type LoginResponse = {
   user: User;
 };
 
-export const login = async (
+const login = async (
   username: string,
   password: string,
 ): Promise<LoginResponse> => {
-  try {
-    const response = await axios.post<AuthResponse>(`${API_URL}login/`, {
-      username,
-      password,
-    });
-    return {
-      accessToken: response.data.access,
-      refreshToken: response.data.refresh,
-      user: response.data.user,
-    };
-  } catch (error: unknown) {
-    throw error;
-  }
+  const response = await axios.post<AuthResponse>(`${API_URL}login/`, {
+    username,
+    password,
+  });
+  return {
+    accessToken: response.data.access,
+    refreshToken: response.data.refresh,
+    user: response.data.user,
+  };
 };
+
+export default {login};
