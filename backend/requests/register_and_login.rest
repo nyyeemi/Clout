@@ -13,13 +13,13 @@ POST http://localhost:8000/api/auth/login/
 Content-Type: application/json
 
 {
-  "username": "admin",
-  "password": "0000"
+  "username": "Johtaja",
+  "password": "Johtaja"
 }
 
 ###
-GET http://localhost:8000/api/images/1/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM5MzY2OTYwLCJpYXQiOjE3MzkzNjUxNjAsImp0aSI6ImZiNjFhOWViNzY0NjRmMGY4NTU0MGM1MDM1Njg3MGJlIiwidXNlcl9pZCI6Mn0.b16QouwjeJLm8DIchsiJdTYMecyKZsqmhWuyFk_eJ-U
+POST http://localhost:8000/api/images/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQyMjIyNzg3LCJpYXQiOjE3Mzk2MzA3ODcsImp0aSI6ImRkMDNjODJkZTQyZjQwYzdhNDRlOWVmMmRlZjAwYzhmIiwidXNlcl9pZCI6MX0.71Fr1vkssBL8PeiTdscEYzv4CMqXNf4N2y5Z2Y5ZMLU
 Content-Type: application/json
 
 {
