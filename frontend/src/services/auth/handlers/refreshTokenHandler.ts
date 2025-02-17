@@ -3,8 +3,7 @@ import {Alert} from 'react-native';
 import {AppDispatch} from '../../../redux/store/store';
 import {refreshAccessToken} from '../refreshToken';
 import {logoutUser} from '../../../redux/slices/userSlice';
-import axios from 'axios';
-import {errorHandler} from './errorHandlers/loginErrorHandler';
+import {loginErrorHandler} from './errorHandlers/loginErrorHandler';
 
 const refreshTokenHandler = async (dispatch: AppDispatch): Promise<void> => {
   try {
@@ -21,17 +20,8 @@ const refreshTokenHandler = async (dispatch: AppDispatch): Promise<void> => {
 
     await AsyncStorage.setItem('accessToken', data.accessToken);
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      errorHandler(error, 'RefreshTokenHandler error');
-      Alert.alert('Session Expired.');
-    } else if (error instanceof Error) {
-      errorHandler(error, 'RefreshTokenHandler error');
-      Alert.alert('Session Expired.');
-    } else {
-      errorHandler(error, 'RefreshTokenHandler error');
-      Alert.alert('Session Expired.');
-    }
-
+    loginErrorHandler(error, 'RefreshTokenHandler error');
+    Alert.alert('Session Expired.');
     dispatch(logoutUser());
   }
 };
