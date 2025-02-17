@@ -16,8 +16,13 @@ const style = StyleSheet.create({
     marginBottom: verticalScale(20),
     textAlign: 'center',
   },
-  input: {
+  inputAndErrorContainer: {
     marginBottom: verticalScale(20),
+  },
+  error: {
+    color: 'red',
+    fontSize: scaleFontSize(14),
+    marginTop: verticalScale(4),
   },
 });
 

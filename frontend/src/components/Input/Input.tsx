@@ -1,5 +1,12 @@
 import React from 'react';
-import {KeyboardTypeOptions, Text, TextInput, View} from 'react-native';
+import {
+  KeyboardTypeOptions,
+  NativeSyntheticEvent,
+  Text,
+  TextInput,
+  TextInputFocusEventData,
+  View,
+} from 'react-native';
 import style from './style';
 
 type Props = {
@@ -7,6 +14,7 @@ type Props = {
   placeholder?: string;
   value: string;
   onChangeText: (val: string) => void;
+  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
   style?: object;
@@ -17,6 +25,7 @@ const Input = ({
   placeholder,
   value,
   onChangeText,
+  onBlur,
   keyboardType = 'default',
   secureTextEntry = false,
   style: inputStyle,
@@ -31,6 +40,7 @@ const Input = ({
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         onChangeText={onChangeText}
+        onBlur={onBlur}
       />
     </View>
   );
