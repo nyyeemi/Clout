@@ -1,5 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {RootStackParamList, Routes} from './Routes';
 import {HomeScreen} from '../screens/Home/HomeScreen';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
@@ -11,8 +12,24 @@ import {CameraScreen} from '../screens/Camera/CameraScreen';
 import {FeedScreen} from '../screens/Feed/FeedScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
-// Screens if user is not authenticated
+const BottomTabNavigator = () => {
+  return (
+    <>
+      <Tab.Navigator
+        screenOptions={{headerShown: false, tabBarStyle: {display: 'none'}}}>
+        <Tab.Screen name={Routes.Home} component={HomeScreen} />
+        <Tab.Screen name={Routes.Leaderboard} component={LeaderboardScreen} />
+        <Tab.Screen name={Routes.Vote} component={VoteScreen} />
+        <Tab.Screen name={Routes.Camera} component={CameraScreen} />
+        <Tab.Screen name={Routes.Feed} component={FeedScreen} />
+      </Tab.Navigator>
+    </>
+  );
+};
+
+// Screens for unauthenticated users
 export const NonAuthenticated = (): JSX.Element => {
   return (
     <Stack.Navigator
@@ -24,21 +41,16 @@ export const NonAuthenticated = (): JSX.Element => {
   );
 };
 
-// Screens if user is authenticated
+// Screens for authenticated users
 export const Authenticated = (): JSX.Element => {
   return (
     <>
-      <Stack.Navigator
-        initialRouteName={Routes.Home}
-        screenOptions={{header: () => null, headerShown: false}}>
-        <Stack.Screen name={Routes.Home} component={HomeScreen} />
-        <Stack.Screen name={Routes.Leaderboard} component={LeaderboardScreen} />
-        <Stack.Screen name={Routes.Vote} component={VoteScreen} />
-        <Stack.Screen name={Routes.Camera} component={CameraScreen} />
-        <Stack.Screen name={Routes.Feed} component={FeedScreen} />
-        {/*<Stack.Screen name={Routes.Profile} component={ProfileScreen} />*/}
+      <Stack.Navigator screenOptions={{header: () => null, headerShown: false}}>
+        <Stack.Screen
+          name="BottomTabNavigator"
+          component={BottomTabNavigator}
+        />
       </Stack.Navigator>
-      {/*TODO: Not sure if navigation bar should be here?? */}
       <NavigationBar />
     </>
   );
