@@ -4,6 +4,7 @@ import {Routes} from './Routes';
 import {HomeScreen} from '../screens/Home/HomeScreen';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
+import {NavigationBar} from '../components/NavigationBar/NavigationBar';
 
 const Stack = createStackNavigator();
 
@@ -22,10 +23,14 @@ export const NonAuthenticated = (): JSX.Element => {
 // Näkymä, jossa käyttäjä on kirjautunut
 export const Authenticated = (): JSX.Element => {
   return (
-    <Stack.Navigator
-      initialRouteName={Routes.Home}
-      screenOptions={{header: () => null, headerShown: false}}>
-      <Stack.Screen name={Routes.Home} component={HomeScreen} />
-    </Stack.Navigator>
+    <>
+      <Stack.Navigator
+        initialRouteName={Routes.Home}
+        screenOptions={{header: () => null, headerShown: false}}>
+        <Stack.Screen name={Routes.Home} component={HomeScreen} />
+      </Stack.Navigator>
+      {/*TODO: Not sure if navigation bar should be here?? */}
+      <NavigationBar />
+    </>
   );
 };
