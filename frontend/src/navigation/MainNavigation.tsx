@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Routes} from './Routes';
+import {RootStackParamList, Routes} from './Routes';
 import {HomeScreen} from '../screens/Home/HomeScreen';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
@@ -10,9 +10,9 @@ import {VoteScreen} from '../screens/Vote/VoteScreen';
 import {CameraScreen} from '../screens/Camera/CameraScreen';
 import {FeedScreen} from '../screens/Feed/FeedScreen';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
-// Näkymä, jossa käyttäjä ei ole kirjautunut
+// Screens if user is not authenticated
 export const NonAuthenticated = (): JSX.Element => {
   return (
     <Stack.Navigator
@@ -24,7 +24,7 @@ export const NonAuthenticated = (): JSX.Element => {
   );
 };
 
-// Näkymä, jossa käyttäjä on kirjautunut
+// Screens if user is authenticated
 export const Authenticated = (): JSX.Element => {
   return (
     <>
