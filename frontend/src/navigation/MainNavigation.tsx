@@ -5,6 +5,10 @@ import {HomeScreen} from '../screens/Home/HomeScreen';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
 import {NavigationBar} from '../components/NavigationBar/NavigationBar';
+import {LeaderboardScreen} from '../screens/LeaderboardScreen/LeaderboardScreen';
+import {VoteScreen} from '../screens/Vote/VoteScreen';
+import {CameraScreen} from '../screens/Camera/CameraScreen';
+import {FeedScreen} from '../screens/Feed/FeedScreen';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +32,11 @@ export const Authenticated = (): JSX.Element => {
         initialRouteName={Routes.Home}
         screenOptions={{header: () => null, headerShown: false}}>
         <Stack.Screen name={Routes.Home} component={HomeScreen} />
+        <Stack.Screen name={Routes.Leaderboard} component={LeaderboardScreen} />
+        <Stack.Screen name={Routes.Vote} component={VoteScreen} />
+        <Stack.Screen name={Routes.Camera} component={CameraScreen} />
+        <Stack.Screen name={Routes.Feed} component={FeedScreen} />
+        {/*<Stack.Screen name={Routes.Profile} component={ProfileScreen} />*/}
       </Stack.Navigator>
       {/*TODO: Not sure if navigation bar should be here?? */}
       <NavigationBar />

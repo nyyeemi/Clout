@@ -4,26 +4,33 @@ import {View} from 'react-native';
 import {NavigationButton} from '../NavigationButton/NavigationButton';
 import {
   faCamera,
-  faUser,
   faHandPointer,
   faAward,
   faImages,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList, Routes} from '../../navigation/Routes';
 
 export const NavigationBar = (): JSX.Element => {
-  const [activeButton, setActiveButton] = useState<string>('awards');
+  const [activeButton, setActiveButton] =
+    useState<keyof typeof Routes>('Leaderboard');
 
-  const buttons = [
-    {id: 'awards', icon: faAward},
-    {id: 'vote', icon: faHandPointer},
-    {id: 'camera', icon: faCamera},
-    {id: 'feed', icon: faImages},
-    {id: 'profile', icon: faUser},
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const buttons: {id: keyof RootStackParamList; icon: IconDefinition}[] = [
+    {id: 'Leaderboard', icon: faAward},
+    {id: 'Vote', icon: faHandPointer},
+    {id: 'Camera', icon: faCamera},
+    {id: 'Feed', icon: faImages},
+    //{id: 'Profile', icon: faUser},
   ];
 
-  const handlePress = (id: string) => {
+  const handlePress = (id: keyof RootStackParamList) => {
     setActiveButton(id);
-    //navigation.navigate(id)
+    navigation.navigate(id);
   };
 
   return (
