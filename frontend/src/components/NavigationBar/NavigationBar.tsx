@@ -10,21 +10,21 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+//import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList, Routes} from '../../navigation/Routes';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
 export const NavigationBar = (): JSX.Element => {
-  const [activeButton, setActiveButton] =
-    useState<keyof typeof Routes>('Leaderboard');
+  const [activeButton, setActiveButton] = useState<keyof typeof Routes>('Vote');
 
   const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    useNavigation<BottomTabNavigationProp<RootStackParamList>>();
 
   const buttons: {id: keyof RootStackParamList; icon: IconDefinition}[] = [
-    {id: 'Leaderboard', icon: faAward},
-    {id: 'Vote', icon: faHandPointer},
-    {id: 'Camera', icon: faCamera},
-    {id: 'Feed', icon: faImages},
+    {id: Routes.Leaderboard, icon: faAward},
+    {id: Routes.Vote, icon: faHandPointer},
+    {id: Routes.Camera, icon: faCamera},
+    {id: Routes.Feed, icon: faImages},
     //{id: 'Profile', icon: faUser},
   ];
 

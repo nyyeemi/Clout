@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Camera: undefined;
   Feed: undefined;
   Profile: undefined;
+  BottomTabNavigator: undefined;
 };
 
 export const Routes = {
@@ -18,4 +19,5 @@ export const Routes = {
   Camera: 'Camera',
   Feed: 'Feed',
   Profile: 'Profile',
+  BottomTabNavigator: 'BottomTabNavigator',
 } as const;
