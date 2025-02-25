@@ -8,6 +8,7 @@ import {
   faAward,
   faImages,
   IconDefinition,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import {useNavigation} from '@react-navigation/native';
 //import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -25,7 +26,7 @@ export const NavigationBar = (): JSX.Element => {
     {id: Routes.Vote, icon: faHandPointer},
     {id: Routes.Camera, icon: faCamera},
     {id: Routes.Feed, icon: faImages},
-    //{id: 'Profile', icon: faUser},
+    {id: Routes.Profile, icon: faUser},
   ];
 
   const handlePress = (id: keyof RootStackParamList) => {
