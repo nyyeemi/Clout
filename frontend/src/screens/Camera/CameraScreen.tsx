@@ -1,12 +1,5 @@
-import React, {useState, useRef, useCallback, useEffect} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  SafeAreaView,
-  Alert,
-} from 'react-native';
+import React, {useState, useRef, useCallback} from 'react';
+import {View, TouchableOpacity, Image, Text, Alert} from 'react-native';
 import {
   useCameraDevices,
   useCameraPermission,
@@ -49,8 +42,10 @@ export const CameraScreen = (): JSX.Element => {
   const devices = useCameraDevices();
   const frontCamera = devices.find(device => device.position === 'front');
   const backCamera = devices.find(device => device.position === 'back');
-  const activeDevice: CameraDevice | undefined =
-    cameraType === 'front' ? frontCamera : backCamera;
+  const activeDevice: CameraDevice =
+    cameraType === 'front'
+      ? frontCamera ?? backCamera!
+      : backCamera ?? frontCamera!;
 
   const zoom = useSharedValue(activeDevice?.neutralZoom ?? 1);
   const animatedProps = useAnimatedProps<CameraProps>(
