@@ -5,6 +5,7 @@ import {
   useCameraPermission,
   Camera,
   CameraDevice,
+  CameraProps,
 } from 'react-native-vision-camera';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
@@ -30,7 +31,6 @@ Reanimated.addWhitelistedNativeProps({zoom: true});
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 
 export const CameraScreen = (): JSX.Element => {
-  const zoom = useSharedValue(1);
   const zoomOffset = useSharedValue(0);
 
   const [cameraType, setCameraType] = useState<'back' | 'front'>('back');
@@ -38,9 +38,18 @@ export const CameraScreen = (): JSX.Element => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const animatedProps = useAnimatedProps(() => ({
-    zoom: zoom.value,
-  }));
+
+  const devices = useCameraDevices();
+  const frontCamera = devices.find(device => device.position === 'front');
+  const backCamera = devices.find(device => device.position === 'back');
+  const activeDevice: CameraDevice | undefined =
+    cameraType === 'front' ? frontCamera : backCamera;
+
+  const zoom = useSharedValue(activeDevice?.neutralZoom ?? 1);
+  const animatedProps = useAnimatedProps<CameraProps>(
+    () => ({zoom: zoom.value}),
+    [zoom],
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -51,7 +60,6 @@ export const CameraScreen = (): JSX.Element => {
     }, [dispatch]),
   );
 
-  const devices = useCameraDevices();
   const cameraRef = useRef<Camera>(null);
   const {hasPermission, requestPermission} = useCameraPermission();
 
@@ -60,9 +68,6 @@ export const CameraScreen = (): JSX.Element => {
     return <Text>Requesting camera permission...</Text>;
   }
 
-  const frontCamera = devices.find(device => device.position === 'front');
-  const backCamera = devices.find(device => device.position === 'back');
-
   if (!frontCamera && !backCamera) {
     return (
       <SafeAreaView>
@@ -70,9 +75,6 @@ export const CameraScreen = (): JSX.Element => {
       </SafeAreaView>
     );
   }
-
-  const activeDevice: CameraDevice | undefined =
-    cameraType === 'front' ? frontCamera : backCamera;
 
   if (!activeDevice) {
     return <Text>No active camera found</Text>;
@@ -89,7 +91,7 @@ export const CameraScreen = (): JSX.Element => {
       const newZoom = zoomOffset.value * e.scale;
       zoom.value = interpolate(
         newZoom,
-        [minZoom, maxZoom],
+        [1, 10],
         [minZoom, maxZoom],
         Extrapolation.CLAMP,
       );
