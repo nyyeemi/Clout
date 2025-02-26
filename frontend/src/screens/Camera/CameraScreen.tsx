@@ -14,6 +14,8 @@ import {
   faCheck,
   faTimes,
   faArrowLeft,
+  faBolt,
+  faSlash,
 } from '@fortawesome/free-solid-svg-icons';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {Style} from './style';
@@ -32,7 +34,7 @@ const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 
 export const CameraScreen = (): JSX.Element => {
   const zoomOffset = useSharedValue(0);
-
+  const [flashMode, setFlashMode] = useState<'on' | 'off' | 'auto'>('off');
   const [cameraType, setCameraType] = useState<'back' | 'front'>('back');
   const [photo, setPhoto] = useState<string | null>(null);
 
@@ -99,7 +101,9 @@ export const CameraScreen = (): JSX.Element => {
 
   const takePicture = async () => {
     if (cameraRef.current) {
-      const photoData = await cameraRef.current.takePhoto();
+      const photoData = await cameraRef.current.takePhoto({
+        flash: flashMode,
+      });
       setPhoto(`file://${photoData.path}`);
     }
   };
@@ -122,6 +126,12 @@ export const CameraScreen = (): JSX.Element => {
     navigation.goBack();
   };
 
+  const toggleFlashMode = () => {
+    setFlashMode(prev =>
+      prev === 'off' ? 'on' : prev === 'on' ? 'auto' : 'off',
+    );
+  };
+
   return (
     <View style={Style.container}>
       {!photo ? (
@@ -136,9 +146,27 @@ export const CameraScreen = (): JSX.Element => {
               animatedProps={animatedProps}
             />
           </GestureDetector>
-
           <TouchableOpacity onPress={handleBack} style={Style.backButton}>
             <FontAwesomeIcon icon={faArrowLeft} size={30} color="white" />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={toggleFlashMode} style={Style.flashButton}>
+            <View>
+              <FontAwesomeIcon
+                icon={faBolt}
+                size={flashMode === 'auto' ? 20 : 30}
+                color={flashMode === 'off' ? 'grey' : 'white'}
+              />
+              {flashMode === 'off' && (
+                <FontAwesomeIcon
+                  icon={faSlash}
+                  size={32}
+                  color="grey"
+                  style={Style.flashSlashIcon}
+                />
+              )}
+            </View>
+            {flashMode === 'auto' && <Text style={Style.flashText}>AUTO</Text>}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -146,7 +174,6 @@ export const CameraScreen = (): JSX.Element => {
             style={Style.changeCameraButton}>
             <FontAwesomeIcon icon={faSync} size={30} color="white" />
           </TouchableOpacity>
-
           <TouchableOpacity onPress={takePicture} style={Style.captureButton}>
             <FontAwesomeIcon icon={faCamera} size={40} color="white" />
           </TouchableOpacity>

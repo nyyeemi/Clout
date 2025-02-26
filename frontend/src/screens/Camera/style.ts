@@ -14,8 +14,6 @@ export const Style = StyleSheet.create({
     left: horizontalScale(20),
     bottom: verticalScale(50),
     padding: horizontalScale(10),
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: horizontalScale(50),
   },
   captureButton: {
     position: 'absolute',
@@ -45,20 +43,31 @@ export const Style = StyleSheet.create({
   },
   cancelButton: {
     padding: horizontalScale(15),
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
     borderRadius: horizontalScale(50),
   },
   confirmButton: {
     padding: horizontalScale(15),
-    backgroundColor: 'green',
+    //backgroundColor: 'green',
     borderRadius: horizontalScale(50),
   },
   backButton: {
     position: 'absolute',
     top: verticalScale(50),
     left: horizontalScale(20),
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: horizontalScale(20),
     padding: horizontalScale(10),
+  },
+  flashButton: {
+    position: 'absolute',
+    top: verticalScale(50),
+    right: horizontalScale(20),
+    padding: horizontalScale(10),
+    alignItems: 'center',
+  },
+  flashText: {color: 'white', fontSize: 11},
+  flashSlashIcon: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
   },
 });
