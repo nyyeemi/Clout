@@ -12,19 +12,39 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import globalStyle from '../../assets/styles/globalStyle';
 import {styles} from './style';
 
-const {width} = Dimensions.get('window');
-const MAX_ROTATION = 60;
-const MAX_TRANSLATE_X = width * 0.7;
-
 export const VoteScreen = (): JSX.Element => {
   const translateX = useSharedValue(0);
 
+  const swipeStart = useSharedValue(0);
+
+  const {width} = Dimensions.get('window');
+  const MAX_ROTATION = 60;
+  const MAX_TRANSLATE_X = width * 0.6;
+
   const swipeGesture = Gesture.Pan()
+    .onBegin(() => {
+      swipeStart.value = translateX.value;
+    })
     .onUpdate(e => {
-      translateX.value = e.translationX;
+      translateX.value = swipeStart.value + e.translationX;
     })
     .onEnd(() => {
-      translateX.value = withSpring(0);
+      if (translateX.value > width * 0.1) {
+        translateX.value = withSpring(MAX_TRANSLATE_X, {
+          stiffness: 100,
+          damping: 100,
+        });
+      } else if (translateX.value < -width * 0.1) {
+        translateX.value = withSpring(-MAX_TRANSLATE_X, {
+          stiffness: 100,
+          damping: 100,
+        });
+      } else {
+        translateX.value = withSpring(0, {
+          stiffness: 100, // Stiffness (higher value = faster)
+          damping: 100, // Damping (higher value = less oscillation)
+        });
+      }
     });
 
   const leftImageStyle = useAnimatedStyle(() => {
