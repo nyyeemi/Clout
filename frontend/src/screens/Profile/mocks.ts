@@ -1,5 +1,5 @@
 import {CustomImage} from '../../services/image/images';
-import {CustomUser} from './components/ProfileInfoSection';
+import {CustomUser} from './components/ProfileInfoCard';
 
 const IMAGELIST_LENGTH = 50;
 
@@ -66,9 +66,15 @@ export const mockImageList: CustomImage[] = [
 ];
 
 let extendedMockImageList: CustomImage[] = [];
+let uri_idx: number;
 
 for (let i = 0; i < IMAGELIST_LENGTH; ++i) {
-  extendedMockImageList.push({...baseImageMock, id: i});
+  uri_idx = Math.floor(Math.random() * mockImageList.length);
+  extendedMockImageList.push({
+    ...baseImageMock,
+    id: i,
+    image_url: mockImageList[uri_idx].image_url,
+  });
 }
 
 export default extendedMockImageList;

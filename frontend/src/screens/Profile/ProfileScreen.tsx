@@ -1,16 +1,23 @@
 import React from 'react';
 import globalStyle from '../../assets/styles/globalStyle';
-import {ImageGrid} from './components/ImageGrid';
+import {ImageList} from './components/ImageList';
 import extendedMockImageList, {mockUser} from './mocks';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ProfileHeader} from './components/ProfileHeader';
+import {View} from 'react-native';
 
 export const ProfileScreen = (): JSX.Element => {
   //useEffect --> get image data, user,
+  const insets = useSafeAreaInsets();
   return (
-    <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
+    <View
+      style={[
+        globalStyle.backgroundWhite,
+        globalStyle.flex,
+        {paddingTop: insets.top},
+      ]}>
       <ProfileHeader user={mockUser} />
-      <ImageGrid data={extendedMockImageList} />
-    </SafeAreaView>
+      <ImageList data={extendedMockImageList} />
+    </View>
   );
 };

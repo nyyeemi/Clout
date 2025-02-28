@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-import style from '../style';
+import {style} from '../style';
 
 export const UserInfoBox = ({
   count,

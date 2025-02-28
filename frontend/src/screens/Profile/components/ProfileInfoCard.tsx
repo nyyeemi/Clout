@@ -1,34 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {scaleFontSize, verticalScale} from '../../../assets/styles/scaling';
-import style from '../style';
+import {style} from '../style';
 import globalStyle from '../../../assets/styles/globalStyle';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../../../navigation/Routes';
+import {ProfileStackParamList} from '../../../navigation/Routes';
 import {ButtonRow} from './ButtonRow';
 import {UserInfoBar} from './UserInfoBar';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginVertical: verticalScale(10),
-    flexDirection: 'column',
-    paddingHorizontal: globalStyle.defaultPadding.paddingHorizontal,
-  },
-  buttonText: {
-    textAlign: 'center',
-    fontSize: scaleFontSize(15),
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-  defaultMargin: {
-    marginVertical: verticalScale(10),
-  },
-});
 
 export type CustomUser = {
   id: number;
@@ -41,8 +20,9 @@ export type CustomUser = {
   num_posts: number;
 };
 
-export const ProfileInfoSection = ({user}: {user: CustomUser}): JSX.Element => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
+  const navigation =
+    useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const renderButton = (text: string) => (
     <Text style={styles.buttonText}>{text}</Text>
   );
@@ -75,3 +55,25 @@ export const ProfileInfoSection = ({user}: {user: CustomUser}): JSX.Element => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    //marginVertical: verticalScale(10),
+    flexDirection: 'column',
+    paddingHorizontal: globalStyle.defaultPadding.paddingHorizontal,
+  },
+  buttonText: {
+    textAlign: 'center',
+    fontSize: scaleFontSize(15),
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  defaultMargin: {
+    marginVertical: verticalScale(10),
+  },
+});

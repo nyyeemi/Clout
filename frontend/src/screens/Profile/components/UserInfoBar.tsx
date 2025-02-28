@@ -2,15 +2,16 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {View} from 'react-native';
-import {RootStackParamList} from '../../../navigation/Routes';
+import {ProfileStackParamList} from '../../../navigation/Routes';
 import {CustomPressable} from '../CustomPressable';
-import {CustomUser} from './ProfileInfoSection';
-import style from '../style';
+import {CustomUser} from './ProfileInfoCard';
+import {style} from '../style';
 import {ProfilePicture} from './ProfilePicture';
 import {UserInfoBox} from './UserInfoBox';
 
 export const UserInfoBar = ({user}: {user: CustomUser}): JSX.Element => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const onPress = () => {
     navigation.navigate('Followers');
   };

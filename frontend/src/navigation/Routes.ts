@@ -6,11 +6,16 @@ export type RootStackParamList = {
   Vote: undefined;
   Camera: undefined;
   Feed: undefined;
-  Profile: undefined;
   BottomTabNavigator: undefined;
+  Profile: undefined;
+};
+
+export type ProfileStackParamList = {
+  Profile: undefined;
   Settings: undefined;
   Followers: undefined;
   EditProfile: undefined;
+  ImageDetail: {imageId: number};
 };
 
 export const Routes = {
@@ -26,4 +31,5 @@ export const Routes = {
   Settings: 'Settings',
   Followers: 'Followers',
   EditProfile: 'EditProfile',
+  ImageDetail: 'ImageDetail',
 } as const;

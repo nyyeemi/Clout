@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image} from 'react-native';
-import style from '../style';
+import {style} from '../style';
 
 export const ProfilePicture = ({uri}: {uri: string}) => {
   return (

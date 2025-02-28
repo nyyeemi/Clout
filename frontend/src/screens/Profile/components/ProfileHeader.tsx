@@ -6,9 +6,9 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {StyleSheet, View, Text} from 'react-native';
 import globalStyle from '../../../assets/styles/globalStyle';
 import {scaleFontSize} from '../../../assets/styles/scaling';
-import {RootStackParamList} from '../../../navigation/Routes';
+import {ProfileStackParamList} from '../../../navigation/Routes';
 import {CustomPressable} from '../CustomPressable';
-import {CustomUser} from './ProfileInfoSection';
+import {CustomUser} from './ProfileInfoCard';
 
 const headerstyle = StyleSheet.create({
   container: {
@@ -26,7 +26,8 @@ const headerstyle = StyleSheet.create({
 });
 
 export const ProfileHeader = ({user}: {user: CustomUser}): JSX.Element => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const onPress = () => {
     navigation.navigate('Settings');
   };

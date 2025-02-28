@@ -8,9 +8,9 @@ const imageWidth = Math.ceil(width / 3);
 console.log(imageWidth % 3);
 const buttonTextSize = scaleFontSize(17);
 console.log(buttonTextSize);
-const imageHeight = imageWidth * (4 / 3);
+export const imageHeight = imageWidth * (4 / 3);
 
-const style = StyleSheet.create({
+export const style = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: horizontalScale(8),
@@ -48,7 +48,7 @@ const style = StyleSheet.create({
     fontWeight: 'bold',
   },
   divider: {
-    padding: horizontalScale(5),
+    paddingTop: horizontalScale(5),
     borderBottomColor: '#dedede',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
@@ -69,5 +69,3 @@ const style = StyleSheet.create({
     borderColor: 'white',
   },
 });
-
-export default style;

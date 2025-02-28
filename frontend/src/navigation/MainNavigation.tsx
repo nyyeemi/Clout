@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {RootStackParamList, Routes} from './Routes';
+import {ProfileStackParamList, RootStackParamList, Routes} from './Routes';
 import {HomeScreen} from '../screens/Home/HomeScreen';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
@@ -16,9 +16,38 @@ import {StyleSheet, View} from 'react-native';
 import globalStyle from '../assets/styles/globalStyle';
 import {FollowersScreen} from '../screens/Profile/FollowersScreen';
 import {EditProfileScreen} from '../screens/Profile/EditProfileScreen';
+import {ImageDetailsScreen} from '../screens/Profile/ImageDetailsScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
+const ProfileStack = createStackNavigator<ProfileStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
+
+const ProfileStackScreen = () => {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name={Routes.Profile}
+        component={ProfileScreen}
+        options={{header: () => null, headerShown: false}}
+      />
+      <ProfileStack.Screen name={Routes.Settings} component={SettingsScreen} />
+      <ProfileStack.Screen
+        name={Routes.Followers}
+        component={FollowersScreen}
+      />
+      <ProfileStack.Screen
+        name={Routes.EditProfile}
+        component={EditProfileScreen}
+        options={{title: 'Edit profile'}}
+      />
+      <ProfileStack.Screen
+        name={Routes.ImageDetail}
+        component={ImageDetailsScreen}
+        options={{title: 'Post'}}
+      />
+    </ProfileStack.Navigator>
+  );
+};
 
 const BottomTabNavigator = () => {
   return (
@@ -30,7 +59,7 @@ const BottomTabNavigator = () => {
         <Tab.Screen name={Routes.Vote} component={VoteScreen} />
         <Tab.Screen name={Routes.Camera} component={CameraScreen} />
         <Tab.Screen name={Routes.Feed} component={FeedScreen} />
-        <Tab.Screen name={Routes.Profile} component={ProfileScreen} />
+        <Tab.Screen name={Routes.Profile} component={ProfileStackScreen} />
       </Tab.Navigator>
     </>
   );
@@ -65,13 +94,6 @@ export const Authenticated = (): JSX.Element => {
           name="BottomTabNavigator"
           component={BottomTabNavigator}
           options={{header: () => null, headerShown: false}}
-        />
-        <Stack.Screen name={Routes.Settings} component={SettingsScreen} />
-        <Stack.Screen name={Routes.Followers} component={FollowersScreen} />
-        <Stack.Screen
-          name={Routes.EditProfile}
-          component={EditProfileScreen}
-          options={{title: 'Edit profile'}}
         />
       </Stack.Navigator>
       <NavigationBar />
