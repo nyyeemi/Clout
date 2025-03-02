@@ -59,7 +59,7 @@ const BottomTabNavigator = () => {
         <Tab.Screen name={Routes.Vote} component={VoteScreen} />
         <Tab.Screen name={Routes.Camera} component={CameraScreen} />
         <Tab.Screen name={Routes.Feed} component={FeedScreen} />
-        <Tab.Screen name={Routes.Profile} component={ProfileStackScreen} />
+        <Tab.Screen name={Routes.ProfileStack} component={ProfileStackScreen} />
       </Tab.Navigator>
     </>
   );
@@ -69,7 +69,7 @@ const BottomTabNavigator = () => {
 export const NonAuthenticated = (): JSX.Element => {
   return (
     <Stack.Navigator
-      initialRouteName={Routes.Profile}
+      initialRouteName={Routes.Login}
       screenOptions={{
         header: () => null,
         headerShown: false,

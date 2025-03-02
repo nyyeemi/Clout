@@ -29,7 +29,7 @@ export const NavigationBar = (): JSX.Element => {
     {id: Routes.Feed, icon: faImages},
     {id: Routes.Camera, icon: faCamera},
     {id: Routes.Leaderboard, icon: faAward},
-    {id: Routes.Profile, icon: faUser},
+    {id: Routes.ProfileStack, icon: faUser},
   ];
 
   const handlePress = (id: keyof RootStackParamList) => {
