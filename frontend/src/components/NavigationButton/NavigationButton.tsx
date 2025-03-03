@@ -18,13 +18,9 @@ export const NavigationButton = ({
   onPress,
   size,
   color,
-  isActive,
-}: NavigationButtonProps): JSX.Element => (
-  <View
-    style={[
-      Style.container,
-      isActive ? Style.activeButton : Style.inactiveButton,
-    ]}>
+}: //isActive,
+NavigationButtonProps): JSX.Element => (
+  <View style={[Style.container]}>
     <Pressable onPress={onPress}>
       <FontAwesomeIcon icon={icon} size={scaleFontSize(size)} color={color} />
     </Pressable>
