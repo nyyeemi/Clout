@@ -12,7 +12,7 @@ import Animated, {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import globalStyle from '../../assets/styles/globalStyle';
 import {styles} from './style';
-import {useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
 
 export const VoteScreen = (): JSX.Element => {
@@ -23,19 +23,17 @@ export const VoteScreen = (): JSX.Element => {
   const rightTranslateY = useSharedValue(0);
   const swipeStart = useSharedValue(0);
 
+  const leftOpacity = useSharedValue(1);
+  const rightOpacity = useSharedValue(1);
+
   const {width, height} = Dimensions.get('window');
   const MAX_ROTATION = 60;
   const MAX_TRANSLATE_X = width * 0.6;
   const VOTE_THRESHOLD = -height * 0.2;
 
-  const leftOpacity = useSharedValue(1);
-  const rightOpacity = useSharedValue(1);
-
   const voteImage = (side: 'left' | 'right') => {
     console.log(`Voted: ${side} image!`);
-
     setCurrentIndex(prevIndex => (prevIndex + 1) % voteImages.length);
-
     setTimeout(() => {
       leftTranslateY.value = 0;
       rightTranslateY.value = 0;
@@ -61,23 +59,17 @@ export const VoteScreen = (): JSX.Element => {
       })
       .onEnd(() => {
         if (translateX.value > width * 0.1) {
-          translateX.value = withSpring(MAX_TRANSLATE_X, {
-            stiffness: 100,
-            damping: 100,
-          });
+          translateX.value = withSpring(MAX_TRANSLATE_X);
         } else if (translateX.value < -width * 0.1) {
-          translateX.value = withSpring(-MAX_TRANSLATE_X, {
-            stiffness: 100,
-            damping: 100,
-          });
+          translateX.value = withSpring(-MAX_TRANSLATE_X);
         } else {
-          translateX.value = withSpring(0, {stiffness: 100, damping: 100});
+          translateX.value = withSpring(0);
         }
 
         if (translateY.value < VOTE_THRESHOLD) {
           runOnJS(voteImage)(side);
-          translateY.value = withSpring(-height, {stiffness: 20, damping: 500});
-          translateX.value = withSpring(0, {stiffness: 100, damping: 100});
+          translateY.value = withSpring(-height, {stiffness: 40, damping: 500});
+          translateX.value = withSpring(0);
           opacity.value = withSpring(0);
         } else {
           translateY.value = withSpring(0);
@@ -96,7 +88,7 @@ export const VoteScreen = (): JSX.Element => {
   );
 
   const leftImageStyle = useAnimatedStyle(() => ({
-    opacity: leftOpacity.value, // 🔥 Häivytys
+    opacity: leftOpacity.value,
     transform: [
       {
         translateX: interpolate(
@@ -143,6 +135,7 @@ export const VoteScreen = (): JSX.Element => {
 
   const voteImages = useSelector(
     (state: RootState) => state.voteImage.imageTupleList,
+    shallowEqual,
   );
 
   const currentImages = useMemo(() => {
@@ -150,6 +143,8 @@ export const VoteScreen = (): JSX.Element => {
       ? voteImages[currentIndex % voteImages.length]
       : null;
   }, [currentIndex, voteImages]);
+
+  //console.log('current images', currentImages[0]);
 
   return (
     <SafeAreaView style={[globalStyle.flex, globalStyle.backgroundWhite]}>
