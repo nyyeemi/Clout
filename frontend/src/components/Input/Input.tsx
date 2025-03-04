@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import style from './style';
+import {useTheme} from '@react-navigation/native';
 
 type Props = {
   label: string;
@@ -30,12 +31,13 @@ const Input = ({
   secureTextEntry = false,
   style: inputStyle,
 }: Props): JSX.Element => {
+  const {colors} = useTheme();
   return (
     <View style={inputStyle}>
       <Text style={style.label}>{label}</Text>
       <TextInput
         placeholder={placeholder}
-        style={style.input}
+        style={[style.input, {color: colors.text}]}
         value={value}
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}

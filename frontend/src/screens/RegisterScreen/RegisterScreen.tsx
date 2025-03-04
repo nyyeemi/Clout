@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Alert} from 'react-native';
+import {Alert} from 'react-native';
 import {Formik, FormikProps} from 'formik';
 import * as Yup from 'yup';
 import Input from '../../components/Input/Input';
@@ -10,6 +10,8 @@ import {RootStackParamList, Routes} from '../../navigation/Routes';
 import {registerHandler} from '../../services/auth/handlers/registerHandler';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {ThemedView} from '../../components/ui/themed-view';
+import {ThemedText} from '../../components/ui/typography';
 
 type RegisterScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -26,12 +28,7 @@ type FormValues = {
 export const RegisterScreen = ({navigation}: RegisterScreenProps) => {
   const insets = useSafeAreaInsets();
   return (
-    <View
-      style={[
-        globalStyle.backgroundWhite,
-        globalStyle.flex,
-        {paddingTop: insets.top},
-      ]}>
+    <ThemedView style={[globalStyle.flex, {paddingTop: insets.top}]}>
       <Formik
         initialValues={{
           username: '',
@@ -62,7 +59,7 @@ export const RegisterScreen = ({navigation}: RegisterScreenProps) => {
         }}>
         {formikProps => <RenderForm {...formikProps} />}
       </Formik>
-    </View>
+    </ThemedView>
   );
 };
 
@@ -105,10 +102,10 @@ const RenderForm = ({
   touched,
   isSubmitting,
 }: FormikProps<FormValues>): JSX.Element => (
-  <View style={style.container}>
-    <Text style={style.title}>Register</Text>
+  <ThemedView style={style.container}>
+    <ThemedText style={style.title}>Register</ThemedText>
 
-    <View style={style.inputAndErrorContainer}>
+    <ThemedView style={style.inputAndErrorContainer}>
       <Input
         label="Username"
         placeholder="erkki123"
@@ -117,11 +114,11 @@ const RenderForm = ({
         onBlur={handleBlur('username')}
       />
       {touched.username && errors.username && (
-        <Text style={style.error}>{errors.username}</Text>
+        <ThemedText style={style.error}>{errors.username}</ThemedText>
       )}
-    </View>
+    </ThemedView>
 
-    <View style={style.inputAndErrorContainer}>
+    <ThemedView style={style.inputAndErrorContainer}>
       <Input
         label="Email"
         placeholder="Email@gmail.com"
@@ -131,11 +128,11 @@ const RenderForm = ({
         keyboardType="email-address"
       />
       {touched.email && errors.email && (
-        <Text style={style.error}>{errors.email}</Text>
+        <ThemedText style={style.error}>{errors.email}</ThemedText>
       )}
-    </View>
+    </ThemedView>
 
-    <View style={style.inputAndErrorContainer}>
+    <ThemedView style={style.inputAndErrorContainer}>
       <Input
         label="Password"
         placeholder="Password"
@@ -145,11 +142,11 @@ const RenderForm = ({
         secureTextEntry
       />
       {touched.password && errors.password && (
-        <Text style={style.error}>{errors.password}</Text>
+        <ThemedText style={style.error}>{errors.password}</ThemedText>
       )}
-    </View>
+    </ThemedView>
 
-    <View style={style.inputAndErrorContainer}>
+    <ThemedView style={style.inputAndErrorContainer}>
       <Input
         label="Confirm Password"
         placeholder="Confirm password"
@@ -159,14 +156,14 @@ const RenderForm = ({
         secureTextEntry
       />
       {touched.confirmPassword && errors.confirmPassword && (
-        <Text style={style.error}>{errors.confirmPassword}</Text>
+        <ThemedText style={style.error}>{errors.confirmPassword}</ThemedText>
       )}
-    </View>
+    </ThemedView>
 
     <Button
       title={isSubmitting ? 'Registering...' : 'Register'}
       onPress={handleSubmit}
       isDisabled={isSubmitting || Object.keys(errors).length !== 0}
     />
-  </View>
+  </ThemedView>
 );

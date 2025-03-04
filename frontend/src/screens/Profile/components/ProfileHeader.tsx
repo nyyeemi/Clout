@@ -1,16 +1,17 @@
 import React from 'react';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import globalStyle from '../../../assets/styles/globalStyle';
-import {scaleFontSize} from '../../../assets/styles/scaling';
 import {ProfileStackParamList} from '../../../navigation/Routes';
 import {CustomPressable} from '../CustomPressable';
 import {CustomUser} from './ProfileInfoCard';
+import {ThemedText} from '../../../components/ui/typography';
 
 export const ProfileHeader = ({user}: {user: CustomUser}): JSX.Element => {
+  const {colors} = useTheme();
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const onPress = () => {
@@ -18,9 +19,9 @@ export const ProfileHeader = ({user}: {user: CustomUser}): JSX.Element => {
   };
   return (
     <View style={headerstyle.container}>
-      <Text style={headerstyle.text}>{user.username}</Text>
+      <ThemedText style={headerstyle.text}>{user.username}</ThemedText>
       <CustomPressable onPress={onPress}>
-        <FontAwesomeIcon icon={faBars} size={20} />
+        <FontAwesomeIcon icon={faBars} size={20} color={colors.text} />
       </CustomPressable>
     </View>
   );
@@ -36,7 +37,7 @@ const headerstyle = StyleSheet.create({
   },
   text: {
     fontWeight: 'bold',
-    fontSize: scaleFontSize(20),
+    fontSize: 20,
     textAlignVertical: 'bottom',
   },
 });

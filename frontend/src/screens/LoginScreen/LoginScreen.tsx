@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Input from '../../components/Input/Input'; // Omat Input-komponentit
 import Button from '../../components/Button/Button'; // Omat Button-komponentit
@@ -9,6 +9,8 @@ import {RootStackParamList, Routes} from '../../navigation/Routes';
 import {loginHandler} from '../../services/auth/handlers/loginHandler';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {ThemedView} from '../../components/ui/themed-view';
+import {ThemedText} from '../../components/ui/typography';
 
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -23,14 +25,9 @@ export const LoginScreen = ({navigation}: LoginScreenProps): JSX.Element => {
   };
 
   return (
-    <View
-      style={[
-        globalStyle.backgroundWhite,
-        globalStyle.flex,
-        {paddingTop: insets.top},
-      ]}>
-      <View style={style.container}>
-        <Text style={style.title}>Log in</Text>
+    <ThemedView style={[globalStyle.flex, {paddingTop: insets.top}]}>
+      <ThemedView style={style.container}>
+        <ThemedText style={style.title}>Log in</ThemedText>
 
         <Input
           label="Username"
@@ -56,11 +53,11 @@ export const LoginScreen = ({navigation}: LoginScreenProps): JSX.Element => {
         />
 
         <TouchableOpacity onPress={() => navigation.navigate(Routes.Register)}>
-          <Text style={style.registerLink}>
+          <ThemedText style={style.registerLink}>
             Don't have an account? Register here!
-          </Text>
+          </ThemedText>
         </TouchableOpacity>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };

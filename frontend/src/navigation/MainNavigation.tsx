@@ -1,24 +1,35 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {
+  BottomTabBarButtonProps,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
 import {ProfileStackParamList, RootStackParamList, Routes} from './Routes';
-import {HomeScreen} from '../screens/Home/HomeScreen';
+//import {HomeScreen} from '../screens/Home/HomeScreen';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
-import {NavigationBar} from '../components/NavigationBar/NavigationBar';
 import {LeaderboardScreen} from '../screens/LeaderboardScreen/LeaderboardScreen';
 import {VoteScreen} from '../screens/Vote/VoteScreen';
 import {CameraScreen} from '../screens/Camera/CameraScreen';
 import {FeedScreen} from '../screens/Feed/FeedScreen';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/store/store';
 import {ProfileScreen} from '../screens/Profile/ProfileScreen';
 import {SettingsScreen} from '../screens/Settings/SettingsScreen';
-import {StyleSheet, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 import globalStyle from '../assets/styles/globalStyle';
 import {FollowersScreen} from '../screens/Profile/FollowersScreen';
 import {EditProfileScreen} from '../screens/Profile/EditProfileScreen';
 import {ImageDetailsScreen} from '../screens/Profile/ImageDetailsScreen';
+import {RouteProp, useTheme} from '@react-navigation/native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faCamera,
+  faAward,
+  faImages,
+  IconDefinition,
+  faUser,
+  faHouse,
+} from '@fortawesome/free-solid-svg-icons';
+import {ThemedView} from '../components/ui/themed-view';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
@@ -51,15 +62,84 @@ const ProfileStackScreen = () => {
   );
 };
 
+type tabBarIconProps = {
+  route: RouteProp<RootStackParamList, keyof RootStackParamList>;
+  focused: boolean;
+  color: string;
+  size: number;
+};
+
+const tabBarIcon = ({route, focused, color, size}: tabBarIconProps) => {
+  let icon: IconDefinition = faHouse;
+  console.log(focused);
+
+  if (route.name === Routes.Vote) {
+    icon = faHouse;
+    /*icon = focused
+      ? 'ios-information-circle'
+      : 'ios-information-circle-outline';*/
+  } else if (route.name === Routes.Leaderboard) {
+    icon = faAward;
+  } else if (route.name === Routes.Camera) {
+    icon = faCamera;
+  } else if (route.name === Routes.Feed) {
+    icon = faImages;
+  } else if (route.name === Routes.ProfileStack) {
+    icon = faUser;
+  }
+  // You can return any component that you like here!
+  return <FontAwesomeIcon icon={icon} size={size} color={color} />;
+};
+
+const CustomPressable = ({
+  onPress,
+  style,
+  children,
+}: BottomTabBarButtonProps) => {
+  const {colors} = useTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({pressed}) => [
+        {opacity: pressed ? 0.7 : 1},
+        style,
+        {backgroundColor: colors.background, borderColor: colors.text},
+      ]}>
+      {children}
+    </Pressable>
+  );
+};
+
+const tabBarButton = (props: BottomTabBarButtonProps) => (
+  <CustomPressable {...props} />
+);
+
 const BottomTabNavigator = () => {
+  const theme = useTheme();
   return (
     <>
       <Tab.Navigator
-        screenOptions={{headerShown: false, tabBarStyle: {display: 'none'}}}>
-        <Tab.Screen name={Routes.Home} component={HomeScreen} />
-        <Tab.Screen name={Routes.Leaderboard} component={LeaderboardScreen} />
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) =>
+            tabBarIcon({route, focused, color, size}),
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+          tabBarButton: tabBarButton,
+          tabBarStyle: {
+            backgroundColor: theme.colors.background,
+          },
+          header: () => null,
+          headerShown: false,
+          tabBarShowLabel: false,
+        })}>
+        {/* <Tab.Screen name={Routes.Home} component={HomeScreen}/> */}
         <Tab.Screen name={Routes.Vote} component={VoteScreen} />
-        <Tab.Screen name={Routes.Camera} component={CameraScreen} />
+        <Tab.Screen name={Routes.Leaderboard} component={LeaderboardScreen} />
+        <Tab.Screen
+          name={Routes.Camera}
+          component={CameraScreen}
+          options={{tabBarStyle: {display: 'none'}}}
+        />
         <Tab.Screen name={Routes.Feed} component={FeedScreen} />
         <Tab.Screen name={Routes.ProfileStack} component={ProfileStackScreen} />
       </Tab.Navigator>
@@ -70,26 +150,29 @@ const BottomTabNavigator = () => {
 // Screens for unauthenticated users
 export const NonAuthenticated = (): JSX.Element => {
   return (
-    <Stack.Navigator
-      initialRouteName={Routes.Login}
-      screenOptions={{
-        header: () => null,
-        headerShown: false,
-      }}>
-      <Stack.Screen name={Routes.Login} component={LoginScreen} />
-      <Stack.Screen name={Routes.Register} component={RegisterScreen} />
-    </Stack.Navigator>
+    <ThemedView style={globalStyle.flex}>
+      <Stack.Navigator
+        initialRouteName={Routes.Login}
+        screenOptions={{
+          header: () => null,
+          headerShown: false,
+        }}>
+        <Stack.Screen name={Routes.Login} component={LoginScreen} />
+        <Stack.Screen name={Routes.Register} component={RegisterScreen} />
+      </Stack.Navigator>
+    </ThemedView>
   );
 };
 //screenOptions={{header: () => null, headerShown: false}}>
 // Screens for authenticated users
 export const Authenticated = (): JSX.Element => {
-  const isCameraActive = useSelector(
+  const {colors} = useTheme();
+  /*const isCameraActive = useSelector(
     (state: RootState) => state.camera.isCameraActive,
-  );
+  );*/
 
   return (
-    <View style={[globalStyle.backgroundWhite, globalStyle.flex]}>
+    <View style={[{backgroundColor: colors.background}, globalStyle.flex]}>
       <Stack.Navigator
         screenOptions={{
           headerStyle: styles.headerStyle,
@@ -102,7 +185,7 @@ export const Authenticated = (): JSX.Element => {
           options={{header: () => null, headerShown: false}}
         />
       </Stack.Navigator>
-      {!isCameraActive && <NavigationBar />}
+      {/*!isCameraActive && <NavigationBar />*/}
     </View>
   );
 };

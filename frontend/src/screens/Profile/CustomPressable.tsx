@@ -1,3 +1,4 @@
+import {useTheme} from '@react-navigation/native';
 import React from 'react';
 import {StyleProp, ViewStyle, Pressable} from 'react-native';
 
@@ -13,13 +14,17 @@ export const CustomPressable = ({
   style,
   children,
   pressedStyle,
-}: CustomPressableProps) => (
-  <Pressable
-    onPress={onPress}
-    style={({pressed}) => [
-      pressedStyle ? pressedStyle(pressed) : {opacity: pressed ? 0.7 : 1},
-      style,
-    ]}>
-    {children}
-  </Pressable>
-);
+}: CustomPressableProps) => {
+  const {colors} = useTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({pressed}) => [
+        pressedStyle ? pressedStyle(pressed) : {opacity: pressed ? 0.7 : 1},
+        style,
+        {backgroundColor: colors.background, borderColor: colors.text},
+      ]}>
+      {children}
+    </Pressable>
+  );
+};

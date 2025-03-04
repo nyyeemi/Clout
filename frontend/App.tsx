@@ -1,27 +1,35 @@
 import 'react-native-gesture-handler';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {Provider} from 'react-redux';
 import store from './src/redux/store/store';
 import {RootNavigation} from './src/navigation/RootNavigation';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {Platform, StatusBar} from 'react-native';
+import {Platform, StatusBar, useColorScheme} from 'react-native';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 const App = (): React.JSX.Element => {
+  const scheme = useColorScheme();
   useEffect(() => {
     if (Platform.OS === 'android') {
       SystemNavigationBar.setNavigationColor('transparent');
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-      StatusBar.setBarStyle('dark-content');
     }
   }, []);
 
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <NavigationContainer>
+        <NavigationContainer
+          theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+          />
           <RootNavigation />
         </NavigationContainer>
       </Provider>
