@@ -1,11 +1,12 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {ProfileStackParamList} from '../../../navigation/Routes';
 import {CustomPressable} from '../CustomPressable';
 import {CustomUser} from './ProfileInfoCard';
 import {ProfilePicture} from './ProfilePicture';
+import {ThemedText} from '../../../components/ui/typography';
 
 export const ProfileStatsRow = ({user}: {user: CustomUser}): JSX.Element => {
   const navigation =
@@ -36,8 +37,8 @@ const ProfileStatItem = ({
 }): JSX.Element => {
   return (
     <View style={styles.statItem}>
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statText}>{label}</Text>
+      <ThemedText style={styles.statValue}>{value}</ThemedText>
+      <ThemedText style={styles.statText}>{label}</ThemedText>
     </View>
   );
 };

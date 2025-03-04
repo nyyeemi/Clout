@@ -1,10 +1,11 @@
-import {Dimensions, StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import React from 'react';
 import {ProfileStackParamList} from '../../navigation/Routes';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {ImageListItem} from './components/ImageListItem';
 import extendedMockImageList from './mocks';
+import {ThemedView} from '../../components/ui/themed-view';
 
 type ImageDetailsProps = NativeStackScreenProps<
   ProfileStackParamList,
@@ -17,7 +18,7 @@ export const ImageDetailsScreen = ({route}: ImageDetailsProps): JSX.Element => {
   const currentImage = getImageById(imageId);
   console.log(currentImage, imageId);
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       {currentImage && (
         <ImageListItem
           image={currentImage}
@@ -25,7 +26,7 @@ export const ImageDetailsScreen = ({route}: ImageDetailsProps): JSX.Element => {
           imageStyle={styles.imageStyle}
         />
       )}
-    </View>
+    </ThemedView>
   );
 };
 

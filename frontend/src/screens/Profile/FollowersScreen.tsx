@@ -1,11 +1,13 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React from 'react';
+import {ThemedText} from '../../components/ui/typography';
+import {ThemedView} from '../../components/ui/themed-view';
 
 export const FollowersScreen = (): JSX.Element => {
   return (
-    <View style={styles.container}>
-      <Text>Followers</Text>
-    </View>
+    <ThemedView style={styles.container}>
+      <ThemedText>Followers</ThemedText>
+    </ThemedView>
   );
 };
 
