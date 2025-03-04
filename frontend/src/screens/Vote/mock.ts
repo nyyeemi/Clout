@@ -1,6 +1,6 @@
 import {CustomImage} from '../../services/image/images';
 
-const IMAGELIST_LENGTH = 50;
+const IMAGELIST_LENGTH = 10;
 
 export type CustomUser = {
   id: number;

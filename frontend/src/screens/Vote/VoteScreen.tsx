@@ -1,5 +1,5 @@
-import React, {useMemo, useState} from 'react';
-import {View, Dimensions} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {View, Dimensions, Text} from 'react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -9,11 +9,16 @@ import Animated, {
   Extrapolation,
   runOnJS,
 } from 'react-native-reanimated';
+import FastImage from 'react-native-fast-image';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import globalStyle from '../../assets/styles/globalStyle';
 import {styles} from './style';
-import {shallowEqual, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
+import {updateNewVoteImages} from '../../redux/slices/voteImageSlice';
+import extendedMockImageList from './mock';
+
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 export const VoteScreen = (): JSX.Element => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -22,19 +27,48 @@ export const VoteScreen = (): JSX.Element => {
   const leftTranslateY = useSharedValue(0);
   const rightTranslateY = useSharedValue(0);
   const swipeStart = useSharedValue(0);
-
   const leftOpacity = useSharedValue(1);
   const rightOpacity = useSharedValue(1);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(updateNewVoteImages({imageTupleList: extendedMockImageList}));
+  }, [dispatch]);
 
   const {width, height} = Dimensions.get('window');
   const MAX_ROTATION = 60;
   const MAX_TRANSLATE_X = width * 0.6;
   const VOTE_THRESHOLD = -height * 0.2;
 
+  const voteImages = useSelector(
+    (state: RootState) => state.voteImage.imageTupleList,
+    shallowEqual,
+  );
+
+  const currentImages = useMemo(() => {
+    if (voteImages.length === 0) {
+      return null;
+    }
+
+    const nextIndex = currentIndex + 1;
+    const nextImages = voteImages[nextIndex];
+
+    if (nextImages) {
+      FastImage.preload([
+        {uri: nextImages[0].image_url},
+        {uri: nextImages[1].image_url},
+      ]);
+    }
+
+    return voteImages[currentIndex];
+  }, [currentIndex, voteImages]);
+
   const voteImage = (side: 'left' | 'right') => {
     console.log(`Voted: ${side} image!`);
-    setCurrentIndex(prevIndex => (prevIndex + 1) % voteImages.length);
+
     setTimeout(() => {
+      setCurrentIndex(prevIndex => prevIndex + 1);
       leftTranslateY.value = 0;
       rightTranslateY.value = 0;
       leftOpacity.value = 1;
@@ -133,38 +167,29 @@ export const VoteScreen = (): JSX.Element => {
     ],
   }));
 
-  const voteImages = useSelector(
-    (state: RootState) => state.voteImage.imageTupleList,
-    shallowEqual,
-  );
-
-  const currentImages = useMemo(() => {
-    return voteImages.length > 0
-      ? voteImages[currentIndex % voteImages.length]
-      : null;
-  }, [currentIndex, voteImages]);
-
-  //console.log('current images', currentImages[0]);
-
   return (
     <SafeAreaView style={[globalStyle.flex, globalStyle.backgroundWhite]}>
-      {currentImages && (
+      {currentImages ? (
         <View style={styles.container}>
           <GestureDetector gesture={leftImageGesture}>
-            <Animated.Image
+            <AnimatedFastImage
               source={{uri: currentImages[0].image_url}}
               style={[styles.image, leftImageStyle]}
-              resizeMode={'cover'}
+              resizeMode={FastImage.resizeMode.cover}
             />
           </GestureDetector>
 
           <GestureDetector gesture={rightImageGesture}>
-            <Animated.Image
+            <AnimatedFastImage
               source={{uri: currentImages[1].image_url}}
               style={[styles.image, rightImageStyle]}
-              resizeMode={'cover'}
+              resizeMode={FastImage.resizeMode.cover}
             />
           </GestureDetector>
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <Text>No more pictures</Text>
         </View>
       )}
     </SafeAreaView>

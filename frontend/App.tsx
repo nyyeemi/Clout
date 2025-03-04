@@ -1,24 +1,12 @@
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
-import {Provider, useDispatch} from 'react-redux';
+import {Provider} from 'react-redux';
 import store from './src/redux/store/store';
 import {RootNavigation} from './src/navigation/RootNavigation';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Platform, StatusBar} from 'react-native';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
-import {updateNewVoteImages} from './src/redux/slices/voteImageSlice';
-import extendedMockImageList from './src/screens/Vote/mock';
-
-const LoadVoteImages = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(updateNewVoteImages({imageTupleList: extendedMockImageList}));
-  }, [dispatch]);
-
-  return null;
-};
 
 const App = (): React.JSX.Element => {
   useEffect(() => {
@@ -33,7 +21,6 @@ const App = (): React.JSX.Element => {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <LoadVoteImages />
         <NavigationContainer>
           <RootNavigation />
         </NavigationContainer>
