@@ -5,7 +5,7 @@ import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 type DefaultTextProps = {
-  children?: React.ReactNode;
+  children: React.ReactNode;
   style?: StyleProp<TextStyle>;
 };
 
@@ -17,11 +17,12 @@ export const ThemedText = ({
   return <Text style={[{color: theme.colors.text}, style]}>{children}</Text>;
 };
 
-type ThemedIconProps = DefaultTextProps & {
+type ThemedIconProps = {
   icon: IconDefinition;
   size?: number;
   children?: React.ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle>;
 };
 
 export const ThemedIcon = ({
