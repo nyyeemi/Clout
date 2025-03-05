@@ -35,6 +35,7 @@ export const VoteScreen = (): JSX.Element => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [hasVoted, setHasVoted] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
 
   const translateX = useSharedValue(0);
   const leftTranslateY = useSharedValue(0);
@@ -44,6 +45,11 @@ export const VoteScreen = (): JSX.Element => {
   const rightOpacity = useSharedValue(1);
 
   const arrowTranslateY = useSharedValue(0);
+
+  const {width, height} = Dimensions.get('window');
+  const MAX_ROTATION = 60;
+  const MAX_TRANSLATE_X = width * 0.6;
+  const VOTE_THRESHOLD = -height * 0.2;
 
   const dispatch = useDispatch();
 
@@ -67,10 +73,16 @@ export const VoteScreen = (): JSX.Element => {
     };
   }, []);
 
-  const {width, height} = Dimensions.get('window');
-  const MAX_ROTATION = 60;
-  const MAX_TRANSLATE_X = width * 0.6;
-  const VOTE_THRESHOLD = -height * 0.2;
+  useEffect(() => {
+    if (isFirstVisit) {
+      translateX.value = withTiming(-MAX_TRANSLATE_X, {duration: 1500}, () => {
+        translateX.value = withTiming(MAX_TRANSLATE_X, {duration: 1500}, () => {
+          translateX.value = withSpring(0);
+          runOnJS(setIsFirstVisit)(false);
+        });
+      });
+    }
+  }, [MAX_TRANSLATE_X, isFirstVisit, translateX]);
 
   const voteImages: ImageTuple[] = useSelector(
     (state: RootState) => state.voteImage.imageTupleList,
