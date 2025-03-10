@@ -163,11 +163,20 @@ export const VoteScreen = (): JSX.Element => {
       })
       .onEnd(() => {
         if (translateX.value > width * 0.1) {
-          translateX.value = withSpring(MAX_TRANSLATE_X);
+          translateX.value = withSpring(MAX_TRANSLATE_X, {
+            stiffness: 100,
+            damping: 100,
+          });
         } else if (translateX.value < -width * 0.1) {
-          translateX.value = withSpring(-MAX_TRANSLATE_X);
+          translateX.value = withSpring(-MAX_TRANSLATE_X, {
+            stiffness: 100,
+            damping: 100,
+          });
         } else {
-          translateX.value = withSpring(0);
+          translateX.value = withSpring(0, {
+            stiffness: 100,
+            damping: 100,
+          });
         }
 
         if (translateY.value < VOTE_THRESHOLD) {
