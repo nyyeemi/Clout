@@ -6,6 +6,6 @@ import {RootState} from '../redux/store/store';
 export const RootNavigation = () => {
   const user = useSelector((state: RootState) => state.user);
 
-  return user.isAuthenticated ? <Authenticated /> : <NonAuthenticated />;
-  //return <Authenticated />;
+  //return user.isAuthenticated ? <Authenticated /> : <NonAuthenticated />;
+  return <Authenticated />;
 };
