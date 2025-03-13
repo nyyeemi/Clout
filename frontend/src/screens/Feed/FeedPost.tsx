@@ -38,7 +38,7 @@ const IMAGE_WIDTH = width;
 const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
 
 const style = StyleSheet.create({
-  container: {},
+  container: {borderBottomWidth: StyleSheet.hairlineWidth},
   image: {
     width: IMAGE_WIDTH,
     height: IMAGE_HEIGHT,

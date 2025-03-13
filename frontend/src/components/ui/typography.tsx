@@ -1,42 +1,58 @@
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
-import {StyleProp, TextStyle, Text, View, ViewStyle} from 'react-native';
+import {
+  StyleProp,
+  TextStyle,
+  Text,
+  View,
+  ViewStyle,
+  TextProps,
+} from 'react-native';
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
-type DefaultTextProps = {
-  children: React.ReactNode;
+type ThemedTextProps = TextProps & {
+  variant?: 'regular' | 'medium' | 'bold' | 'heavy';
   style?: StyleProp<TextStyle>;
 };
 
 export const ThemedText = ({
-  children,
+  variant = 'regular',
   style,
-}: DefaultTextProps): JSX.Element => {
+  ...props
+}: ThemedTextProps): JSX.Element => {
   const theme = useTheme();
-  return <Text style={[{color: theme.colors.text}, style]}>{children}</Text>;
+
+  return (
+    <Text
+      style={[{color: theme.colors.text}, theme.fonts[variant], style]}
+      {...props}
+    />
+  );
 };
 
 type ThemedIconProps = {
   icon: IconDefinition;
   size?: number;
-  children?: React.ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
-  style?: StyleProp<TextStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  children?: string;
 };
 
 export const ThemedIcon = ({
-  children,
-  style,
   icon,
   size = 24,
   containerStyle,
+  textStyle,
+  children,
+  ...props
 }: ThemedIconProps): JSX.Element => {
   const theme = useTheme();
+
   return (
-    <View style={containerStyle}>
+    <View style={containerStyle} {...props}>
       <FontAwesomeIcon icon={icon} size={size} color={theme.colors.text} />
-      {children && <ThemedText style={style}>{children}</ThemedText>}
+      {children && <ThemedText style={textStyle}>{children}</ThemedText>}
     </View>
   );
 };

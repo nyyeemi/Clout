@@ -20,6 +20,7 @@ type Props = {
 
 export const BottomBar = ({user, user_id, caption}: Props): JSX.Element => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleNavigate = () => {
     console.log('NAVIGATE TO SPECIFIC PROFILE', user_id);
@@ -27,12 +28,16 @@ export const BottomBar = ({user, user_id, caption}: Props): JSX.Element => {
 
   const likeImage = () => {
     setIsLiked(true);
-    //TODO: Api call for liking the picture
+    // TODO: API call for liking the picture
   };
 
   const unLikeImage = () => {
     setIsLiked(false);
-    //TODO: Api call for unliking the picture
+    // TODO: API call for unliking the picture
+  };
+
+  const openCommentSection = () => {
+    console.log('comment section opened');
   };
 
   return (
@@ -47,28 +52,52 @@ export const BottomBar = ({user, user_id, caption}: Props): JSX.Element => {
             <ThemedIcon icon={farHeart} size={25} />
           </Pressable>
         )}
-        <ThemedIcon icon={faComment} size={25} />
+        <Pressable onPress={() => openCommentSection()}>
+          <ThemedIcon icon={faComment} size={25} />
+        </Pressable>
       </View>
+
       <Pressable onPress={() => handleNavigate()}>
-        <ThemedText>{user.username}</ThemedText>
+        <ThemedText variant="bold">{user.username}</ThemedText>
       </Pressable>
-      <ThemedText>{caption}</ThemedText>
+
+      {caption && (
+        <View>
+          <ThemedText numberOfLines={expanded ? undefined : 2}>
+            {caption}
+          </ThemedText>
+          {!expanded &&
+            caption.length > 100 && ( // Näytä "Show more" vain jos teksti on pitkä
+              <Pressable onPress={() => setExpanded(true)}>
+                <ThemedText style={style.showMoreText}>Show more...</ThemedText>
+              </Pressable>
+            )}
+          {expanded && (
+            <Pressable onPress={() => setExpanded(false)}>
+              <ThemedText style={style.showMoreText}>Show less</ThemedText>
+            </Pressable>
+          )}
+        </View>
+      )}
     </ThemedView>
   );
 };
 
 const style = StyleSheet.create({
   container: {
-    height: verticalScale(65),
+    height: 'auto',
     justifyContent: 'space-between',
     flexDirection: 'column',
-    borderBottomWidth: StyleSheet.hairlineWidth,
     marginLeft: horizontalScale(10),
     gap: 8,
-    marginVertical: verticalScale(3),
+    paddingVertical: verticalScale(3),
   },
   likeCommentContainer: {
     flexDirection: 'row',
     gap: 10,
+  },
+  showMoreText: {
+    color: '#2889eb',
+    marginTop: 5,
   },
 });
