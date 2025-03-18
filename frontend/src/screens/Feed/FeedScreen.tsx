@@ -1,12 +1,21 @@
 import React from 'react';
 import globalStyle from '../../assets/styles/globalStyle';
-import {ThemedView} from '../../components/ui/themed-view';
-import {ThemedText} from '../../components/ui/typography';
+import {ThemedSafeAreaView} from '../../components/ui/themed-view';
+import {FlatList} from 'react-native';
+import {FeedPost} from './FeedPost';
+import {mockImageList} from './mock';
 
 export const FeedScreen = (): JSX.Element => {
+  //TODO: Replace mockImageList with api answer.
+  //Should imageList come from redux?
   return (
-    <ThemedView style={[globalStyle.flex]}>
-      <ThemedText>moromoro tää on leaderboardscreen</ThemedText>
-    </ThemedView>
+    <ThemedSafeAreaView style={[globalStyle.flex]}>
+      <FlatList
+        data={mockImageList}
+        keyExtractor={item => String(item.id)}
+        renderItem={({item}) => <FeedPost post={item} />}
+        showsVerticalScrollIndicator={false}
+      />
+    </ThemedSafeAreaView>
   );
 };

@@ -1,16 +1,25 @@
 import React from 'react';
-import {View, Image} from 'react-native';
+import {View, Image, ImageStyle, StyleProp} from 'react-native';
 import {style} from '../style';
 import {useTheme} from '@react-navigation/native';
 
-export const ProfilePicture = ({uri}: {uri: string}) => {
+type ProfilePictureProps = {
+  uri: string;
+  style?: StyleProp<ImageStyle>;
+};
+
+export const ProfilePicture = ({
+  uri,
+  style: customStyle,
+}: ProfilePictureProps) => {
   const {colors} = useTheme();
+
   return (
     <View>
       <Image
         source={{uri}}
         resizeMode="cover"
-        style={[style.image, {borderColor: colors.border}]}
+        style={[style.image, {borderColor: colors.border}, customStyle]}
       />
     </View>
   );
