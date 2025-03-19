@@ -4,7 +4,12 @@ import {
   BottomTabBarButtonProps,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
-import {ProfileStackParamList, RootStackParamList, Routes} from './Routes';
+import {
+  FeedStackParamList,
+  ProfileStackParamList,
+  RootStackParamList,
+  Routes,
+} from './Routes';
 //import {HomeScreen} from '../screens/Home/HomeScreen';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
@@ -35,7 +40,24 @@ import {RootState} from '../redux/store/store';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
+const FeedStack = createStackNavigator<FeedStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
+
+const FeedStackScreen = () => {
+  return (
+    <FeedStack.Navigator screenOptions={{headerShown: false}}>
+      <FeedStack.Screen
+        name={Routes.Feed}
+        component={FeedScreen}
+        options={{header: () => null, headerShown: false}}
+      />
+      <FeedStack.Screen
+        name={Routes.ProfileStack}
+        component={ProfileStackScreen}
+      />
+    </FeedStack.Navigator>
+  );
+};
 
 const ProfileStackScreen = () => {
   const loggedInUser = useSelector((state: RootState) => state.user);
@@ -44,7 +66,7 @@ const ProfileStackScreen = () => {
       <ProfileStack.Screen
         name={Routes.Profile}
         component={ProfileScreen}
-        options={{header: () => null, headerShown: false}}
+        options={{headerTitleAlign: 'left'}}
         initialParams={{userId: loggedInUser.user?.id}}
       />
       <ProfileStack.Screen name={Routes.Settings} component={SettingsScreen} />
@@ -144,7 +166,7 @@ const BottomTabNavigator = () => {
           component={CameraScreen}
           options={{tabBarStyle: {display: 'none'}}}
         />
-        <Tab.Screen name={Routes.Feed} component={FeedScreen} />
+        <Tab.Screen name={Routes.Feed} component={FeedStackScreen} />
         <Tab.Screen name={Routes.ProfileStack} component={ProfileStackScreen} />
       </Tab.Navigator>
     </>

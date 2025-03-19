@@ -8,6 +8,7 @@ export type RootStackParamList = {
   Feed: undefined;
   BottomTabNavigator: undefined;
   ProfileStack: undefined;
+  Profile: {userId: number};
 };
 
 export type ProfileStackParamList = {
@@ -16,6 +17,11 @@ export type ProfileStackParamList = {
   Followers: undefined;
   EditProfile: undefined;
   ImageDetail: {imageId: number};
+};
+
+export type FeedStackParamList = {
+  Feed: undefined;
+  ProfileStack: undefined;
 };
 
 export const Routes = {

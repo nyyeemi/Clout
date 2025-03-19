@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import globalStyle from '../../assets/styles/globalStyle';
 import {ImageList} from './components/ImageList';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {ProfileHeader} from './components/ProfileHeader';
+import {ProfileHeader, SettingsButton} from './components/ProfileHeader';
 import {ThemedView} from '../../components/ui/themed-view';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '../../navigation/Routes';
@@ -15,7 +15,10 @@ import {CustomImage} from '../../services/image/images';
 
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
-export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
+export const ProfileScreen = ({
+  route,
+  navigation,
+}: ProfileProps): JSX.Element => {
   //useEffect --> get image data, user,
   const {userId} = route.params;
   const loggedInUser = useSelector((state: RootState) => state.user.user);
@@ -23,6 +26,8 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   const [imageData, setImageData] = useState<CustomImage[]>([]);
   const [loading, setLoading] = useState(true);
   const insets = useSafeAreaInsets();
+
+  //const renderSettingsButton = useCallback(({navigation}) => <SettingsButton />, []);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -72,15 +77,17 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
       </ThemedView>
     );
   }
-
+  if (userToRender === loggedInUser) {
+    navigation.setOptions({headerRight: () => <SettingsButton />});
+  }
+  navigation.setOptions({title: userToRender.username});
   return (
     <ThemedView style={[globalStyle.flex, {paddingTop: insets.top}]}>
-      <ProfileHeader user={userToRender} />
       <ImageList data={imageData} user={userToRender} />
     </ThemedView>
   );
 };
-
+//<ProfileHeader user={userToRender} />
 const styles = StyleSheet.create({
   activityIndicator: {
     flex: 1,
