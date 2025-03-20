@@ -4,6 +4,7 @@ import cameraReducer from '../slices/cameraSlice';
 import voteImageReducer from '../slices/voteImageSlice';
 import feedImageReducer from '../slices/feedImageSlice';
 import likeReducer from '../slices/likeSlice';
+import commentReducer from '../slices/commentSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     voteImage: voteImageReducer,
     feedImage: feedImageReducer,
     like: likeReducer,
+    comment: commentReducer,
   },
 });
 

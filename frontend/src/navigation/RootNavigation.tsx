@@ -11,7 +11,7 @@ export const RootNavigation = () => {
     const data = {user: mockUser, accessToken: 'lol', refreshToken: 'lol'};
     dispatch(loginUser(data));
   }, [dispatch]);
-  return <Authenticated />;
-  //const user = useSelector((state: RootState) => state.user);
-  //return user.isAuthenticated ? <Authenticated /> : <NonAuthenticated />;
+  //return <Authenticated />;
+  const user = useSelector((state: RootState) => state.user);
+  return user.isAuthenticated ? <Authenticated /> : <NonAuthenticated />;
 };

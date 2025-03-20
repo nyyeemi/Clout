@@ -16,7 +16,7 @@ const initialState: LikesState = {
 };
 
 export const likesSlice = createSlice({
-  name: 'likes',
+  name: 'like',
   initialState,
   reducers: {
     setLikes: (state, action: PayloadAction<LikeType[]>) => {
@@ -25,9 +25,9 @@ export const likesSlice = createSlice({
     addLike: (state, action: PayloadAction<LikeType>) => {
       state.likes.push(action.payload);
     },
-    removeLike: (state, action: PayloadAction<{likeId: number}>) => {
+    removeLike: (state, action: PayloadAction<{like_id: number}>) => {
       state.likes = state.likes.filter(
-        like => like.id !== action.payload.likeId,
+        like => like.id !== action.payload.like_id,
       );
     },
   },

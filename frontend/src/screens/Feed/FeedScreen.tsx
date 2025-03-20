@@ -3,10 +3,12 @@ import globalStyle from '../../assets/styles/globalStyle';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {FlatList} from 'react-native';
 import {FeedPost} from './FeedPost';
-import {mockImageList} from './mock';
+import {mockComments, mockImageList, mockLikes} from './mock';
 import {useDispatch, useSelector} from 'react-redux';
 import {setFeedImages} from '../../redux/slices/feedImageSlice';
 import {RootState} from '../../redux/store/store';
+import {setLikes} from '../../redux/slices/likeSlice';
+import {setComments} from '../../redux/slices/commentSlice';
 
 export const FeedScreen = (): JSX.Element => {
   //TODO: Replace mockImageList with api answer.
@@ -15,8 +17,12 @@ export const FeedScreen = (): JSX.Element => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    //apicall for feed images
+    //TODO: apicall for feed images
     dispatch(setFeedImages(mockImageList));
+
+    //TODO: apicall
+    dispatch(setLikes(mockLikes));
+    dispatch(setComments(mockComments));
   }, [dispatch]);
 
   const data = useSelector((state: RootState) => state.feedImage.feedImages);
