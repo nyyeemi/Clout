@@ -49,7 +49,7 @@ export const likeImage = async (image_id: number) => {
 /*
 export const unLikeImage = async (like_id: number): Promise<AxiosResponse> => {
   const response = await instance.delete(`${API_URL}/likes/${like_id}`);
-  return response;
+  return response.data;
 };
 */
 
