@@ -11,16 +11,13 @@ import {fetchLikes} from '../../redux/slices/likeSlice';
 import {fetchComments} from '../../redux/slices/commentSlice';
 
 export const FeedScreen = (): JSX.Element => {
-  //TODO: Replace mockImageList with api answer.
   //TODO: if feed downloads for example 20 images
   // -> when scrolled to 18th image then download more from backend
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    //TODO: apicall for feed images
+    //TODO: Asyncthunk and service for feedImages.
     dispatch(setFeedImages(mockImageList));
-
-    //TODO: apicall
     dispatch(fetchLikes());
     dispatch(fetchComments());
   }, [dispatch]);
