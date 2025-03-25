@@ -1,0 +1,87 @@
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  StyleSheet,
+} from 'react-native';
+import React, {useCallback, useMemo} from 'react';
+import {ProfileStackParamList} from '../../navigation/Routes';
+
+import {ThemedView} from '../../components/ui/themed-view';
+import {CustomImage} from '../Feed/mock';
+import {FeedPost} from '../Feed/FeedPost';
+import globalStyle from '../../assets/styles/globalStyle';
+import {verticalScale} from '../../assets/styles/scaling';
+import {useGetPostsQuery} from '../../redux/slices/apiSlice';
+import {StackScreenProps} from '@react-navigation/stack';
+
+type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ImageDetail'>;
+
+export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
+  const {imageId, userId} = route.params || {};
+  const {
+    data: posts = [],
+    isLoading: isPostsLoading,
+    //isSuccess: isPostsSuccess,
+    isError: isPostsError,
+    error: postsError,
+  } = useGetPostsQuery(userId);
+
+  const postIndex = useMemo(() => {
+    return imageId ? posts.findIndex(image => image.id === imageId) : 0;
+  }, [imageId, posts]);
+
+  console.log('render profilefeedscreen');
+
+  //https://reactnative.dev/docs/optimizing-flatlist-configuration
+  const renderItem = useCallback(
+    ({item}: {item: CustomImage}) => <FeedPost post={item} />,
+    [],
+  );
+
+  if (isPostsLoading) {
+    return (
+      <ActivityIndicator
+        style={styles.activityIndicator}
+        size="large"
+        color="tomato"
+      />
+    );
+  }
+
+  if (isPostsError) {
+    console.error('Error fetching data:', postsError);
+  }
+
+  return (
+    <ThemedView style={[globalStyle.flex]}>
+      <FlatList
+        data={posts}
+        keyExtractor={item => String(item.id)}
+        renderItem={renderItem}
+        getItemLayout={(data, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        showsVerticalScrollIndicator={false}
+        initialScrollIndex={postIndex}
+      />
+    </ThemedView>
+  );
+};
+
+const {width} = Dimensions.get('window');
+const IMAGE_WIDTH = width;
+const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
+
+const TOP_BAR_HEIGHT = verticalScale(50);
+const BOTTOM_BAR_HEIGHT = verticalScale(69);
+// TODO: make sure the calculation is working on all devices
+const ITEM_HEIGHT = IMAGE_HEIGHT + TOP_BAR_HEIGHT + BOTTOM_BAR_HEIGHT;
+const styles = StyleSheet.create({
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+});

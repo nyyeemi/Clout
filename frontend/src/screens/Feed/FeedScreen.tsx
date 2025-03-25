@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import globalStyle from '../../assets/styles/globalStyle';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {FlatList} from 'react-native';
 import {FeedPost} from './FeedPost';
-import {mockComments, mockImageList, mockLikes} from './mock';
+import {CustomImage, mockComments, mockImageList, mockLikes} from './mock';
 import {useDispatch, useSelector} from 'react-redux';
 import {setFeedImages} from '../../redux/slices/feedImageSlice';
 import {RootState} from '../../redux/store/store';
@@ -27,12 +27,17 @@ export const FeedScreen = (): JSX.Element => {
 
   const data = useSelector((state: RootState) => state.feedImage.feedImages);
 
+  const renderItem = useCallback(
+    ({item}: {item: CustomImage}) => <FeedPost post={item} />,
+    [],
+  );
+
   return (
     <ThemedSafeAreaView style={[globalStyle.flex]}>
       <FlatList
         data={data}
         keyExtractor={item => String(item.id)}
-        renderItem={({item}) => <FeedPost post={item} />}
+        renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
     </ThemedSafeAreaView>

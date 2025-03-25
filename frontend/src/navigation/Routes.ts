@@ -8,17 +8,18 @@ export type RootStackParamList = {
   Vote: undefined;
   Camera: undefined;
   Feed: undefined;
+  FeedStack: undefined;
   BottomTabNavigator: undefined;
   ProfileStack: undefined;
   Profile: {userId: number};
 };
 
 export type ProfileStackParamList = {
-  Profile: {userId: number};
+  Profile: {userId: number; username: string};
   Settings: undefined;
   Followers: undefined;
   EditProfile: undefined;
-  ImageDetail: {imageId: number};
+  ImageDetail: {imageId: number; userId: number};
 };
 
 export type FeedStackParamList = {
@@ -34,6 +35,7 @@ export const Routes = {
   Vote: 'Vote',
   Camera: 'Camera',
   Feed: 'Feed',
+  FeedStack: 'FeedStack',
   Profile: 'Profile',
   BottomTabNavigator: 'BottomTabNavigator',
   Settings: 'Settings',

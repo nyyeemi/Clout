@@ -23,14 +23,13 @@ import {ProfileStackNavigator} from './ProfileStackNavigator';
 
 type tabBarIconProps = {
   route: RouteProp<RootStackParamList, keyof RootStackParamList>;
-  focused: boolean;
   color: string;
   size: number;
 };
 
-const tabBarIcon = ({route, focused, color, size}: tabBarIconProps) => {
+const tabBarIcon = ({route, color, size}: tabBarIconProps) => {
   let icon: IconDefinition = faHouse;
-  console.log(`Tab: ${route.name}, Focused: ${focused}`);
+  //console.log(`Tab: ${route.name}, Focused: ${focused}`);
 
   if (route.name === Routes.Vote) {
     icon = faHouse;
@@ -38,7 +37,7 @@ const tabBarIcon = ({route, focused, color, size}: tabBarIconProps) => {
     icon = faAward;
   } else if (route.name === Routes.Camera) {
     icon = faCamera;
-  } else if (route.name === Routes.Feed) {
+  } else if (route.name === Routes.FeedStack) {
     icon = faImages;
   } else if (route.name === Routes.ProfileStack) {
     icon = faUser;
@@ -76,8 +75,7 @@ export const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) =>
-          tabBarIcon({route, focused, color, size}),
+        tabBarIcon: ({color, size}) => tabBarIcon({route, color, size}),
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
         tabBarButton: tabBarButton,
@@ -95,7 +93,7 @@ export const BottomTabNavigator = () => {
         component={CameraScreen}
         options={{tabBarStyle: {display: 'none'}}}
       />
-      <Tab.Screen name={Routes.Feed} component={FeedStackNavigator} />
+      <Tab.Screen name={Routes.FeedStack} component={FeedStackNavigator} />
       <Tab.Screen
         name={Routes.ProfileStack}
         component={ProfileStackNavigator}

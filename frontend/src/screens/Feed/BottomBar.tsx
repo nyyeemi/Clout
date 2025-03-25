@@ -23,6 +23,7 @@ export const BottomBar = ({post}: Props): JSX.Element => {
 
   const caption = post.caption;
 
+  // can and should clean this up in redux filtering and counting logic
   const allLikes = useSelector((state: RootState) => state.like.likes);
   const imagelikes = allLikes.filter(like => like.image_id === post.id);
   const likeCount = imagelikes.length;

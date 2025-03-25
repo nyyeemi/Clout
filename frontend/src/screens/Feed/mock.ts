@@ -16,7 +16,7 @@ const IMAGELIST_LENGTH = 10;
 
 export const mockUser: CustomUser = {
   id: 0,
-  username: 'Johtaja',
+  username: 'Johtaja1',
   email: 'johtaja@johtaja.johtaja',
   bio: 'L5 Software Engineer @Clout',
   num_followers: 420,
@@ -128,7 +128,7 @@ export const mockImageList: CustomImage[] = [
     image_url:
       'https://static.wikia.nocookie.net/louser/images/1/15/Eheheh.png/revision/latest?cb=20130218225046',
     num_likes: 2,
-    user: mockUserList[1],
+    //user: mockUserList[1],
   },
   {
     ...baseImageMock,
@@ -159,7 +159,7 @@ export const mockImageList: CustomImage[] = [
     image_url:
       'https://ultimateguard.com/media/8a/19/c9/1728480928/SQR-050001-277-011-00_dark_0001.jpg?1728480928',
     num_likes: 0,
-    user: mockUserList[5],
+    //user: mockUserList[5],
   },
   {
     ...baseImageMock,
@@ -167,7 +167,7 @@ export const mockImageList: CustomImage[] = [
     image_url:
       'https://spinnaker-watches.com/cdn/shop/articles/pizza_delivery_106.jpg?v=1721710885',
     num_likes: 0,
-    user: mockUserList[6],
+    //user: mockUserList[6],
   },
 ];
 

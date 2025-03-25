@@ -1,82 +1,39 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import globalStyle from '../../assets/styles/globalStyle';
 import {ImageList} from './components/ImageList';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ThemedView} from '../../components/ui/themed-view';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ProfileStackParamList, Routes} from '../../navigation/Routes';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store/store';
-import {getImagesByUser, getUserById, User} from '../../services/user/users';
+import {ProfileStackParamList} from '../../navigation/Routes';
 import {ThemedText} from '../../components/ui/typography';
 import {ActivityIndicator, StyleSheet} from 'react-native';
-import {CustomImage} from '../../services/image/images';
-import {useNavigation, useTheme} from '@react-navigation/native';
-import {CustomPressable} from './CustomPressable';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faBars} from '@fortawesome/free-solid-svg-icons';
-import {StackNavigationProp} from '@react-navigation/stack';
+import {
+  useGetPostsQuery,
+  useGetUserByIdQuery,
+} from '../../redux/slices/apiSlice';
 
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
-export const ProfileScreen = ({
-  route,
-  navigation,
-}: ProfileProps): JSX.Element => {
-  //useEffect --> get image data, user,
+export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   const {userId} = route.params;
-  const loggedInUser = useSelector((state: RootState) => state.user.user);
-  const [userToRender, setUserToRender] = useState<User | null>(null);
-  const [imageData, setImageData] = useState<CustomImage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const insets = useSafeAreaInsets();
+  console.log('renders profilescreen');
 
-  const renderSettingsButton = useCallback(() => <SettingsButton />, []);
+  const {
+    data: posts = [],
+    isLoading: isPostsLoading,
+    //isSuccess: isPostsSuccess,
+    isError: isPostsError,
+    error: postsError,
+  } = useGetPostsQuery(userId);
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const images = await getImagesByUser(userId);
-        setImageData(images);
-      } catch (error) {
-        console.error('Error fetching images:', error);
-      }
-    };
+  const {
+    data: user = null,
+    isLoading: isUserLoading,
+    //isSuccess: isUserSuccess,
+    isError: isUserError,
+    error: userError,
+  } = useGetUserByIdQuery(userId);
 
-    if (userId === loggedInUser?.id) {
-      setUserToRender(loggedInUser);
-      fetchImages();
-      setLoading(false);
-    } else if (userId) {
-      const fetchUserData = async () => {
-        try {
-          const user = await getUserById(userId);
-          setUserToRender(user);
-          fetchImages();
-        } catch (error) {
-          console.error('Error fetching user:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchUserData();
-    }
-  }, [userId, loggedInUser, imageData]);
-
-  useEffect(() => {
-    if (userToRender) {
-      navigation.setOptions({
-        title: userToRender.username,
-        headerRight:
-          userToRender.id === loggedInUser?.id
-            ? renderSettingsButton
-            : undefined,
-      });
-    }
-  }, [navigation, userToRender, loggedInUser, renderSettingsButton]);
-
-  if (loading) {
+  if (isPostsLoading || isUserLoading) {
     return (
       <ActivityIndicator
         style={styles.activityIndicator}
@@ -86,32 +43,24 @@ export const ProfileScreen = ({
     );
   }
 
-  if (!userToRender) {
+  if (isPostsError || isUserError) {
+    console.error(
+      'Error fetching data:',
+      isPostsError ? postsError : userError,
+    );
+  }
+
+  if (!user) {
     return (
       <ThemedView>
         <ThemedText>Error getting profile</ThemedText>
       </ThemedView>
     );
   }
-  return (
-    <ThemedView style={[globalStyle.flex, {paddingTop: insets.top}]}>
-      <ImageList data={imageData} user={userToRender} />
-    </ThemedView>
-  );
-};
 
-export const SettingsButton = (): JSX.Element => {
-  const navigation =
-    useNavigation<StackNavigationProp<ProfileStackParamList>>();
-  const {colors} = useTheme();
-  const onPress = () => {
-    navigation.navigate(Routes.Settings);
-  };
   return (
-    <ThemedView style={styles.button}>
-      <CustomPressable onPress={onPress}>
-        <FontAwesomeIcon icon={faBars} size={20} color={colors.text} />
-      </CustomPressable>
+    <ThemedView style={[globalStyle.flex]}>
+      <ImageList data={posts} user={user} />
     </ThemedView>
   );
 };
@@ -120,8 +69,5 @@ const styles = StyleSheet.create({
   activityIndicator: {
     flex: 1,
     justifyContent: 'center',
-  },
-  button: {
-    paddingHorizontal: globalStyle.defaultPadding.paddingHorizontal,
   },
 });

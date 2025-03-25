@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const FeedPost = ({post}: Props): JSX.Element => {
-  console.log(post);
+  //console.log(post);
   return (
     <ThemedView bottomBorder style={globalStyle.flex}>
       <TopBar url={post.user.profile_picture_url} user={post.user} />

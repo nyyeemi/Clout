@@ -21,8 +21,8 @@ export const CustomPressable = ({
       onPress={onPress}
       style={({pressed}) => [
         pressedStyle ? pressedStyle(pressed) : {opacity: pressed ? 0.7 : 1},
-        style,
         {backgroundColor: colors.background, borderColor: colors.text},
+        style,
       ]}>
       {children}
     </Pressable>

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../redux/store/store';
 import {loginUser} from '../redux/slices/userSlice';
-import {mockUser} from '../screens/Profile/mocks';
 import {ThemedView} from '../components/ui/themed-view';
 import globalStyle from '../assets/styles/globalStyle';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -10,6 +9,7 @@ import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
 import {BottomTabNavigator} from './BottomTabNavigator';
 import {RootStackParamList, Routes} from './Routes';
+import {mockUser} from '../screens/Feed/mock';
 
 const RootStack = createStackNavigator<RootStackParamList>();
 
