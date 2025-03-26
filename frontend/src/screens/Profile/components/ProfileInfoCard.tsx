@@ -61,7 +61,7 @@ type ActionButtonProps = {
   buttonStyle?: StyleProp<ViewStyle>;
 };
 
-const ActionButton = ({
+export const ActionButton = ({
   text,
   onPress,
   buttonStyle,

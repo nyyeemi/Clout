@@ -17,6 +17,8 @@ const IMAGELIST_LENGTH = 10;
 export const mockUser: CustomUser = {
   id: 0,
   username: 'Johtaja1',
+  first_name: 'Johtaja',
+  last_name: 'McJohtaja',
   email: 'johtaja@johtaja.johtaja',
   bio: 'L5 Software Engineer @Clout',
   num_followers: 420,
@@ -30,6 +32,8 @@ export const mockUserList: CustomUser[] = [
   {
     id: 0,
     username: 'Johtaja1',
+    first_name: 'Johtaja',
+    last_name: 'McJohtaja',
     email: 'johtaja@johtaja.johtaja',
     bio: 'L5 Software Engineer @Clout',
     num_followers: 420,
@@ -41,6 +45,8 @@ export const mockUserList: CustomUser[] = [
   {
     id: 1,
     username: 'Johtaja2',
+    first_name: 'Johto',
+    last_name: 'Jaajotain',
     email: 'johtaja@johtaja.johtaja',
     bio: 'L5 Software Engineer @Clout',
     num_followers: 320,
@@ -52,6 +58,8 @@ export const mockUserList: CustomUser[] = [
   {
     id: 2,
     username: 'Johtaja3',
+    first_name: 'Johta',
+    last_name: 'GigaChad',
     email: 'johtaja@johtaja.johtaja',
     bio: 'L5 Software Engineer @Clout',
     num_followers: 4230,
@@ -63,6 +71,8 @@ export const mockUserList: CustomUser[] = [
   {
     id: 3,
     username: 'Johtaja4',
+    first_name: 'Johan',
+    last_name: 'Tajaja',
     email: 'johtaja@johtaja.johtaja',
     bio: 'L5 Software Engineer @Clout',
     num_followers: 20,
@@ -74,6 +84,8 @@ export const mockUserList: CustomUser[] = [
   {
     id: 4,
     username: 'Johtaja5',
+    first_name: 'Johtimies',
+    last_name: 'Von Johto',
     email: 'johtaja@johtaja.johtaja',
     bio: 'L5 Software Engineer @Clout',
     num_followers: 410,
@@ -85,6 +97,8 @@ export const mockUserList: CustomUser[] = [
   {
     id: 5,
     username: 'Johtaja6',
+    first_name: 'Johto',
+    last_name: 'Majuri',
     email: 'johtaja@johtaja.johtaja',
     bio: 'L5 Software Engineer @Clout',
     num_followers: 770,
@@ -96,6 +110,8 @@ export const mockUserList: CustomUser[] = [
   {
     id: 6,
     username: 'Johtaja7',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
     email: 'johtaja@johtajasdasdasdaa.johtaja',
     bio: 'L5 Software Engineer @Clout',
     num_followers: 7270,

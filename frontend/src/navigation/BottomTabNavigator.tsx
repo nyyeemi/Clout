@@ -76,7 +76,7 @@ export const BottomTabNavigator = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarIcon: ({color, size}) => tabBarIcon({route, color, size}),
-        tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: 'gray',
         tabBarButton: tabBarButton,
         tabBarStyle: {

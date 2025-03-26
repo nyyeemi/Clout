@@ -1,97 +1,68 @@
-import {StyleSheet, TextInput} from 'react-native';
+import {StyleSheet, TextInput, useWindowDimensions} from 'react-native';
 import React, {useCallback, useMemo, useState} from 'react';
 import {ThemedView} from '../../components/ui/themed-view';
 import {CustomUser} from '../Vote/mock';
 import {mockUserList} from '../Feed/mock';
 import {FlatList} from 'react-native-gesture-handler';
-import {TopBar} from '../Feed/TopBar';
 import {verticalScale} from '../../assets/styles/scaling';
 import {useTheme} from '@react-navigation/native';
-
-//type FollowersScreenProps = StackScreenProps<
-//  ProfileStackParamList,
-//  'Followers'
-//>;
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-
-const Tab = createMaterialTopTabNavigator();
+import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {UserListItem} from './UserListItem';
 
 export const FollowersScreen = (): JSX.Element => {
+  const layout = useWindowDimensions();
+  const [index, setIndex] = React.useState(0);
   const {colors} = useTheme();
 
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: {backgroundColor: colors.background},
-        tabBarIndicatorStyle: {backgroundColor: colors.text, height: 2}, // Sliding bottom border
-        tabBarLabelStyle: {fontWeight: 'bold', color: colors.text},
-      }}>
-      <Tab.Screen name="Followers" component={FollowersList} />
-      <Tab.Screen name="Following" component={FollowingList} />
-    </Tab.Navigator>
+  const renderTabBar = (props: any) => (
+    <TabBar
+      {...props}
+      indicatorStyle={{backgroundColor: colors.primary}}
+      style={{
+        backgroundColor: colors.background,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: colors.border,
+      }}
+      activeColor={colors.text}
+      inactiveColor={'gray'}
+      android_ripple={{radius: 0}}
+    />
   );
-};
 
-export const FollowersList = (): JSX.Element => {
-  const data = useMemo<CustomUser[]>(() => mockUserList, []);
-  //const followingData = mockUserList.concat(mockUserList);
-
-  const [value, setValue] = useState('');
-  const {colors} = useTheme();
-
-  //const [activeIndex, setActiveIndex] = useState(0); // default: Followers
-
-  const filteredList = useMemo(() => {
-    return value.trim()
-      ? data.filter(user =>
-          user.username.toLowerCase().includes(value.toLowerCase()),
-        )
-      : data;
-  }, [value, data]);
-
-  const renderItem = useCallback(
-    ({item}: {item: CustomUser}) => (
-      <TopBar url={item.profile_picture_url} user={item} />
-    ),
-    [],
-  );
   return (
-    <ThemedView style={styles.container}>
-      <TextInput
-        placeholder={'Search'}
-        style={[
-          styles.input,
-          {
-            backgroundColor: colors.card,
-            color: colors.text,
-            borderColor: colors.border,
-          },
-        ]}
-        value={value}
-        onChangeText={text => setValue(text)}
-      />
-      <FlatList
-        data={filteredList ?? data}
-        keyExtractor={item => String(item.id)}
-        renderItem={renderItem}
-        getItemLayout={(data, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
-      />
-    </ThemedView>
+    <TabView
+      navigationState={{index, routes}}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{width: layout.width}}
+      renderTabBar={renderTabBar} // Apply custom tab bar
+    />
   );
 };
 
 export const FollowingList = (): JSX.Element => {
-  //const data = useMemo<CustomUser[]>(() => mockUserList, []);
-  const data = mockUserList.concat(mockUserList);
+  const data = mockUserList.slice(0, 5);
+  return <UserList data={data} />;
+};
 
+export const FollowersList = (): JSX.Element => {
+  const data = mockUserList;
+  return <UserList data={data} />;
+};
+
+const renderScene = SceneMap({
+  followers: FollowersList,
+  following: FollowingList,
+});
+
+const routes = [
+  {key: 'followers', title: 'Followers'},
+  {key: 'following', title: 'Following'},
+];
+
+export const UserList = ({data}: {data: CustomUser[]}): JSX.Element => {
   const [value, setValue] = useState('');
   const {colors} = useTheme();
-
-  //const [activeIndex, setActiveIndex] = useState(0); // default: Followers
 
   const filteredList = useMemo(() => {
     return value.trim()
@@ -102,15 +73,14 @@ export const FollowingList = (): JSX.Element => {
   }, [value, data]);
 
   const renderItem = useCallback(
-    ({item}: {item: CustomUser}) => (
-      <TopBar url={item.profile_picture_url} user={item} />
-    ),
+    ({item}: {item: CustomUser}) => <UserListItem user={item} />,
     [],
   );
-  return (
-    <ThemedView style={styles.container}>
+
+  const renderListHeader = useMemo(
+    () => (
       <TextInput
-        placeholder={'Search'}
+        placeholder="Search"
         style={[
           styles.input,
           {
@@ -120,13 +90,20 @@ export const FollowingList = (): JSX.Element => {
           },
         ]}
         value={value}
-        onChangeText={text => setValue(text)}
+        onChangeText={setValue}
       />
+    ),
+    [value, colors],
+  );
+
+  return (
+    <ThemedView style={styles.container}>
       <FlatList
+        ListHeaderComponent={renderListHeader}
         data={filteredList ?? data}
         keyExtractor={item => String(item.id)}
         renderItem={renderItem}
-        getItemLayout={(data, index) => ({
+        getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
           offset: ITEM_HEIGHT * index,
           index,
@@ -135,51 +112,6 @@ export const FollowingList = (): JSX.Element => {
     </ThemedView>
   );
 };
-/*
-
-type TabButtonProps = {
-  borderColor: string;
-  isActive: boolean;
-  content: string;
-  onPress: () => void;
-};
-
-
-      <View style={[styles.actionBar, {borderBottomColor: colors.border}]}>
-        <TabButton
-          borderColor={colors.border}
-          isActive={activeIndex === 0}
-          content={'Followers'}
-          onPress={() => setActiveIndex(0)}
-        />
-        <TabButton
-          borderColor={colors.border}
-          isActive={activeIndex === 1}
-          content={'Following'}
-          onPress={() => setActiveIndex(1)}
-        />
-      </View>
-
-
-const TabButton = ({
-  borderColor,
-  isActive,
-  content,
-  onPress,
-}: TabButtonProps): JSX.Element => {
-  const activeStyle = {
-    borderBottomColor: isActive ? borderColor : 'transparent',
-    borderBottomWidth: isActive ? 2 : 0,
-  };
-  return (
-    <CustomPressable
-      onPress={onPress}
-      style={[activeStyle, styles.actionPressable]}>
-      <ThemedText style={styles.actionText}>{content}</ThemedText>
-    </CustomPressable>
-  );
-};
- */
 
 const ITEM_HEIGHT = verticalScale(50);
 
