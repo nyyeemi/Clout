@@ -41,6 +41,13 @@ export const FollowersScreen = (): JSX.Element => {
 };
 
 export const FollowingList = (): JSX.Element => {
+  /*const {
+      data = [],
+      isLoading,
+      //isSuccess: isPostsSuccess,
+      isError: isPostsError,
+      error: postsError,
+    } = useGetUserFollowingQuery(userId);*/
   const data = mockUserList.slice(0, 5);
   return <UserList data={data} />;
 };

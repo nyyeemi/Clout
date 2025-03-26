@@ -4,6 +4,7 @@ import {
   mockImageList,
   mockUserList,
   CustomImage,
+  mockFollowRelations,
 } from '../../screens/Feed/mock';
 import {CustomUser} from '../../screens/Vote/mock';
 
@@ -15,11 +16,25 @@ const getUserById = async (id: number) => {
   return mockUserList.find(user => user.id === id);
 };
 
-// mock api
+const getUserFollowers = async (id: number) => {
+  return mockFollowRelations.flatMap(data => {
+    return data.user_id2 === id
+      ? mockUserList.find(user => user.id === data.user_id1) || []
+      : [];
+  });
+};
+
+const getUserFollowing = async (id: number) => {
+  return mockFollowRelations.flatMap(data => {
+    return data.user_id1 === id
+      ? mockUserList.find(user => user.id === data.user_id2) || []
+      : [];
+  });
+};
+
+// Mock API
 export const apiSlice = createApi({
-  // The cache reducer expects to be added at `state.api` (already default - this is optional)
   reducerPath: 'api',
-  // Replace with our actual base url
   baseQuery: fetchBaseQuery({baseUrl: '/fakeApi'}),
   endpoints: builder => ({
     getPosts: builder.query<CustomImage[], number>({
@@ -34,8 +49,24 @@ export const apiSlice = createApi({
         return {data: user};
       },
     }),
+    getUserFollowers: builder.query<CustomUser[], number>({
+      queryFn: async (userId: number) => {
+        const users = await getUserFollowers(userId);
+        return {data: users};
+      },
+    }),
+    getUserFollowing: builder.query<CustomUser[], number>({
+      queryFn: async (userId: number) => {
+        const users = await getUserFollowing(userId);
+        return {data: users};
+      },
+    }),
   }),
 });
 
-// Export the auto-generated hook for the `getPosts` query endpoint
-export const {useGetPostsQuery, useGetUserByIdQuery} = apiSlice;
+export const {
+  useGetPostsQuery,
+  useGetUserByIdQuery,
+  useGetUserFollowersQuery,
+  useGetUserFollowingQuery,
+} = apiSlice;

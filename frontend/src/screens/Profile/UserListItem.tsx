@@ -1,10 +1,9 @@
 import React from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
-import {Pressable, Image, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ProfileStackParamList, Routes} from '../../navigation/Routes';
 import {CustomUser} from '../Vote/mock';
-import {ActionButton} from './components/ProfileInfoCard';
 import {ThemedText} from '../../components/ui/typography';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfilePicture} from './components/ProfilePicture';
