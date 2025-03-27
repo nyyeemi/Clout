@@ -1,19 +1,59 @@
 import {StyleSheet, TextInput, useWindowDimensions} from 'react-native';
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {memo, useCallback, useMemo, useState} from 'react';
 import {ThemedView} from '../../components/ui/themed-view';
 import {CustomUser} from '../Vote/mock';
-import {mockUserList} from '../Feed/mock';
 import {FlatList} from 'react-native-gesture-handler';
 import {verticalScale} from '../../assets/styles/scaling';
 import {useTheme} from '@react-navigation/native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import {UserListItem} from './UserListItem';
+import {ThemedText} from '../../components/ui/typography';
+import {
+  useGetUserFollowersQuery,
+  useGetUserFollowingQuery,
+} from '../../redux/slices/apiSlice';
+import {ProfileStackParamList} from '../../navigation/Routes';
+import {StackScreenProps} from '@react-navigation/stack';
 
-export const FollowersScreen = (): JSX.Element => {
+type FollowersScreenProps = StackScreenProps<
+  ProfileStackParamList,
+  'Followers'
+>;
+
+const routes = [
+  {key: 'followers', title: 'Followers'},
+  {key: 'following', title: 'Following'},
+];
+
+export const FollowersScreen = ({
+  route: mainRoute,
+}: FollowersScreenProps): JSX.Element => {
+  const {userId} = mainRoute.params;
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const {colors} = useTheme();
 
+  const {data: following = []} = useGetUserFollowingQuery(userId);
+
+  const {data: followers = []} = useGetUserFollowersQuery(userId);
+
+  const renderScene = ({
+    route,
+  }: {
+    route: {
+      key: string;
+      title: string;
+    };
+  }) => {
+    switch (route.key) {
+      case 'followers':
+        return <FollowersList data={followers} />;
+      case 'following':
+        return <FollowingList data={following} />;
+      default:
+        return null;
+    }
+  };
   const renderTabBar = (props: any) => (
     <TabBar
       {...props}
@@ -40,32 +80,24 @@ export const FollowersScreen = (): JSX.Element => {
   );
 };
 
-export const FollowingList = (): JSX.Element => {
-  /*const {
-      data = [],
-      isLoading,
-      //isSuccess: isPostsSuccess,
-      isError: isPostsError,
-      error: postsError,
-    } = useGetUserFollowingQuery(userId);*/
-  const data = mockUserList.slice(0, 5);
-  return <UserList data={data} />;
-};
+export const FollowingList = memo(
+  ({data}: {data: CustomUser[]}): JSX.Element => {
+    return <UserList data={data} />;
+  },
+);
 
-export const FollowersList = (): JSX.Element => {
-  const data = mockUserList;
-  return <UserList data={data} />;
-};
+export const FollowersList = memo(
+  ({data}: {data: CustomUser[]}): JSX.Element => {
+    return <UserList data={data} />;
+  },
+);
 
+/*
 const renderScene = SceneMap({
   followers: FollowersList,
   following: FollowingList,
 });
-
-const routes = [
-  {key: 'followers', title: 'Followers'},
-  {key: 'following', title: 'Following'},
-];
+*/
 
 export const UserList = ({data}: {data: CustomUser[]}): JSX.Element => {
   const [value, setValue] = useState('');
@@ -84,28 +116,31 @@ export const UserList = ({data}: {data: CustomUser[]}): JSX.Element => {
     [],
   );
 
-  const renderListHeader = useMemo(
-    () => (
-      <TextInput
-        placeholder="Search"
-        style={[
-          styles.input,
-          {
-            backgroundColor: colors.card,
-            color: colors.text,
-            borderColor: colors.border,
-          },
-        ]}
-        value={value}
-        onChangeText={setValue}
-      />
-    ),
-    [value, colors],
+  const renderListHeader = (
+    <TextInput
+      placeholder="Search"
+      inputMode="search"
+      autoCapitalize="none"
+      clearButtonMode="while-editing"
+      style={[
+        styles.input,
+        {
+          backgroundColor: colors.card,
+          color: colors.text,
+          borderColor: colors.border,
+        },
+      ]}
+      value={value}
+      onChangeText={setValue}
+    />
   );
 
   return (
     <ThemedView style={styles.container}>
       <FlatList
+        ListEmptyComponent={
+          <ThemedText style={styles.listEmptyText}>No users found</ThemedText>
+        }
         ListHeaderComponent={renderListHeader}
         data={filteredList ?? data}
         keyExtractor={item => String(item.id)}
@@ -153,5 +188,11 @@ const styles = StyleSheet.create({
   actionText: {
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  listEmptyText: {
+    fontSize: 17,
+    fontWeight: '900',
+    color: 'gray',
+    paddingHorizontal: 16,
   },
 });

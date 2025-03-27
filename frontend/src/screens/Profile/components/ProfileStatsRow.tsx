@@ -7,12 +7,16 @@ import {CustomPressable} from '../CustomPressable';
 import {ProfilePicture} from './ProfilePicture';
 import {ThemedText} from '../../../components/ui/typography';
 import {CustomUser} from '../../Vote/mock';
+//import { useGetUserFollowersQuery, useGetUserFollowingQuery } from '../../../redux/slices/apiSlice';
 
 export const ProfileStatsRow = ({user}: {user: CustomUser}): JSX.Element => {
+  //  const {data: following = []} = useGetUserFollowingQuery(user.id);
+  //  const {data: followers = []} = useGetUserFollowersQuery(user.id);
+
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const onPress = () => {
-    navigation.navigate('Followers');
+    navigation.navigate('Followers', {userId: user.id});
   };
   return (
     <View style={styles.container}>
