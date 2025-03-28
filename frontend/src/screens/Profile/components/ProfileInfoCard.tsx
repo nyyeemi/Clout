@@ -6,13 +6,11 @@ import {
   verticalScale,
 } from '../../../assets/styles/scaling';
 import globalStyle from '../../../assets/styles/globalStyle';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
+import {useTheme} from '@react-navigation/native';
 import {ProfileStatsRow} from './ProfileStatsRow';
 import {ThemedView} from '../../../components/ui/themed-view';
 import {ThemedText} from '../../../components/ui/typography';
-import {CustomPressable} from '../CustomPressable';
+import {OpacityPressable} from '../../../components/OpacityPressable/OpacityPressable';
 import {style} from '../style';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
@@ -20,8 +18,6 @@ import {CustomUser} from '../../Vote/mock';
 
 export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
   const loggedInUser = useSelector((state: RootState) => state.user.user);
-  const navigation =
-    useNavigation<StackNavigationProp<ProfileStackParamList>>();
 
   return (
     <ThemedView style={styles.container}>
@@ -31,24 +27,11 @@ export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
         <ThemedText>{user.bio}</ThemedText>
       </View>
       <View style={styles.buttonContainer}>
-        {loggedInUser?.id === user.id ? (
-          <>
-            <ActionButton
-              text={'Edit Profile'}
-              onPress={() => navigation.navigate(Routes.EditProfile)}
-            />
-            <ActionButton
-              text={'Share Profile'}
-              onPress={() => console.log('share profile')}
-            />
-          </>
-        ) : (
-          <>
-            <ActionButton
-              text={'Follow'}
-              onPress={() => console.log('Clicked follow')}
-            />
-          </>
+        {loggedInUser?.id !== user.id && (
+          <ActionButton
+            text={'Follow'}
+            onPress={() => console.log('Clicked follow')}
+          />
         )}
       </View>
     </ThemedView>
@@ -66,10 +49,13 @@ export const ActionButton = ({
   onPress,
   buttonStyle,
 }: ActionButtonProps): JSX.Element => {
+  const theme = useTheme();
   return (
-    <CustomPressable style={[styles.button, buttonStyle]} onPress={onPress}>
+    <OpacityPressable
+      style={[styles.button, {borderColor: theme.colors.text}, buttonStyle]}
+      onPress={onPress}>
       <ThemedText style={styles.buttonText}>{text}</ThemedText>
-    </CustomPressable>
+    </OpacityPressable>
   );
 };
 
@@ -79,6 +65,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingHorizontal: globalStyle.defaultPadding.paddingHorizontal,
     paddingVertical: 5,
+    borderBottomEndRadius: 10,
   },
   button: {
     paddingVertical: horizontalScale(3),

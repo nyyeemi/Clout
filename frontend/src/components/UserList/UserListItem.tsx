@@ -7,7 +7,7 @@ import {CustomUser} from '../../screens/Vote/mock';
 import {ThemedText} from '../ui/typography';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfilePicture} from '../ProfilePicture/ProfilePicture';
-import {CustomPressable} from '../../screens/Profile/CustomPressable';
+import {OpacityPressable} from '../OpacityPressable/OpacityPressable';
 
 type UserListItemProps = {
   user: CustomUser;
@@ -27,7 +27,7 @@ export const UserListItem = ({user, size = 'small'}: UserListItemProps) => {
 
   return (
     <ThemedView style={styles.container}>
-      <CustomPressable onPress={handlePress} style={styles.profileWrapper}>
+      <OpacityPressable onPress={handlePress} style={styles.profileWrapper}>
         <ProfilePicture uri={user.profile_picture_url} size={size} />
         <View style={styles.textContainer}>
           <ThemedText style={styles.username}>{user.username}</ThemedText>
@@ -35,12 +35,12 @@ export const UserListItem = ({user, size = 'small'}: UserListItemProps) => {
             {`${user.first_name} ${user.last_name}`}
           </ThemedText>
         </View>
-      </CustomPressable>
-      <CustomPressable
+      </OpacityPressable>
+      <OpacityPressable
         style={[styles.followButton, {backgroundColor: colors.primary}]}
         onPress={() => console.log('follow pressed')}>
         <ThemedText style={styles.buttonText}>Follow</ThemedText>
-      </CustomPressable>
+      </OpacityPressable>
     </ThemedView>
   );
 };

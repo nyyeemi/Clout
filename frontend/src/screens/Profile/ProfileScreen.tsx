@@ -5,11 +5,11 @@ import {ThemedView} from '../../components/ui/themed-view';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '../../navigation/Routes';
 import {ThemedText} from '../../components/ui/typography';
-import {ActivityIndicator, StyleSheet} from 'react-native';
 import {
   useGetPostsQuery,
   useGetUserByIdQuery,
 } from '../../redux/slices/apiSlice';
+import {Spinner} from '../../components/Spinner/Spinner';
 
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
@@ -33,24 +33,12 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
     error: userError,
   } = useGetUserByIdQuery(userId);
 
-  if (isPostsLoading || isUserLoading) {
-    return (
-      <ActivityIndicator
-        style={styles.activityIndicator}
-        size="large"
-        color="tomato"
-      />
-    );
+  if (isUserLoading) {
+    return <Spinner />;
   }
 
-  if (isPostsError || isUserError) {
-    console.error(
-      'Error fetching data:',
-      isPostsError ? postsError : userError,
-    );
-  }
-
-  if (!user) {
+  if (!user || isUserError) {
+    console.error('Error fetching data:', userError);
     return (
       <ThemedView>
         <ThemedText>Error getting profile</ThemedText>
@@ -58,16 +46,20 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
     );
   }
 
+  if (isPostsError) {
+    if (isPostsError) {
+      console.error('Error fetching posts:', postsError);
+    }
+  }
+
   return (
     <ThemedView style={[globalStyle.flex]}>
-      <ImageList data={posts} user={user} />
+      <ImageList
+        data={posts}
+        user={user}
+        isLoadingPosts={isPostsLoading}
+        isErrorPosts={isPostsError}
+      />
     </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  activityIndicator: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-});

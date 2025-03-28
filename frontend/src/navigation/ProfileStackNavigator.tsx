@@ -15,7 +15,7 @@ import {ProfileStackParamList, Routes} from './Routes';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {ThemedView} from '../components/ui/themed-view';
-import {CustomPressable} from '../screens/Profile/CustomPressable';
+import {OpacityPressable} from '../components/OpacityPressable/OpacityPressable';
 import {StyleSheet} from 'react-native';
 import globalStyle from '../assets/styles/globalStyle';
 
@@ -75,9 +75,9 @@ export const SettingsButton = (): JSX.Element => {
   };
   return (
     <ThemedView style={styles.button}>
-      <CustomPressable onPress={onPress}>
+      <OpacityPressable onPress={onPress}>
         <FontAwesomeIcon icon={faBars} size={20} color={colors.text} />
-      </CustomPressable>
+      </OpacityPressable>
     </ThemedView>
   );
 };

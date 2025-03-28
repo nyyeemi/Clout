@@ -1,9 +1,4 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import React, {memo, useCallback} from 'react';
 import {CustomUser} from '../Vote/mock';
 import {useTheme} from '@react-navigation/native';
@@ -16,6 +11,7 @@ import {ProfileStackParamList} from '../../navigation/Routes';
 import {StackScreenProps} from '@react-navigation/stack';
 import {UserList} from '../../components/UserList/UserList';
 import {ThemedText} from '../../components/ui/typography';
+import {Spinner} from '../../components/Spinner/Spinner';
 
 type FollowersScreenProps = StackScreenProps<
   ProfileStackParamList,
@@ -77,11 +73,7 @@ export const FollowersScreen = ({
   );
 
   if (isLoadingFollowers || isLoadingFollowing) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    );
+    return <Spinner />;
   }
 
   if (isErrorFollowers || isErrorFollowing) {

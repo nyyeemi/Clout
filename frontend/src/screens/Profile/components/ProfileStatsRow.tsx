@@ -3,7 +3,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ProfileStackParamList} from '../../../navigation/Routes';
-import {CustomPressable} from '../CustomPressable';
+import {OpacityPressable} from '../../../components/OpacityPressable/OpacityPressable';
 import {ProfilePicture} from '../../../components/ProfilePicture/ProfilePicture';
 import {ThemedText} from '../../../components/ui/typography';
 import {CustomUser} from '../../Vote/mock';
@@ -22,12 +22,12 @@ export const ProfileStatsRow = ({user}: {user: CustomUser}): JSX.Element => {
     <View style={styles.container}>
       <ProfilePicture uri={user.profile_picture_url} />
       <ProfileStatItem value={user.num_posts} label={'posts'} />
-      <CustomPressable onPress={onPress} style={styles.statItem}>
+      <OpacityPressable onPress={onPress} style={styles.statItem}>
         <ProfileStatItem value={user.num_following} label={'following'} />
-      </CustomPressable>
-      <CustomPressable onPress={onPress} style={styles.statItem}>
+      </OpacityPressable>
+      <OpacityPressable onPress={onPress} style={styles.statItem}>
         <ProfileStatItem value={user.num_followers} label={'followers'} />
-      </CustomPressable>
+      </OpacityPressable>
     </View>
   );
 };

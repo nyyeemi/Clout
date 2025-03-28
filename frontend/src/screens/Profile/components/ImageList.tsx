@@ -1,26 +1,39 @@
 import React, {useState} from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  Image,
+  ImageStyle,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+} from 'react-native';
 import {CustomImage} from '../../../services/image/images';
-import {imageHeight} from '../style';
+import {imageHeight, style} from '../style';
 import {scaleFontSize, verticalScale} from '../../../assets/styles/scaling';
-import {ImageListItem} from './ImageListItem';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
 import {ThemedView} from '../../../components/ui/themed-view';
 import {ThemedText} from '../../../components/ui/typography';
-import {User} from '../../../services/user/users';
 import {ProfileInfoCard} from './ProfileInfoCard';
+import {CustomUser} from '../../Vote/mock';
+import {Spinner} from '../../../components/Spinner/Spinner';
 
 const ITEM_HEIGHT = imageHeight;
+
+type ImageListProps = {
+  data: CustomImage[];
+  user: CustomUser;
+  isLoadingPosts: boolean;
+  isErrorPosts: boolean;
+};
 
 export const ImageList = ({
   data,
   user,
-}: {
-  data: CustomImage[];
-  user: User;
-}): JSX.Element => {
+  isLoadingPosts,
+  isErrorPosts,
+}: ImageListProps): JSX.Element => {
   const [refreshing, setRefreshing] = useState(false);
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
@@ -43,22 +56,66 @@ export const ImageList = ({
     return <ImageListItem image={item} onPress={() => handlePress(item)} />;
   };
 
+  const renderListEmptyComponent = () => {
+    if (isLoadingPosts) {
+      return <Spinner />;
+    }
+    if (isErrorPosts) {
+      return (
+        <ThemedText style={placeholderStyle.container}>
+          Error loading posts.
+        </ThemedText>
+      );
+    }
+    return <ListPlaceholder />;
+  };
+
   return (
     <FlatList
       ListHeaderComponent={<ProfileInfoCard user={user} />}
-      ListEmptyComponent={<ListPlaceholder />}
+      ListEmptyComponent={renderListEmptyComponent()}
       getItemLayout={(_data, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
         index,
       })}
-      data={data}
+      data={isLoadingPosts ? [] : data}
       renderItem={renderItem}
       keyExtractor={item => String(item.id)}
       numColumns={3}
       refreshing={refreshing}
       onRefresh={onRefresh}
     />
+  );
+};
+
+type ImageBoxProps = {
+  image: CustomImage;
+  onPress: () => void;
+  imageStyle?: StyleProp<ImageStyle>;
+};
+
+const ImageListItem = ({
+  image,
+  onPress,
+  imageStyle,
+}: ImageBoxProps): JSX.Element => {
+  const {colors} = useTheme();
+  return (
+    <>
+      <Pressable
+        style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}
+        onPress={onPress}>
+        <Image
+          source={{uri: image.image_url}}
+          resizeMode="cover"
+          style={[
+            imageStyle ? imageStyle : style.imageBox,
+            {borderColor: colors.border},
+          ]}
+        />
+      </Pressable>
+    </>
   );
 };
 

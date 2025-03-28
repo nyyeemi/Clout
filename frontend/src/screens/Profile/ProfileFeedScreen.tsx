@@ -1,9 +1,4 @@
-import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {Dimensions, FlatList} from 'react-native';
 import React, {useCallback, useMemo} from 'react';
 import {ProfileStackParamList} from '../../navigation/Routes';
 
@@ -14,6 +9,7 @@ import globalStyle from '../../assets/styles/globalStyle';
 import {verticalScale} from '../../assets/styles/scaling';
 import {useGetPostsQuery} from '../../redux/slices/apiSlice';
 import {StackScreenProps} from '@react-navigation/stack';
+import {Spinner} from '../../components/Spinner/Spinner';
 
 type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ImageDetail'>;
 
@@ -40,13 +36,7 @@ export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
   );
 
   if (isPostsLoading) {
-    return (
-      <ActivityIndicator
-        style={styles.activityIndicator}
-        size="large"
-        color="tomato"
-      />
-    );
+    return <Spinner />;
   }
 
   if (isPostsError) {
@@ -79,9 +69,3 @@ const TOP_BAR_HEIGHT = verticalScale(50);
 const BOTTOM_BAR_HEIGHT = verticalScale(69);
 // TODO: make sure the calculation is working on all devices
 const ITEM_HEIGHT = IMAGE_HEIGHT + TOP_BAR_HEIGHT + BOTTOM_BAR_HEIGHT;
-const styles = StyleSheet.create({
-  activityIndicator: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-});
