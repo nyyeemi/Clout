@@ -15,7 +15,7 @@ type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
 export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   const {userId} = route.params;
-  console.log('renders profilescreen');
+  //console.log('renders profilescreen');
 
   const {
     data: posts = [],
