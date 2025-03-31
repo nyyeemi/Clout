@@ -3,15 +3,15 @@ import React, {memo, useCallback} from 'react';
 import {CustomUser} from '../../types/types';
 import {useTheme} from '@react-navigation/native';
 import {TabView, TabBar} from 'react-native-tab-view';
-import {
-  useGetUserFollowersQuery,
-  useGetUserFollowingQuery,
-} from '../../redux/slices/apiSlice';
 import {ProfileStackParamList} from '../../navigation/Routes';
 import {StackScreenProps} from '@react-navigation/stack';
 import {UserList} from '../../components/UserList/UserList';
 import {ThemedText} from '../../components/ui/typography';
 import {Spinner} from '../../components/Spinner/Spinner';
+import {
+  useGetUserFollowersQuery,
+  useGetUserFollowingQuery,
+} from '../../redux/slices/mockApiSlice';
 
 type FollowersScreenProps = StackScreenProps<
   ProfileStackParamList,

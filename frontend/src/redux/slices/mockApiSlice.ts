@@ -1,5 +1,9 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {mockImageList, mockUserList} from '../../mock/mock';
+import {
+  mockFollowRelations,
+  mockImageList,
+  mockUserList,
+} from '../../mock/mock';
 import {CustomImage, CustomUser} from '../../types/types';
 
 let mockLikes = [
@@ -128,6 +132,22 @@ const getUserById = async (id: number) => {
   return mockUserList.find(user => user.id === id);
 };
 
+const getUserFollowers = async (id: number) => {
+  return mockFollowRelations.flatMap(data => {
+    return data.user_id2 === id
+      ? mockUserList.find(user => user.id === data.user_id1) || []
+      : [];
+  });
+};
+
+const getUserFollowing = async (id: number) => {
+  return mockFollowRelations.flatMap(data => {
+    return data.user_id1 === id
+      ? mockUserList.find(user => user.id === data.user_id2) || []
+      : [];
+  });
+};
+
 // mock api
 export const mockApiSlice = createApi({
   // The cache reducer expects to be added at `state.api` (already default - this is optional)
@@ -146,6 +166,18 @@ export const mockApiSlice = createApi({
       queryFn: async (userId: number) => {
         const user = await getUserById(userId);
         return {data: user};
+      },
+    }),
+    getUserFollowers: builder.query<CustomUser[], number>({
+      queryFn: async (userId: number) => {
+        const users = await getUserFollowers(userId);
+        return {data: users};
+      },
+    }),
+    getUserFollowing: builder.query<CustomUser[], number>({
+      queryFn: async (userId: number) => {
+        const users = await getUserFollowing(userId);
+        return {data: users};
       },
     }),
     getLikesByImageId: builder.query<LikeType[], number>({
@@ -187,6 +219,8 @@ export const mockApiSlice = createApi({
 export const {
   useGetPostsQuery,
   useGetUserByIdQuery,
+  useGetUserFollowersQuery,
+  useGetUserFollowingQuery,
   useGetLikesByImageIdQuery,
   useAddLikeMutation,
   useDeleteLikeMutation,
