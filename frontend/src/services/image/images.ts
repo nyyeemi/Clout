@@ -3,24 +3,12 @@ import {HOST} from '../../../localVariables';
 
 import axios, {AxiosResponse} from 'axios';
 import {getAccessToken} from '../utils';
-import {User} from '../user/users';
+import {CustomImage} from '../../types/types';
 
 export const API_URL =
   Platform.OS === 'ios'
     ? 'http://localhost:8000/api/images/'
     : `http://${HOST}:8000/api/images/`;
-
-export type CustomImage = {
-  id: number;
-  user: User;
-  image_url: string;
-  thumbnail_url: string | null;
-  caption: string | null;
-  created_at: string;
-  is_visible: boolean;
-  num_likes: number | null;
-  num_comments: number | null;
-};
 
 type ImageUpdateObject = {
   caption: string | null;

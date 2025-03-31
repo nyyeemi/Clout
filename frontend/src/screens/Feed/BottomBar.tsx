@@ -10,9 +10,14 @@ import {
   faHeart as farHeart,
 } from '@fortawesome/free-regular-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {CustomImage} from '../../services/image/images';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
+import {
+  useAddLikeMutation,
+  useDeleteLikeMutation,
+  useGetLikesByImageIdQuery,
+} from '../../redux/slices/mockApiSlice';
+import {CustomImage} from '../../types/types';
 
 type Props = {
   post: CustomImage;
@@ -21,12 +26,15 @@ type Props = {
 export const BottomBar = ({post}: Props): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
 
+  const {data: likes = []} = useGetLikesByImageIdQuery(post.id);
+  const [addLike] = useAddLikeMutation();
+  const [deleteLike] = useDeleteLikeMutation();
+
   const caption = post.caption;
 
   // can and should clean this up in redux filtering and counting logic
-  const allLikes = useSelector((state: RootState) => state.like.likes);
-  const imagelikes = allLikes.filter(like => like.image_id === post.id);
-  const likeCount = imagelikes.length;
+
+  const likeCount = likes.length;
 
   const comments = useSelector((state: RootState) => state.comment.comments);
   const commentCount = comments.filter(
@@ -35,16 +43,14 @@ export const BottomBar = ({post}: Props): JSX.Element => {
 
   const user = useSelector((state: RootState) => state.user.user);
 
-  const isLiked = imagelikes.find(like => like.user_id === user?.id);
-  //console.log('tykkäys', isLiked);
+  const like = likes.find(item => item.user_id === user?.id);
+  console.log(like);
 
   const toggleLike = (newState: boolean) => {
     if (newState) {
-      console.log('Liked image');
-      // TODO: API call for liking the picture
-    } else {
-      console.log('Unliked image');
-      // TODO: API call for unliking the picture
+      addLike(post.id);
+    } else if (like?.id) {
+      deleteLike(like);
     }
   };
 
@@ -55,8 +61,8 @@ export const BottomBar = ({post}: Props): JSX.Element => {
     <ThemedView style={[globalStyle.flex, styles.container]}>
       <View style={styles.likeCommentContainer}>
         <View style={styles.iconAndNumber}>
-          <Pressable onPress={() => toggleLike(!isLiked)}>
-            {isLiked ? (
+          <Pressable onPress={() => toggleLike(!like)}>
+            {like ? (
               <FontAwesomeIcon icon={fasHeart} color="red" size={25} />
             ) : (
               <ThemedIcon icon={farHeart} size={25} />

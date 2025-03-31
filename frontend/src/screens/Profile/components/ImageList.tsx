@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
-import {CustomImage} from '../../../services/image/images';
 import {imageHeight} from '../style';
 import {scaleFontSize, verticalScale} from '../../../assets/styles/scaling';
 import {ImageListItem} from './ImageListItem';
@@ -9,8 +8,8 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
 import {ThemedView} from '../../../components/ui/themed-view';
 import {ThemedText} from '../../../components/ui/typography';
-import {User} from '../../../services/user/users';
 import {ProfileInfoCard} from './ProfileInfoCard';
+import {CustomImage, CustomUser} from '../../../types/types';
 
 const ITEM_HEIGHT = imageHeight;
 
@@ -19,7 +18,7 @@ export const ImageList = ({
   user,
 }: {
   data: CustomImage[];
-  user: User;
+  user: CustomUser;
 }): JSX.Element => {
   const [refreshing, setRefreshing] = useState(false);
   const navigation =

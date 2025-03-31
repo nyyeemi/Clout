@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {CustomImage} from '../../services/image/images';
+import {CustomImage} from '../../types/types';
 
 type ImageTuple = [CustomImage, CustomImage];
 

@@ -3,9 +3,9 @@ import globalStyle from '../../assets/styles/globalStyle';
 import {ThemedView} from '../../components/ui/themed-view';
 import {Dimensions, StyleSheet} from 'react-native';
 import {TopBar} from './TopBar';
-import {CustomImage} from './mock';
 import {BottomBar} from './BottomBar';
 import FastImage from 'react-native-fast-image';
+import {CustomImage} from '../../types/types';
 
 type Props = {
   post: CustomImage;
@@ -15,7 +15,7 @@ export const FeedPost = ({post}: Props): JSX.Element => {
   //console.log(post);
   return (
     <ThemedView bottomBorder style={globalStyle.flex}>
-      <TopBar url={post.user.profile_picture_url} user={post.user} />
+      <TopBar post={post} />
       <FastImage
         source={{uri: post.image_url}}
         resizeMode="cover"

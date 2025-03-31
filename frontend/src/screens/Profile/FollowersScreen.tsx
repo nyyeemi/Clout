@@ -1,8 +1,7 @@
 import {StyleSheet, TextInput} from 'react-native';
 import React, {useCallback, useMemo, useState} from 'react';
 import {ThemedView} from '../../components/ui/themed-view';
-import {CustomUser} from '../Vote/mock';
-import {mockUserList} from '../Feed/mock';
+import {mockUserList} from '../../mock/mock';
 import {FlatList} from 'react-native-gesture-handler';
 import {TopBar} from '../Feed/TopBar';
 import {verticalScale} from '../../assets/styles/scaling';
@@ -13,6 +12,7 @@ import {useTheme} from '@react-navigation/native';
 //  'Followers'
 //>;
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {CustomUser} from '../../types/types';
 
 const Tab = createMaterialTopTabNavigator();
 

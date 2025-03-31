@@ -23,12 +23,12 @@ import {
   setNextVoteImages,
   swapVoteImages,
 } from '../../redux/slices/voteImageSlice';
-import extendedMockImageList from './mock';
-import {CustomImage} from '../../services/image/images';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ThemedIcon, ThemedText} from '../../components/ui/typography';
 import {faArrowUp} from '@fortawesome/free-solid-svg-icons';
 import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
+import extendedMockImageList from '../../mock/mock';
+import {CustomImage} from '../../types/types';
 
 const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 

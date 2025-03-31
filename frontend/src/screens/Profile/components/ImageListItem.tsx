@@ -1,8 +1,8 @@
 import React from 'react';
 import {Pressable, Image, StyleProp, ImageStyle} from 'react-native';
-import {CustomImage} from '../../../services/image/images';
 import {style} from '../style';
 import {useTheme} from '@react-navigation/native';
+import {CustomImage} from '../../../types/types';
 
 type ImageBoxProps = {
   image: CustomImage;

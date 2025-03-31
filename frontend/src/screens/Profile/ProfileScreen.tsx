@@ -9,7 +9,7 @@ import {ActivityIndicator, StyleSheet} from 'react-native';
 import {
   useGetPostsQuery,
   useGetUserByIdQuery,
-} from '../../redux/slices/apiSlice';
+} from '../../redux/slices/mockApiSlice';
 
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 

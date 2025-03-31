@@ -4,9 +4,9 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ProfileStackParamList} from '../../../navigation/Routes';
 import {CustomPressable} from '../CustomPressable';
-import {CustomUser} from './ProfileInfoCard';
 import {ProfilePicture} from './ProfilePicture';
 import {ThemedText} from '../../../components/ui/typography';
+import {CustomUser} from '../../../types/types';
 
 export const ProfileStatsRow = ({user}: {user: CustomUser}): JSX.Element => {
   const navigation =

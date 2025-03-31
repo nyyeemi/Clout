@@ -8,12 +8,12 @@ import React, {useCallback, useMemo} from 'react';
 import {ProfileStackParamList} from '../../navigation/Routes';
 
 import {ThemedView} from '../../components/ui/themed-view';
-import {CustomImage} from '../Feed/mock';
 import {FeedPost} from '../Feed/FeedPost';
 import globalStyle from '../../assets/styles/globalStyle';
 import {verticalScale} from '../../assets/styles/scaling';
-import {useGetPostsQuery} from '../../redux/slices/apiSlice';
+import {useGetPostsQuery} from '../../redux/slices/mockApiSlice';
 import {StackScreenProps} from '@react-navigation/stack';
+import {CustomImage} from '../../types/types';
 
 type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ImageDetail'>;
 

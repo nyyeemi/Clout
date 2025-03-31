@@ -9,7 +9,7 @@ import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
 import {BottomTabNavigator} from './BottomTabNavigator';
 import {RootStackParamList, Routes} from './Routes';
-import {mockUser} from '../screens/Feed/mock';
+import {mockUser} from '../mock/mock';
 
 const RootStack = createStackNavigator<RootStackParamList>();
 

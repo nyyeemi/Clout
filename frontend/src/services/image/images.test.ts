@@ -1,8 +1,9 @@
 import {register} from '../auth/register';
 import loginService from '../auth/login';
 import {getAccessToken, setAccessToken} from '../utils';
-import {deleteUser} from '../user/users';
-import imageService, {CustomImage} from './images';
+import {deleteCustomUser} from '../user/users';
+import imageService from './images';
+import {CustomImage} from '../../types/types';
 
 jest.mock('@react-native-async-storage/async-storage');
 
@@ -105,7 +106,7 @@ describe('Image api integration', () => {
       try {
         const accessToken = await getAccessToken();
         if (accessToken) {
-          await deleteUser(user_id, accessToken);
+          await deleteCustomUser(user_id);
         }
       } catch (error: any) {
         console.error(error.response?.data || error.message);
