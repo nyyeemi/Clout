@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  FlatList,
-  Image,
-  ImageStyle,
-  Pressable,
-  StyleProp,
-  StyleSheet,
-} from 'react-native';
+import {FlatList, Pressable, StyleSheet} from 'react-native';
 import {CustomImage} from '../../../services/image/images';
 import {imageHeight, style} from '../style';
 import {scaleFontSize, verticalScale} from '../../../assets/styles/scaling';
@@ -18,6 +11,7 @@ import {ThemedText} from '../../../components/ui/typography';
 import {ProfileInfoCard} from './ProfileInfoCard';
 import {CustomUser} from '../../Vote/mock';
 import {Spinner} from '../../../components/Spinner/Spinner';
+import FastImage, {FastImageProps} from 'react-native-fast-image';
 
 const ITEM_HEIGHT = imageHeight;
 
@@ -92,7 +86,7 @@ export const ImageList = ({
 type ImageBoxProps = {
   image: CustomImage;
   onPress: () => void;
-  imageStyle?: StyleProp<ImageStyle>;
+  imageStyle?: FastImageProps['style'];
 };
 
 const ImageListItem = ({
@@ -106,7 +100,7 @@ const ImageListItem = ({
       <Pressable
         style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}
         onPress={onPress}>
-        <Image
+        <FastImage
           source={{uri: image.image_url}}
           resizeMode="cover"
           style={[

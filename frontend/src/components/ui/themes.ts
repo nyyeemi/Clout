@@ -78,7 +78,7 @@ export const LightTheme = {
   fonts: fonts,
   colors: {
     ...DefaultTheme.colors,
-    primary: '',
+    primary: '#E74C3C',
   },
 };
 
