@@ -7,7 +7,13 @@ import {ThemedText} from '../ui/typography';
 import {CustomUser} from '../../types/types';
 
 // todo: add options for size and searchbarvisible
-export const UserList = ({data}: {data: CustomUser[]}): JSX.Element => {
+export const UserList = ({
+  data,
+  onItemPress,
+}: {
+  data: CustomUser[];
+  onItemPress?: () => void;
+}): JSX.Element => {
   const [value, setValue] = useState('');
   const {colors} = useTheme();
 
@@ -20,8 +26,10 @@ export const UserList = ({data}: {data: CustomUser[]}): JSX.Element => {
   }, [value, data]);
 
   const renderItem = useCallback(
-    ({item}: {item: CustomUser}) => <UserListItem user={item} />,
-    [],
+    ({item}: {item: CustomUser}) => (
+      <UserListItem user={item} onItemPress={onItemPress} />
+    ),
+    [onItemPress],
   );
 
   const renderListHeader = (

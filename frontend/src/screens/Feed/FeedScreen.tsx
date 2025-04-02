@@ -73,7 +73,10 @@ export const FeedScreen = (): JSX.Element => {
         backgroundStyle={{backgroundColor: colors.card}}
         handleIndicatorStyle={{backgroundColor: colors.border}}>
         <BottomSheetView style={style.container}>
-          <UserList data={likedUsers} />
+          <UserList
+            data={likedUsers}
+            onItemPress={() => bottomSheetRef.current?.dismiss()}
+          />
         </BottomSheetView>
       </BottomSheetModal>
     </ThemedSafeAreaView>

@@ -11,15 +11,21 @@ import {CustomUser} from '../../types/types';
 type UserListItemProps = {
   user: CustomUser;
   size?: 'small' | 'medium' | 'large';
+  onItemPress?: () => void;
 };
 
-export const UserListItem = ({user, size = 'small'}: UserListItemProps) => {
+export const UserListItem = ({
+  user,
+  size = 'small',
+  onItemPress,
+}: UserListItemProps) => {
   // query here to retrieve data from followers/following table
   const {colors} = useTheme();
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const handlePress = () => {
+    onItemPress?.();
     navigation.navigate(Routes.ProfileStack, {
       screen: Routes.Profile,
       params: {userId: user.id, username: user.username},
