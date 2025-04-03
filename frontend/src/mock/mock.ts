@@ -3,7 +3,7 @@ import {CustomImage, CustomUser} from '../types/types';
 const IMAGELIST_LENGTH = 10;
 
 export const mockUser: CustomUser = {
-  id: 0,
+  id: 1,
   username: 'Johtaja1',
   first_name: 'Johtaja',
   last_name: 'McJohtaja',
@@ -18,7 +18,7 @@ export const mockUser: CustomUser = {
 
 export const mockUserList: CustomUser[] = [
   {
-    id: 0,
+    id: 1,
     username: 'Johtaja1',
     first_name: 'Johtaja',
     last_name: 'McJohtaja',
@@ -31,7 +31,7 @@ export const mockUserList: CustomUser[] = [
     num_posts: IMAGELIST_LENGTH,
   },
   {
-    id: 1,
+    id: 2,
     username: 'Johtaja2',
     first_name: 'Johto',
     last_name: 'Jaajotain',
@@ -44,7 +44,7 @@ export const mockUserList: CustomUser[] = [
     num_posts: IMAGELIST_LENGTH,
   },
   {
-    id: 2,
+    id: 3,
     username: 'Johtaja3',
     first_name: 'Johta',
     last_name: 'GigaChad',
@@ -57,7 +57,7 @@ export const mockUserList: CustomUser[] = [
     num_posts: IMAGELIST_LENGTH,
   },
   {
-    id: 3,
+    id: 4,
     username: 'Johtaja4',
     first_name: 'Johan',
     last_name: 'Tajaja',
@@ -70,7 +70,7 @@ export const mockUserList: CustomUser[] = [
     num_posts: IMAGELIST_LENGTH,
   },
   {
-    id: 4,
+    id: 5,
     username: 'Johtaja5',
     first_name: 'Johtimies',
     last_name: 'Von Johto',
@@ -83,7 +83,7 @@ export const mockUserList: CustomUser[] = [
     num_posts: IMAGELIST_LENGTH,
   },
   {
-    id: 5,
+    id: 6,
     username: 'Johtaja6',
     first_name: 'Johto',
     last_name: 'Majuri',
@@ -96,7 +96,7 @@ export const mockUserList: CustomUser[] = [
     num_posts: IMAGELIST_LENGTH,
   },
   {
-    id: 6,
+    id: 7,
     username: 'Johtaja7',
     first_name: 'Johto',
     last_name: 'Jormanen',
@@ -111,7 +111,7 @@ export const mockUserList: CustomUser[] = [
 ];
 
 export const baseImageMock: CustomImage = {
-  id: 1,
+  id: 101,
   user: mockUserList[0],
   image_url:
     'https://i.guim.co.uk/img/media/b1c1caa029d6f186f9d6b3fabb7f02517eb9c33b/0_58_2528_1519/master/2528.jpg?width=1200&quality=85&auto=format&fit=max&s=a80cc1503df75e0c9d04b78ed226229e',
@@ -128,15 +128,14 @@ export const mockImageList: CustomImage[] = [
   baseImageMock,
   {
     ...baseImageMock,
-    id: 2,
+    id: 102,
     image_url:
       'https://static.wikia.nocookie.net/louser/images/1/15/Eheheh.png/revision/latest?cb=20130218225046',
     num_likes: 2,
-    //user: mockUserList[1],
   },
   {
     ...baseImageMock,
-    id: 3,
+    id: 103,
     image_url:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDMXtoTWSqW0jfC1eIqJUEak0uNt_GOvYq8w&s',
     num_likes: 1,
@@ -144,14 +143,14 @@ export const mockImageList: CustomImage[] = [
   },
   {
     ...baseImageMock,
-    id: 4,
+    id: 104,
     image_url: 'https://pbs.twimg.com/media/F9xhN65WQAATLoU.jpg',
     num_likes: 0,
     user: mockUserList[3],
   },
   {
     ...baseImageMock,
-    id: 5,
+    id: 105,
     image_url:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBGntJMFAROF9MNVt6ippW2IfBwlxtBkS7jg&s',
     num_likes: 0,
@@ -159,148 +158,146 @@ export const mockImageList: CustomImage[] = [
   },
   {
     ...baseImageMock,
-    id: 6,
+    id: 106,
     image_url:
       'https://ultimateguard.com/media/8a/19/c9/1728480928/SQR-050001-277-011-00_dark_0001.jpg?1728480928',
     num_likes: 0,
-    //user: mockUserList[5],
   },
   {
     ...baseImageMock,
-    id: 7,
+    id: 107,
     image_url:
       'https://spinnaker-watches.com/cdn/shop/articles/pizza_delivery_106.jpg?v=1721710885',
     num_likes: 0,
-    //user: mockUserList[6],
   },
 ];
 
 export let mockLikes = [
   {
     id: 1,
-    user_id: 0,
-    image_id: 1,
+    user_id: 1,
+    image_id: 101,
     created_at: '2024-03-07T12:00:00Z',
   },
   {
     id: 2,
-    user_id: 1,
-    image_id: 1,
+    user_id: 2,
+    image_id: 101,
     created_at: '2024-03-07T12:05:00Z',
   },
   {
     id: 3,
-    user_id: 3,
-    image_id: 1,
+    user_id: 4,
+    image_id: 101,
     created_at: '2024-03-07T12:10:00Z',
   },
   {
     id: 4,
-    user_id: 2,
-    image_id: 2,
+    user_id: 3,
+    image_id: 102,
     created_at: '2024-03-07T12:15:00Z',
   },
   {
     id: 5,
-    user_id: 1,
-    image_id: 3,
+    user_id: 2,
+    image_id: 103,
     created_at: '2024-03-07T12:20:00Z',
   },
   {
     id: 6,
-    user_id: 2,
-    image_id: 1,
+    user_id: 3,
+    image_id: 101,
     created_at: '2024-03-07T12:25:00Z',
   },
   {
     id: 7,
-    user_id: 3,
-    image_id: 2,
+    user_id: 4,
+    image_id: 102,
     created_at: '2024-03-07T12:25:00Z',
   },
   {
     id: 8,
-    user_id: 0,
-    image_id: 3,
+    user_id: 1,
+    image_id: 103,
     created_at: '2024-03-07T12:25:00Z',
   },
 ];
 
-export const mockComments = [
+export let mockComments = [
   {
     id: 1,
-    user_id: 0,
-    image_id: 1,
+    user_id: 1,
+    image_id: 101,
     comment: 'HIENO KUVA',
     created_at: '2024-03-07T12:00:00Z',
   },
   {
     id: 2,
-    user_id: 1,
-    image_id: 1,
+    user_id: 2,
+    image_id: 101,
     comment: 'HIENO KUVA joo',
     created_at: '2024-03-07T12:05:00Z',
   },
   {
     id: 3,
-    user_id: 3,
-    image_id: 1,
+    user_id: 4,
+    image_id: 101,
     comment: 'HIENO KUVA hei hoi hai',
     created_at: '2024-03-07T12:10:00Z',
   },
   {
     id: 4,
-    user_id: 2,
-    image_id: 2,
+    user_id: 3,
+    image_id: 102,
     comment: 'HIENO KUVA',
     created_at: '2024-03-07T12:15:00Z',
   },
   {
     id: 5,
-    user_id: 1,
-    image_id: 3,
+    user_id: 2,
+    image_id: 103,
     comment: 'ONPA HIenooo',
     created_at: '2024-03-07T12:20:00Z',
   },
   {
     id: 6,
-    user_id: 2,
-    image_id: 1,
+    user_id: 3,
+    image_id: 101,
     comment: 'katos katos',
     created_at: '2024-03-07T12:25:00Z',
   },
   {
     id: 7,
-    user_id: 3,
-    image_id: 2,
+    user_id: 4,
+    image_id: 102,
     comment: 'terve mikä kuva',
     created_at: '2024-03-07T12:25:00Z',
   },
   {
     id: 8,
-    user_id: 0,
-    image_id: 1,
+    user_id: 1,
+    image_id: 101,
     comment: 'HIENO KUVA hahaha',
     created_at: '2024-03-07T12:00:00Z',
   },
 ];
 
-// Mock follow relations: user_id1 follows user_id2
-export const mockFollowRelations = [
-  {id: 0, user_id1: 0, user_id2: 1},
-  {id: 1, user_id1: 0, user_id2: 2},
-  {id: 2, user_id1: 1, user_id2: 3},
-  {id: 3, user_id1: 2, user_id2: 4},
-  {id: 4, user_id1: 2, user_id2: 5},
-  {id: 5, user_id1: 3, user_id2: 1},
-  {id: 6, user_id1: 4, user_id2: 2},
-  {id: 7, user_id1: 4, user_id2: 5},
-  {id: 8, user_id1: 5, user_id2: 6},
-  {id: 9, user_id1: 6, user_id2: 0},
-  {id: 10, user_id1: 6, user_id2: 1},
-  {id: 11, user_id1: 6, user_id2: 3},
-  {id: 12, user_id1: 6, user_id2: 5},
+export let mockFollowRelations = [
+  {id: 0, user_id1: 1, user_id2: 2},
+  {id: 1, user_id1: 1, user_id2: 3},
+  {id: 2, user_id1: 2, user_id2: 4},
+  {id: 3, user_id1: 3, user_id2: 5},
+  {id: 4, user_id1: 3, user_id2: 6},
+  {id: 5, user_id1: 4, user_id2: 2},
+  {id: 6, user_id1: 5, user_id2: 3},
+  {id: 7, user_id1: 5, user_id2: 6},
+  {id: 8, user_id1: 6, user_id2: 7},
+  {id: 9, user_id1: 7, user_id2: 1},
+  {id: 10, user_id1: 7, user_id2: 2},
+  {id: 11, user_id1: 7, user_id2: 4},
+  {id: 12, user_id1: 7, user_id2: 6},
 ];
+
 type TupleType = [CustomImage, CustomImage];
 
 let extendedMockImageList: TupleType[] = [];

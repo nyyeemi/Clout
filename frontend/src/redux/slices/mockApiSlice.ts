@@ -2,126 +2,25 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {
   mockFollowRelations,
   mockImageList,
+  mockLikes,
   mockUserList,
 } from '../../mock/mock';
 import {CustomImage, CustomUser} from '../../types/types';
 
-let mockLikes = [
-  {
-    id: 1,
-    user_id: 0,
-    image_id: 1,
-    created_at: '2024-03-07T12:00:00Z',
-  },
-  {
-    id: 2,
-    user_id: 1,
-    image_id: 1,
-    created_at: '2024-03-07T12:05:00Z',
-  },
-  {
-    id: 3,
-    user_id: 3,
-    image_id: 1,
-    created_at: '2024-03-07T12:10:00Z',
-  },
-  {
-    id: 4,
-    user_id: 2,
-    image_id: 2,
-    created_at: '2024-03-07T12:15:00Z',
-  },
-  {
-    id: 5,
-    user_id: 1,
-    image_id: 3,
-    created_at: '2024-03-07T12:20:00Z',
-  },
-  {
-    id: 6,
-    user_id: 2,
-    image_id: 1,
-    created_at: '2024-03-07T12:25:00Z',
-  },
-  {
-    id: 7,
-    user_id: 3,
-    image_id: 2,
-    created_at: '2024-03-07T12:25:00Z',
-  },
-  {
-    id: 8,
-    user_id: 0,
-    image_id: 3,
-    created_at: '2024-03-07T12:25:00Z',
-  },
-];
-
-/*let mockComments = [
-  {
-    id: 1,
-    user_id: 0,
-    image_id: 1,
-    comment: 'HIENO KUVA',
-    created_at: '2024-03-07T12:00:00Z',
-  },
-  {
-    id: 2,
-    user_id: 1,
-    image_id: 1,
-    comment: 'HIENO KUVA joo',
-    created_at: '2024-03-07T12:05:00Z',
-  },
-  {
-    id: 3,
-    user_id: 3,
-    image_id: 1,
-    comment: 'HIENO KUVA hei hoi hai',
-    created_at: '2024-03-07T12:10:00Z',
-  },
-  {
-    id: 4,
-    user_id: 2,
-    image_id: 2,
-    comment: 'HIENO KUVA',
-    created_at: '2024-03-07T12:15:00Z',
-  },
-  {
-    id: 5,
-    user_id: 1,
-    image_id: 3,
-    comment: 'ONPA HIenooo',
-    created_at: '2024-03-07T12:20:00Z',
-  },
-  {
-    id: 6,
-    user_id: 2,
-    image_id: 1,
-    comment: 'katos katos',
-    created_at: '2024-03-07T12:25:00Z',
-  },
-  {
-    id: 7,
-    user_id: 3,
-    image_id: 2,
-    comment: 'terve mikä kuva',
-    created_at: '2024-03-07T12:25:00Z',
-  },
-  {
-    id: 8,
-    user_id: 0,
-    image_id: 1,
-    comment: 'HIENO KUVA hahaha',
-    created_at: '2024-03-07T12:00:00Z',
-  },
-];
-*/
+let mutableMockLikes = [...mockLikes];
+let mutableMockFollowRelations = [...mockFollowRelations];
 
 type LikeType = {
   id: number;
   user_id: number;
   image_id: number;
   created_at?: string;
+};
+
+type FollowType = {
+  id: number;
+  user_id1: number;
+  user_id2: number;
 };
 
 const getImagesByUser = async (id: number) => {
@@ -133,7 +32,7 @@ const getUserById = async (id: number) => {
 };
 
 const getUserFollowers = async (id: number) => {
-  return mockFollowRelations.flatMap(data => {
+  return mutableMockFollowRelations.flatMap(data => {
     return data.user_id2 === id
       ? mockUserList.find(user => user.id === data.user_id1) || []
       : [];
@@ -141,7 +40,7 @@ const getUserFollowers = async (id: number) => {
 };
 
 const getUserFollowing = async (id: number) => {
-  return mockFollowRelations.flatMap(data => {
+  return mutableMockFollowRelations.flatMap(data => {
     return data.user_id1 === id
       ? mockUserList.find(user => user.id === data.user_id2) || []
       : [];
@@ -154,7 +53,7 @@ export const mockApiSlice = createApi({
   reducerPath: 'mockApi',
   // Replace with our actual base url
   baseQuery: fetchBaseQuery({baseUrl: '/fakeApi'}),
-  tagTypes: ['Likes'],
+  tagTypes: ['Likes', 'Following', 'Followers'],
   endpoints: builder => ({
     getPosts: builder.query<CustomImage[], number>({
       queryFn: async (userId: number) => {
@@ -176,18 +75,84 @@ export const mockApiSlice = createApi({
     getUserFollowers: builder.query<CustomUser[], number>({
       queryFn: async (userId: number) => {
         const users = await getUserFollowers(userId);
+        console.log(
+          `[QueryFn] getUserFollowers for ${userId} - Reading Store:`,
+          [...mutableMockFollowRelations],
+        );
         return {data: users};
+      },
+      providesTags: (result, error, userId) => {
+        console.log(
+          `[Provides Tag] Followers list for ID: ${userId}`,
+          typeof userId,
+        );
+        return [{type: 'Followers', id: userId}];
       },
     }),
     getUserFollowing: builder.query<CustomUser[], number>({
       queryFn: async (userId: number) => {
         const users = await getUserFollowing(userId);
+        console.log(
+          `[QueryFn] getUserFollowing for ${userId} - Reading Store:`,
+          [...mutableMockFollowRelations],
+        );
         return {data: users};
       },
+      providesTags: (result, error, userId) => {
+        console.log(
+          `[Provides Tag] Following list for ID: ${userId}`,
+          typeof userId,
+        );
+        return [{type: 'Following', id: userId}];
+      },
+    }),
+    followUser: builder.mutation<FollowType, Omit<FollowType, 'id'>>({
+      queryFn: async ({user_id1, user_id2}) => {
+        const relationToAdd = {
+          id: Date.now(),
+          user_id1: user_id1,
+          user_id2: user_id2,
+        };
+        mutableMockFollowRelations = mutableMockFollowRelations.concat([
+          relationToAdd,
+        ]);
+        console.log(
+          `[Mutation] followUser: Added ${user_id1} -> ${user_id2}. Store:`,
+          [...mutableMockFollowRelations],
+        );
+        return {data: relationToAdd};
+      },
+      invalidatesTags: (result, error, {user_id1, user_id2}) => {
+        console.log(
+          `[Invalidating Tags] Following: ${user_id1}, Followers: ${user_id2}`,
+        ); // Log IDs being used
+        return [
+          {type: 'Following', id: user_id1},
+          {type: 'Followers', id: user_id2},
+        ];
+      },
+    }),
+    unFollowUser: builder.mutation<null, Omit<FollowType, 'id'>>({
+      queryFn: async ({user_id1: id1, user_id2: id2}) => {
+        mutableMockFollowRelations = mutableMockFollowRelations.filter(
+          relation => !(relation.user_id1 === id1 && relation.user_id2 === id2),
+        );
+        console.log(
+          `[Mutation] unFollowUser: Removed ${id1} -> ${id2}. Store:`,
+          [...mutableMockFollowRelations],
+        );
+        return {data: null};
+      },
+      invalidatesTags: (result, error, {user_id1, user_id2}) => [
+        {type: 'Following', id: user_id1},
+        {type: 'Followers', id: user_id2},
+      ],
     }),
     getLikesByImageId: builder.query<LikeType[], number>({
       queryFn: async image_id => {
-        return {data: mockLikes.filter(item => item.image_id === image_id)};
+        return {
+          data: mutableMockLikes.filter(item => item.image_id === image_id),
+        };
       },
       providesTags: (result, error, image_id) => [
         {type: 'Likes', id: image_id},
@@ -197,11 +162,11 @@ export const mockApiSlice = createApi({
       queryFn: async image_id => {
         const newLike = {
           id: Date.now(),
-          user_id: 0,
+          user_id: 1,
           image_id: image_id,
           created_at: new Date().toISOString(),
         };
-        mockLikes = [...mockLikes, newLike];
+        mutableMockLikes = [...mutableMockLikes, newLike];
         return {data: newLike};
       },
       invalidatesTags: (result, error, image_id) => [
@@ -210,8 +175,8 @@ export const mockApiSlice = createApi({
     }),
     deleteLike: builder.mutation<LikeType[], LikeType>({
       queryFn: async ({id}) => {
-        mockLikes = mockLikes.filter(like => like.id !== id);
-        return {data: mockLikes};
+        mutableMockLikes = mutableMockLikes.filter(like => like.id !== id);
+        return {data: mutableMockLikes};
       },
       invalidatesTags: (result, error, {image_id}) => [
         {type: 'Likes', id: image_id},
@@ -230,4 +195,6 @@ export const {
   useGetLikesByImageIdQuery,
   useAddLikeMutation,
   useDeleteLikeMutation,
+  useFollowUserMutation,
+  useUnFollowUserMutation,
 } = mockApiSlice;

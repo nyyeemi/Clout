@@ -1,97 +1,182 @@
-import React from 'react';
-import {View, StyleSheet, StyleProp, ViewStyle} from 'react-native';
+import React, {useMemo, useCallback} from 'react';
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
+import {useTheme} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import globalStyle from '../../../assets/styles/globalStyle';
 import {
   horizontalScale,
   scaleFontSize,
   verticalScale,
 } from '../../../assets/styles/scaling';
-import globalStyle from '../../../assets/styles/globalStyle';
-import {useTheme} from '@react-navigation/native';
-import {ProfileStatsRow} from './ProfileStatsRow';
+import {OpacityPressable} from '../../../components/OpacityPressable/OpacityPressable';
 import {ThemedView} from '../../../components/ui/themed-view';
 import {ThemedText} from '../../../components/ui/typography';
-import {OpacityPressable} from '../../../components/OpacityPressable/OpacityPressable';
-import {style} from '../style';
-import {useSelector} from 'react-redux';
+import {
+  useGetUserFollowingQuery,
+  useFollowUserMutation,
+  useUnFollowUserMutation,
+} from '../../../redux/slices/mockApiSlice';
+import {CustomUser} from '../../../types/types';
+import {ProfileStatsRow} from './ProfileStatsRow';
 import {RootState} from '../../../redux/store/store';
-import {CustomUser} from '../../Vote/mock';
 
 export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
+  const {colors} = useTheme();
   const loggedInUser = useSelector((state: RootState) => state.user.user);
+  const loggedInUserId = loggedInUser?.id;
+
+  const {
+    data: loggedInUserFollowingData = [],
+    isLoading: isLoadingLoggedInUserFollowing,
+  } = useGetUserFollowingQuery(loggedInUserId ?? -1, {skip: !loggedInUserId});
+
+  const [followUser, {isLoading: isFollowingUser}] = useFollowUserMutation();
+  const [unfollowUser, {isLoading: isUnfollowingUser}] =
+    useUnFollowUserMutation();
+  const isMutationLoading = isFollowingUser || isUnfollowingUser;
+
+  const followedUserIds = useMemo(() => {
+    if (
+      !loggedInUserFollowingData ||
+      isLoadingLoggedInUserFollowing ||
+      !Array.isArray(loggedInUserFollowingData)
+    ) {
+      return new Set<number>();
+    }
+    return new Set(loggedInUserFollowingData.map((u: CustomUser) => u.id));
+  }, [loggedInUserFollowingData, isLoadingLoggedInUserFollowing]);
+
+  const isFollowing = useMemo(() => {
+    if (!loggedInUserId || isLoadingLoggedInUserFollowing) {
+      return false;
+    }
+    return followedUserIds.has(user.id);
+  }, [
+    loggedInUserId,
+    user.id,
+    followedUserIds,
+    isLoadingLoggedInUserFollowing,
+  ]);
+
+  const handleFollowToggle = useCallback(async () => {
+    if (
+      !loggedInUserId ||
+      isMutationLoading ||
+      isLoadingLoggedInUserFollowing
+    ) {
+      return;
+    }
+    const mutationPayload = {user_id1: loggedInUserId, user_id2: user.id};
+    try {
+      if (isFollowing) {
+        await unfollowUser(mutationPayload).unwrap();
+      } else {
+        await followUser(mutationPayload).unwrap();
+      }
+    } catch (error) {
+      console.error('Failed to toggle follow state:', error);
+    }
+  }, [
+    loggedInUserId,
+    user.id,
+    isFollowing,
+    followUser,
+    unfollowUser,
+    isMutationLoading,
+    isLoadingLoggedInUserFollowing,
+  ]);
+
+  const showButton = loggedInUserId && loggedInUserId !== user.id;
+  const buttonText = isFollowing ? 'Following' : 'Follow';
+
+  const dynamicButtonStyle: StyleProp<ViewStyle> = isFollowing
+    ? [
+        styles.button,
+        {borderColor: colors.primary, backgroundColor: colors.background},
+      ]
+    : [
+        styles.button,
+        {backgroundColor: colors.primary, borderColor: colors.primary},
+      ];
+
+  const dynamicButtonTextStyle = isFollowing
+    ? [styles.buttonText, {color: colors.primary}]
+    : [styles.buttonText, {color: colors.card}];
 
   return (
     <ThemedView style={styles.container}>
       <ProfileStatsRow user={user} />
       <View style={styles.defaultMargin}>
-        <ThemedText style={style.name}>{user.username}</ThemedText>
-        <ThemedText>{user.bio}</ThemedText>
+        <ThemedText style={styles.name}>{user.username}</ThemedText>
+        {user.bio ? <ThemedText>{user.bio}</ThemedText> : null}
       </View>
-      <View style={styles.buttonContainer}>
-        {loggedInUser?.id !== user.id && (
-          <ActionButton
-            text={'Follow'}
-            onPress={() => console.log('Clicked follow')}
-          />
-        )}
-      </View>
+      {showButton && (
+        <View style={styles.buttonContainer}>
+          <OpacityPressable
+            style={dynamicButtonStyle}
+            onPress={handleFollowToggle}
+            disabled={isLoadingLoggedInUserFollowing || isMutationLoading}>
+            {isMutationLoading ||
+            (isLoadingLoggedInUserFollowing &&
+              !loggedInUserFollowingData.length) ? (
+              <ActivityIndicator
+                size="small"
+                color={isFollowing ? colors.primary : colors.card}
+              />
+            ) : (
+              <ThemedText style={dynamicButtonTextStyle}>
+                {buttonText}
+              </ThemedText>
+            )}
+          </OpacityPressable>
+        </View>
+      )}
     </ThemedView>
-  );
-};
-
-type ActionButtonProps = {
-  text: string;
-  onPress: () => void;
-  buttonStyle?: StyleProp<ViewStyle>;
-};
-
-export const ActionButton = ({
-  text,
-  onPress,
-  buttonStyle,
-}: ActionButtonProps): JSX.Element => {
-  const theme = useTheme();
-  return (
-    <OpacityPressable
-      style={[styles.button, {borderColor: theme.colors.text}, buttonStyle]}
-      onPress={onPress}>
-      <ThemedText style={styles.buttonText}>{text}</ThemedText>
-    </OpacityPressable>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
     paddingHorizontal: globalStyle.defaultPadding.paddingHorizontal,
     paddingVertical: 5,
-    borderBottomEndRadius: 10,
   },
   button: {
-    paddingVertical: horizontalScale(3),
-    flex: 1,
-    borderRadius: 6,
-    alignSelf: 'stretch',
-    borderWidth: StyleSheet.hairlineWidth * 5,
-  },
-  followButton: {
-    backgroundColor: 'tomato',
-    borderWidth: 0,
+    paddingVertical: horizontalScale(5),
+    paddingHorizontal: horizontalScale(15),
+    flexGrow: 1,
+    maxWidth: '90%',
+    alignSelf: 'center',
+    borderRadius: 8,
+    borderWidth: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 35,
   },
   buttonText: {
     textAlign: 'center',
-    fontSize: scaleFontSize(15),
+    fontSize: 14,
     fontWeight: 'bold',
   },
   buttonContainer: {
-    paddingBottom: 10,
+    paddingBottom: verticalScale(10),
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    gap: 5,
-    borderBottomColor: '#dedede',
-    //borderBottomWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   defaultMargin: {
     marginVertical: verticalScale(10),
+  },
+  name: {
+    fontWeight: 'bold',
+    fontSize: scaleFontSize(16),
+    marginBottom: verticalScale(4),
   },
 });

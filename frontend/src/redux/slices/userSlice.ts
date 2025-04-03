@@ -1,8 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {User} from '../../services/user/users';
+import {CustomUser} from '../../types/types';
 
 type AuthState = {
-  user: User | null;
+  user: CustomUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
@@ -22,7 +22,7 @@ const userSlice = createSlice({
     loginUser: (
       state,
       action: PayloadAction<{
-        user: User;
+        user: CustomUser;
         accessToken: string;
         refreshToken: string;
       }>,
