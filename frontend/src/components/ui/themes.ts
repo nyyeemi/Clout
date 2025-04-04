@@ -1,4 +1,4 @@
-import {DefaultTheme, DarkTheme} from '@react-navigation/native';
+import {DefaultTheme, DarkTheme, Theme} from '@react-navigation/native';
 import {Platform} from 'react-native';
 /* example theme:
 export const DefaultTheme: Theme = {
@@ -71,22 +71,22 @@ const fonts = Platform.select({
       fontWeight: '700',
     },
   },
-});
+} as const satisfies Record<string, Theme['fonts']>);
 
 export const LightTheme = {
   ...DefaultTheme,
-  fonts: fonts,
   colors: {
     ...DefaultTheme.colors,
     primary: '#E74C3C',
   },
+  fonts,
 };
 
 export const MyDarkTheme = {
   ...DarkTheme,
-  fonts: fonts,
   colors: {
     ...DarkTheme.colors,
     primary: '#E74C3C',
   },
+  fonts,
 };
