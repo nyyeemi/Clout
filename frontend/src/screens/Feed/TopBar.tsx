@@ -1,14 +1,17 @@
 import React from 'react';
+import {Pressable, StyleSheet} from 'react-native';
+
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+
 import globalStyle from '../../assets/styles/globalStyle';
+import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
+import {ProfilePicture} from '../../components/ProfilePicture/ProfilePicture';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
-import {Pressable, StyleSheet} from 'react-native';
-import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
-import {useNavigation} from '@react-navigation/native';
 import {FeedStackParamList, Routes} from '../../navigation/Routes';
-import {StackNavigationProp} from '@react-navigation/stack';
+
 import {CustomImage} from '../../types/types';
-import {ProfilePicture} from '../../components/ProfilePicture/ProfilePicture';
 
 type Props = {
   post: CustomImage;

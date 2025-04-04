@@ -1,18 +1,22 @@
-import {useTheme} from '@react-navigation/native';
 import React, {useCallback, useMemo, useState} from 'react';
-import {TextInput, FlatList, StyleSheet, View} from 'react-native';
+
+import {FlatList, StyleSheet, TextInput, View} from 'react-native';
+
+import {useTheme} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+
 import {verticalScale} from '../../assets/styles/scaling';
-import {UserListItem} from './UserListItem';
-import {ThemedView} from '../ui/themed-view';
-import {ThemedText} from '../ui/typography';
-import {CustomUser} from '../../types/types';
 import {
   useFollowUserMutation,
   useGetUserFollowingQuery,
   useUnFollowUserMutation,
 } from '../../redux/slices/mockApiSlice';
-import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store/store';
+import {CustomUser} from '../../types/types';
+import {ThemedView} from '../ui/themed-view';
+import {ThemedText} from '../ui/typography';
+
+import {UserListItem} from './UserListItem';
 
 // todo: add options for size and searchbarvisible
 export const UserList = ({

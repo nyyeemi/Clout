@@ -1,10 +1,13 @@
 import React from 'react';
+import {Dimensions, StyleSheet} from 'react-native';
+
+import FastImage from 'react-native-fast-image';
+
 import globalStyle from '../../assets/styles/globalStyle';
 import {ThemedView} from '../../components/ui/themed-view';
-import {Dimensions, StyleSheet} from 'react-native';
-import {TopBar} from './TopBar';
 import {BottomBar} from './BottomBar';
-import FastImage from 'react-native-fast-image';
+import {TopBar} from './TopBar';
+
 import {CustomImage} from '../../types/types';
 
 type Props = {
