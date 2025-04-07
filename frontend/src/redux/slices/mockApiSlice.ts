@@ -1,5 +1,6 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {
+  mockComments,
   mockFollowRelations,
   mockImageList,
   mockLikes,
@@ -9,24 +10,13 @@ import {
   CommentType,
   CustomImage,
   CustomUser,
+  FollowType,
   LikeType,
 } from '../../types/types';
 
 let mutableMockLikes = [...mockLikes];
 let mutableMockFollowRelations = [...mockFollowRelations];
-
-type LikeType = {
-  id: number;
-  user_id: number;
-  image_id: number;
-  created_at?: string;
-};
-
-type FollowType = {
-  id: number;
-  user_id1: number;
-  user_id2: number;
-};
+let mutableMockComments = [...mockComments];
 
 const getImagesByUser = async (id: number) => {
   return mockImageList.filter(img => img.user.id === id);
@@ -189,7 +179,7 @@ export const mockApiSlice = createApi({
     }),
     getCommentsByImageId: builder.query<CommentType[], number>({
       queryFn: async image_id => {
-        const filtered = mockComments.filter(
+        const filtered = mutableMockComments.filter(
           item => item.image_id === image_id,
         );
         return {data: filtered};
@@ -211,7 +201,7 @@ export const mockApiSlice = createApi({
           comment,
           created_at: new Date().toISOString(),
         };
-        mockComments = [...mockComments, newComment];
+        mutableMockComments = [...mutableMockComments, newComment];
         return {data: newComment};
       },
       invalidatesTags: (result, error, {image_id}) => [
@@ -224,8 +214,8 @@ export const mockApiSlice = createApi({
       {id: number; image_id: number}
     >({
       queryFn: async ({id}) => {
-        mockComments = mockComments.filter(c => c.id !== id);
-        return {data: mockComments};
+        mutableMockComments = mutableMockComments.filter(c => c.id !== id);
+        return {data: mutableMockComments};
       },
       invalidatesTags: (result, error, {image_id}) => [
         {type: 'Comments', id: image_id},
