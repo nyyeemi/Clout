@@ -19,8 +19,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {Style} from './style';
-import {useDispatch} from 'react-redux';
-import {setCameraActive} from '../../redux/slices/cameraSlice';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Reanimated, {
   useSharedValue,
@@ -39,7 +37,6 @@ export const CameraScreen = (): JSX.Element => {
   const [photo, setPhoto] = useState<string | null>(null);
 
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const devices = useCameraDevices();
   const frontCamera = devices.find(device => device.position === 'front');
@@ -58,16 +55,12 @@ export const CameraScreen = (): JSX.Element => {
   useFocusEffect(
     useCallback(() => {
       if (!frontCamera && !backCamera) {
-        dispatch(setCameraActive(false));
         navigation.goBack();
         Alert.alert('Camera not found');
         return;
       }
-      dispatch(setCameraActive(true));
-      return () => {
-        dispatch(setCameraActive(false));
-      };
-    }, [dispatch, navigation, frontCamera, backCamera]),
+      return;
+    }, [navigation, frontCamera, backCamera]),
   );
 
   const cameraRef = useRef<Camera>(null);
@@ -122,7 +115,6 @@ export const CameraScreen = (): JSX.Element => {
   };
 
   const handleBack = () => {
-    dispatch(setCameraActive(false));
     navigation.goBack();
   };
 

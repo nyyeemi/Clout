@@ -196,7 +196,7 @@ export const mockApiSlice = createApi({
       queryFn: async ({image_id, comment}) => {
         const newComment: CommentType = {
           id: Date.now(),
-          user_id: 0,
+          user_id: 1,
           image_id,
           comment,
           created_at: new Date().toISOString(),

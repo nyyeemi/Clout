@@ -15,6 +15,7 @@ import {RootState} from '../../redux/store/store';
 import {
   useAddLikeMutation,
   useDeleteLikeMutation,
+  useGetCommentsByImageIdQuery,
   useGetLikesByImageIdQuery,
 } from '../../redux/slices/mockApiSlice';
 import {CustomImage} from '../../types/types';
@@ -34,6 +35,7 @@ export const BottomBar = ({
   const [expanded, setExpanded] = useState(false);
 
   const {data: likes = []} = useGetLikesByImageIdQuery(post.id);
+  const {data: comments = []} = useGetCommentsByImageIdQuery(post.id);
   const [addLike] = useAddLikeMutation();
   const [deleteLike] = useDeleteLikeMutation();
 
@@ -43,10 +45,7 @@ export const BottomBar = ({
 
   const likeCount = likes.length;
 
-  const comments = useSelector((state: RootState) => state.comment.comments);
-  const commentCount = comments.filter(
-    comment => comment.image_id === post.id,
-  ).length;
+  const commentCount = comments.length;
 
   const user = useSelector((state: RootState) => state.user.user);
 

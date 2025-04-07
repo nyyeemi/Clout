@@ -9,9 +9,7 @@ import globalStyle from '../../assets/styles/globalStyle';
 import {UserList} from '../../components/UserList/UserList';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {mockImageList} from '../../mock/mock';
-import {fetchComments} from '../../redux/slices/commentSlice';
 import {setFeedImages} from '../../redux/slices/feedImageSlice';
-import {fetchLikes} from '../../redux/slices/likeSlice';
 import {
   useGetCommentsByImageIdQuery,
   useGetLikesByImageIdQuery,
@@ -36,8 +34,6 @@ export const FeedScreen = (): JSX.Element => {
   // -> when scrolled to 18th image then download more from backend
   useEffect(() => {
     dispatch(setFeedImages(mockImageList));
-    dispatch(fetchLikes());
-    dispatch(fetchComments());
   }, [dispatch]);
 
   const data = useSelector((state: RootState) => state.feedImage.feedImages);
