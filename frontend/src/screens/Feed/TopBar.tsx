@@ -36,8 +36,6 @@ export const TopBar = ({post}: Props): JSX.Element => {
   );
 };
 
-//TODO: Maybe profilepicture should have size prop instead of everytime styling it?
-//Also should border come from theme?
 const style = StyleSheet.create({
   container: {
     height: verticalScale(50),

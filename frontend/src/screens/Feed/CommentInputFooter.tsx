@@ -1,4 +1,3 @@
-// CommentInputFooter.tsx
 import React, {useState} from 'react';
 import {
   BottomSheetFooter,
@@ -24,6 +23,11 @@ export const CommentInputFooter = ({
   const {colors} = useTheme();
   const insets = useSafeAreaInsets();
 
+  const addComment = () => {
+    handleAddComment(input);
+    setInput('');
+  };
+
   return (
     <BottomSheetFooter
       {...props}
@@ -35,9 +39,7 @@ export const CommentInputFooter = ({
           value={input}
           onChangeText={setInput}
         />
-        <OpacityPressable
-          disabled={input.length < 1}
-          onPress={() => handleAddComment(input)}>
+        <OpacityPressable disabled={input.length < 1} onPress={addComment}>
           <FontAwesomeIcon icon={faCircleUp} color={colors.primary} size={25} />
         </OpacityPressable>
       </View>
@@ -50,7 +52,6 @@ const styles = StyleSheet.create({
     padding: 4,
     margin: 4,
     borderRadius: 12,
-    flex: 1,
     flexDirection: 'row',
     gap: 5,
     alignItems: 'center',

@@ -3,15 +3,14 @@ import {
   BottomSheetFooterProps,
   BottomSheetModal,
   BottomSheetModalProps,
-  BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import {CommentList} from '../../components/Comment/CommentList';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useTheme} from '@react-navigation/native';
-import {StyleSheet} from 'react-native';
 import {CommentType, CustomImage} from '../../types/types';
 import {CommentInputFooter} from './CommentInputFooter';
 import {useAddCommentMutation} from '../../redux/slices/mockApiSlice';
+import {Backdrop} from '../../components/Backdrop/Backdrop';
 
 type CommentModalProps = Omit<BottomSheetModalProps, 'children'> & {
   comments: CommentType[];
@@ -56,31 +55,12 @@ export const CommentModal = ({
       backgroundStyle={{backgroundColor: colors.card}}
       handleIndicatorStyle={{backgroundColor: colors.border}}
       footerComponent={renderFooter}
-      topInset={insets.top}>
-      <BottomSheetView style={styles.container}>
-        <CommentList data={comments} />
-      </BottomSheetView>
+      topInset={insets.top}
+      backdropComponent={Backdrop}>
+      <CommentList data={comments} />
     </BottomSheetModal>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {gap: 10, flex: 1}, //REMEMBER FLEX 1, OTHERWISE LIST WONT RENDER CORRECTLY
-  footerContainer: {
-    padding: 4,
-    margin: 4,
-    borderRadius: 12,
-    flex: 1,
-    flexDirection: 'row',
-    gap: 5,
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    borderRadius: 10,
-    fontSize: 16,
-    lineHeight: 20,
-    padding: 8,
-    backgroundColor: 'rgba(151, 151, 151, 0.25)',
-  },
-});
+//REMOVED BOTTOMSHEETVIEW.
+//BottomSheetFlatList HAS TO BE STRAIGHT AFTER THE MODAL COMPONENT.

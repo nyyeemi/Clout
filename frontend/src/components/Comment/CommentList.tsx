@@ -1,16 +1,15 @@
 import React, {useCallback} from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
-import {verticalScale} from '../../assets/styles/scaling';
+import {StyleSheet, View} from 'react-native';
 import {ThemedText} from '../ui/typography';
 import {CommentType} from '../../types/types';
 import {CommentListItem} from './CommentListItem';
+import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 
 type CommentListType = {
   data: CommentType[];
   onItemPress?: () => void;
 };
 
-// todo: add options for size and searchbarvisible
 export const CommentList = ({
   data,
   onItemPress,
@@ -24,7 +23,7 @@ export const CommentList = ({
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <BottomSheetFlatList
         ListEmptyComponent={
           <View style={styles.noComments}>
             <ThemedText style={styles.listEmptyText}>
@@ -35,23 +34,16 @@ export const CommentList = ({
         data={data}
         keyExtractor={item => String(item.id)}
         renderItem={renderItem}
-        getItemLayout={(_data, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
       />
     </View>
   );
 };
 
-//TODO: check this value
-const ITEM_HEIGHT = verticalScale(50);
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
+    paddingBottom: 80, //TODO IS THIS GOOD IN HERE
   },
   listEmptyText: {
     fontSize: 17,

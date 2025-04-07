@@ -19,12 +19,13 @@ import {
 } from '../../redux/slices/mockApiSlice';
 import {UserList} from '../../components/UserList/UserList';
 import {CommentModal} from './CommentModal';
+import {Backdrop} from '../../components/Backdrop/Backdrop';
 
 export const FeedScreen = (): JSX.Element => {
   const [selectedPost, setSelectedPost] = useState<CustomImage | null>(null);
   const likeSheetRef = useRef<BottomSheetModal>(null);
   const commentSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ['50%'], []);
+  const snapPoints = useMemo(() => ['50%', '90%'], []);
   const {colors} = useTheme();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -72,8 +73,6 @@ export const FeedScreen = (): JSX.Element => {
     [],
   );
 
-  console.log('Feedscreeni rendered');
-
   return (
     <ThemedSafeAreaView style={[globalStyle.flex]}>
       <FlatList
@@ -90,7 +89,8 @@ export const FeedScreen = (): JSX.Element => {
         onDismiss={() => setSelectedPost(null)}
         index={0}
         backgroundStyle={{backgroundColor: colors.card}}
-        handleIndicatorStyle={{backgroundColor: colors.border}}>
+        handleIndicatorStyle={{backgroundColor: colors.border}}
+        backdropComponent={Backdrop}>
         <BottomSheetView style={styles.container}>
           <UserList
             data={likedUsers}
@@ -99,15 +99,13 @@ export const FeedScreen = (): JSX.Element => {
         </BottomSheetView>
       </BottomSheetModal>
 
-      {selectedPost && (
-        <CommentModal
-          comments={comments}
-          commentSheetRef={commentSheetRef}
-          snapPoints={snapPoints}
-          onDismiss={() => setSelectedPost(null)}
-          selectedPost={selectedPost}
-        />
-      )}
+      <CommentModal
+        comments={comments}
+        commentSheetRef={commentSheetRef}
+        snapPoints={snapPoints}
+        onDismiss={() => setSelectedPost(null)}
+        selectedPost={selectedPost || ({} as CustomImage)}
+      />
     </ThemedSafeAreaView>
   );
 };

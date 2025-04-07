@@ -18,7 +18,6 @@ export const FeedPost = ({
   onShowLikes,
   onShowComments,
 }: Props): JSX.Element => {
-  //console.log(post);
   return (
     <ThemedView bottomBorder style={globalStyle.flex}>
       <TopBar post={post} />
