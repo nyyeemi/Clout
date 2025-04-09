@@ -1,16 +1,19 @@
 import React, {useCallback} from 'react';
+
 import {
   BottomSheetFooterProps,
   BottomSheetModal,
   BottomSheetModalProps,
 } from '@gorhom/bottom-sheet';
-import {CommentList} from '../../components/Comment/CommentList';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useTheme} from '@react-navigation/native';
-import {CommentType, CustomImage} from '../../types/types';
-import {CommentInputFooter} from './CommentInputFooter';
-import {useAddCommentMutation} from '../../redux/slices/mockApiSlice';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import {Backdrop} from '../../components/Backdrop/Backdrop';
+import {CommentList} from '../../components/Comment/CommentList';
+import {useAddCommentMutation} from '../../redux/slices/mockApiSlice';
+import {CommentInputFooter} from './CommentInputFooter';
+
+import {CommentType, CustomImage} from '../../types/types';
 
 type CommentModalProps = Omit<BottomSheetModalProps, 'children'> & {
   comments: CommentType[];

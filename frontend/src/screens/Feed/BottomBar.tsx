@@ -1,25 +1,28 @@
 import React, {useState} from 'react';
-import globalStyle from '../../assets/styles/globalStyle';
-import {ThemedView} from '../../components/ui/themed-view';
-import {ThemedIcon, ThemedText} from '../../components/ui/typography';
 import {Pressable, StyleSheet, View} from 'react-native';
-import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
-import {faHeart as fasHeart} from '@fortawesome/free-solid-svg-icons';
+
 import {
   faComment,
   faHeart as farHeart,
 } from '@fortawesome/free-regular-svg-icons';
+import {faHeart as fasHeart} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store/store';
+
+import globalStyle from '../../assets/styles/globalStyle';
+import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
+import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
+import {ThemedView} from '../../components/ui/themed-view';
+import {ThemedIcon, ThemedText} from '../../components/ui/typography';
 import {
   useAddLikeMutation,
   useDeleteLikeMutation,
   useGetCommentsByImageIdQuery,
   useGetLikesByImageIdQuery,
 } from '../../redux/slices/mockApiSlice';
+import {RootState} from '../../redux/store/store';
+
 import {CustomImage} from '../../types/types';
-import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
 
 type Props = {
   post: CustomImage;

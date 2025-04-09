@@ -108,6 +108,97 @@ export const mockUserList: CustomUser[] = [
       'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
     num_posts: IMAGELIST_LENGTH,
   },
+  {
+    id: 8,
+    username: 'Johtaja8',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
+    email: 'johtaja@johtajasdasdasdaa.johtaja',
+    bio: 'JOHTAMISTA JA SILLEE',
+    num_followers: 7270,
+    num_following: 2011,
+    profile_picture_url:
+      'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
+    num_posts: IMAGELIST_LENGTH,
+  },
+  {
+    id: 9,
+    username: 'Johtaja9',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
+    email: 'johtaja@johtajasdasdasdaa.johtaja',
+    bio: 'L5 Software Engineer',
+    num_followers: 7270,
+    num_following: 2011,
+    profile_picture_url:
+      'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
+    num_posts: IMAGELIST_LENGTH,
+  },
+  {
+    id: 10,
+    username: 'Johtaja10',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
+    email: 'johtaja@johtajasdasdasdaa.johtaja',
+    bio: 'asddd',
+    num_followers: 7270,
+    num_following: 2011,
+    profile_picture_url:
+      'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
+    num_posts: IMAGELIST_LENGTH,
+  },
+  {
+    id: 11,
+    username: 'Johtaja11',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
+    email: 'johtaja@johtajasdasdasdaa.johtaja',
+    bio: 'NOCCOA SAAKELI',
+    num_followers: 7270,
+    num_following: 2011,
+    profile_picture_url:
+      'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
+    num_posts: IMAGELIST_LENGTH,
+  },
+  {
+    id: 12,
+    username: 'Johtaja12',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
+    email: 'johtaja@johtajasdasdasdaa.johtaja',
+    bio: 'KOVIS',
+    num_followers: 7270,
+    num_following: 2011,
+    profile_picture_url:
+      'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
+    num_posts: IMAGELIST_LENGTH,
+  },
+  {
+    id: 13,
+    username: 'Johtaja13',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
+    email: 'johtaja@johtajasdasdasdaa.johtaja',
+    bio: 'asdasd',
+    num_followers: 7270,
+    num_following: 2011,
+    profile_picture_url:
+      'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
+    num_posts: IMAGELIST_LENGTH,
+  },
+  {
+    id: 14,
+    username: 'Johtaja14',
+    first_name: 'Johto',
+    last_name: 'Jormanen',
+    email: 'johtaja@johtajasdasdasdaa.johtaja',
+    bio: 'LJOUUU',
+    num_followers: 7270,
+    num_following: 2011,
+    profile_picture_url:
+      'https://static.wikia.nocookie.net/joke-battles/images/d/df/Gigachad.png/revision/latest/scale-to-width-down/400?cb=20230812064835',
+    num_posts: IMAGELIST_LENGTH,
+  },
 ];
 
 export const baseImageMock: CustomImage = {
@@ -221,6 +312,60 @@ export let mockLikes = [
     image_id: 103,
     created_at: '2024-03-07T12:25:00Z',
   },
+  {
+    id: 9,
+    user_id: 5,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 10,
+    user_id: 6,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 11,
+    user_id: 7,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 12,
+    user_id: 8,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 13,
+    user_id: 9,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 14,
+    user_id: 10,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 15,
+    user_id: 11,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 16,
+    user_id: 12,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
+  {
+    id: 17,
+    user_id: 13,
+    image_id: 101,
+    created_at: '2024-03-07T12:25:00Z',
+  },
 ];
 
 export let mockComments = [
@@ -277,7 +422,7 @@ export let mockComments = [
     id: 8,
     user_id: 1,
     image_id: 101,
-    comment: 'HIENO KUVA hahaha',
+    comment: 'HIENO KUVA hahaha. THIS IS LONG COMMENT SO WE CAN SEE HOW THOSE WORKS. LIIBA LAABA DAABA DIIBA DAABA ETC. GIMME MY ULTRA WHITE MONSTER MAAN! SKABADABADAUUUUU. SCATMAAAAAAAN!',
     created_at: '2024-03-07T12:00:00Z',
   },
 ];
