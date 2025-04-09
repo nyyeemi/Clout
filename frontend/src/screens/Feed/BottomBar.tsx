@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import {faHeart as fasHeart} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {useTheme} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
 import globalStyle from '../../assets/styles/globalStyle';
@@ -36,19 +37,24 @@ export const BottomBar = ({
   onShowComments,
 }: Props): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
-
   const {data: likes = []} = useGetLikesByImageIdQuery(post.id);
   const {data: comments = []} = useGetCommentsByImageIdQuery(post.id);
   const [addLike] = useAddLikeMutation();
   const [deleteLike] = useDeleteLikeMutation();
+  const {colors} = useTheme();
 
   const caption = post.caption;
 
   // can and should clean this up in redux filtering and counting logic
 
   const likeCount = likes.length;
-
   const commentCount = comments.length;
+  const date = new Date(post.created_at);
+  const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(
+    date.getMonth() + 1
+  )
+    .toString()
+    .padStart(2, '0')}.${date.getFullYear()}`;
 
   const user = useSelector((state: RootState) => state.user.user);
 
@@ -69,30 +75,39 @@ export const BottomBar = ({
 
   return (
     <ThemedView style={[globalStyle.flex, styles.container]}>
-      <View style={styles.likeCommentContainer}>
-        <View style={styles.iconAndNumber}>
-          <OpacityPressable onPress={() => toggleLike(!like)}>
-            {like ? (
-              <FontAwesomeIcon icon={fasHeart} color="red" size={25} />
-            ) : (
-              <ThemedIcon icon={farHeart} size={25} />
+      <View style={styles.likeCommentDateContainer}>
+        <View style={styles.likeCommentContainer}>
+          <View style={styles.iconAndNumber}>
+            <OpacityPressable onPress={() => toggleLike(!like)}>
+              {like ? (
+                <FontAwesomeIcon
+                  icon={fasHeart}
+                  color={colors.primary}
+                  size={25}
+                />
+              ) : (
+                <ThemedIcon icon={farHeart} size={25} />
+              )}
+            </OpacityPressable>
+            {likeCount > 0 && (
+              <OpacityPressable onPress={showLikes}>
+                <ThemedText variant="bold">{likeCount}</ThemedText>
+              </OpacityPressable>
+            )}
+          </View>
+
+          <OpacityPressable
+            onPress={openCommentSection}
+            style={styles.iconAndNumber}>
+            <ThemedIcon icon={faComment} size={25} />
+            {commentCount > 0 && (
+              <ThemedText variant="bold">{commentCount}</ThemedText>
             )}
           </OpacityPressable>
-          {likeCount > 0 && (
-            <OpacityPressable onPress={showLikes}>
-              <ThemedText variant="bold">{likeCount}</ThemedText>
-            </OpacityPressable>
-          )}
         </View>
-
-        <OpacityPressable
-          onPress={openCommentSection}
-          style={styles.iconAndNumber}>
-          <ThemedIcon icon={faComment} size={25} />
-          {commentCount > 0 && (
-            <ThemedText variant="bold">{commentCount}</ThemedText>
-          )}
-        </OpacityPressable>
+        <View style={styles.date}>
+          <ThemedText>{formattedDate}</ThemedText>
+        </View>
       </View>
 
       {caption && (
@@ -131,6 +146,7 @@ const styles = StyleSheet.create({
   likeCommentContainer: {
     flexDirection: 'row',
     gap: 15,
+    alignItems: 'center',
   },
   iconAndNumber: {
     flexDirection: 'row',
@@ -141,4 +157,10 @@ const styles = StyleSheet.create({
     color: '#2889eb',
     marginTop: 5,
   },
+  likeCommentDateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  date: {paddingRight: 5},
 });

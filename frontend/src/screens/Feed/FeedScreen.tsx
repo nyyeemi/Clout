@@ -39,6 +39,11 @@ export const FeedScreen = (): JSX.Element => {
   }, [dispatch]);
 
   const data = useSelector((state: RootState) => state.feedImage.feedImages);
+  const sortedData = [...data].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
+
   const {data: likes = []} = useGetLikesByImageIdQuery(selectedPost?.id ?? -1, {
     skip: !selectedPost,
   });
@@ -46,6 +51,7 @@ export const FeedScreen = (): JSX.Element => {
   const {data: likedUsers = []} = useGetUsersByIdsQuery(userIds, {
     skip: userIds.length === 0,
   });
+
   const {data: comments = []} = useGetCommentsByImageIdQuery(
     selectedPost?.id ?? -1,
     {
@@ -77,7 +83,7 @@ export const FeedScreen = (): JSX.Element => {
   return (
     <ThemedSafeAreaView style={[globalStyle.flex]}>
       <FlatList
-        data={data}
+        data={sortedData}
         keyExtractor={item => String(item.id)}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}

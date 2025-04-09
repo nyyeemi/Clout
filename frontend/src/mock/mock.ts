@@ -209,7 +209,7 @@ export const baseImageMock: CustomImage = {
   thumbnail_url: null,
   caption:
     'Amazing SPONGEBOB picture. Took this one when i was drinking white ultra monster. PS. collaboration with monster would be great wink wink.',
-  created_at: '01122024',
+  created_at: '2025-04-09T10:12:00Z',
   is_visible: true,
   num_likes: 4,
   num_comments: 3,
@@ -223,6 +223,7 @@ export const mockImageList: CustomImage[] = [
     image_url:
       'https://static.wikia.nocookie.net/louser/images/1/15/Eheheh.png/revision/latest?cb=20130218225046',
     num_likes: 2,
+    created_at: '2025-04-08T15:45:30Z',
   },
   {
     ...baseImageMock,
@@ -231,6 +232,7 @@ export const mockImageList: CustomImage[] = [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDMXtoTWSqW0jfC1eIqJUEak0uNt_GOvYq8w&s',
     num_likes: 1,
     user: mockUserList[2],
+    created_at: '2025-04-09T20:01:10Z',
   },
   {
     ...baseImageMock,
@@ -238,6 +240,7 @@ export const mockImageList: CustomImage[] = [
     image_url: 'https://pbs.twimg.com/media/F9xhN65WQAATLoU.jpg',
     num_likes: 0,
     user: mockUserList[3],
+    created_at: '2025-04-06T09:27:54Z',
   },
   {
     ...baseImageMock,
@@ -246,6 +249,7 @@ export const mockImageList: CustomImage[] = [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBGntJMFAROF9MNVt6ippW2IfBwlxtBkS7jg&s',
     num_likes: 0,
     user: mockUserList[4],
+    created_at: '2025-04-08T12:13:22Z',
   },
   {
     ...baseImageMock,
@@ -253,6 +257,7 @@ export const mockImageList: CustomImage[] = [
     image_url:
       'https://ultimateguard.com/media/8a/19/c9/1728480928/SQR-050001-277-011-00_dark_0001.jpg?1728480928',
     num_likes: 0,
+    created_at: '2025-04-04T18:40:05Z',
   },
   {
     ...baseImageMock,
@@ -260,6 +265,7 @@ export const mockImageList: CustomImage[] = [
     image_url:
       'https://spinnaker-watches.com/cdn/shop/articles/pizza_delivery_106.jpg?v=1721710885',
     num_likes: 0,
+    created_at: '2025-04-03T22:05:15Z',
   },
 ];
 
@@ -422,7 +428,8 @@ export let mockComments = [
     id: 8,
     user_id: 1,
     image_id: 101,
-    comment: 'HIENO KUVA hahaha. THIS IS LONG COMMENT SO WE CAN SEE HOW THOSE WORKS. LIIBA LAABA DAABA DIIBA DAABA ETC. GIMME MY ULTRA WHITE MONSTER MAAN! SKABADABADAUUUUU. SCATMAAAAAAAN!',
+    comment:
+      'HIENO KUVA hahaha. THIS IS LONG COMMENT SO WE CAN SEE HOW THOSE WORKS. LIIBA LAABA DAABA DIIBA DAABA ETC. GIMME MY ULTRA WHITE MONSTER MAAN! SKABADABADAUUUUU. SCATMAAAAAAAN!',
     created_at: '2024-03-07T12:00:00Z',
   },
 ];
