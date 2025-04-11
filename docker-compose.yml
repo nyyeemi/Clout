@@ -11,20 +11,19 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend
-    container_name: django_backend
+    build: ./server
+    container_name: fastapi_server
     restart: always
     depends_on:
       - db
     env_file:
       - ./.env
-    working_dir: /app
+    working_dir: /src
     volumes:
-      - ./backend:/app
+      - ./server:/src
     ports:
       - "8000:8000"
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-    #command: ["gunicorn", "--bind", "0.0.0.0:8000", "clout.wsgi:application"]
+    command: ["fastapi", "run", "app/main.py", "--port", "8000"]
 
 volumes:
   postgres_data:
