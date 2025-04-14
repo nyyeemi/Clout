@@ -23,7 +23,7 @@ services:
       - ./server:/src
     ports:
       - "8000:8000"
-    command: ["fastapi", "run", "app/main.py", "--port", "8000"]
+    command: ["fastapi", "run", "app/main.py", --reload, "--port", "8000"]
 
 volumes:
   postgres_data:

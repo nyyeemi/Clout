@@ -1,4 +1,7 @@
 from collections.abc import Generator
+from typing import Annotated
+
+from fastapi import Depends
 from app.db.session import SessionLocal
 from sqlalchemy.orm import Session
 
@@ -16,6 +19,8 @@ def get_db() -> Generator[Session, None, None]:
     finally:
         db.close()
 
+
+SessionDep = Annotated[Session, Depends(get_db)]
 
 """
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
