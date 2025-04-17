@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from app.services.user import create_user
+from app.services.user_crud import create_user
 from app.core.config import settings
 from app.models.user import User
 from app.schemas.user import UserCreate

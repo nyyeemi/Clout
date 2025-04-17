@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from app.api.deps import CurrentUser, SessionDep
 from app.schemas.utils import Token
-from app.services.user import authenticate
+from app.services.user_crud import authenticate
 from app.schemas.user import UserOut
 
 
