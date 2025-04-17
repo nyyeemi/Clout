@@ -24,6 +24,19 @@ class UserOut(BaseModel):
         from_attributes = True
 
 
+# Properties to return via API, id is always required
+class UserPublic(UserBase):
+    id: uuid.UUID
+
+    class Config:
+        from_attributes = True
+
+
+class UsersPublic(BaseModel):
+    data: list[UserPublic]
+    count: int
+
+
 class User(UserBase):
     id: uuid.UUID
     hashed_password: str

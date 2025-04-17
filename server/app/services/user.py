@@ -3,22 +3,25 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.core.security import hash_password, verify_password
+from app.core.security import get_password_hash, verify_password
 
 
 def get_user_by_id(db: Session, user_id: uuid.UUID) -> User | None:
     return db.get(User, user_id)
 
 
-def create_user(db: Session, user_in: UserCreate) -> User:
-    hashed_pw = hash_password(user_in.password)
-    user = User(
-        username=user_in.username, email=user_in.email, hashed_password=hashed_pw
+def create_user(*, session: Session, user_create: UserCreate) -> User:
+    hashed_pw = get_password_hash(user_create.password)
+    db_obj = User(
+        username=user_create.username,
+        email=user_create.email,
+        is_superuser=user_create.is_superuser,
+        hashed_password=hashed_pw,
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
 
 
 def get_user_by_email(*, session: Session, email: str) -> User | None:

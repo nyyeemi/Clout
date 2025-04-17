@@ -1,11 +1,32 @@
+from typing import Any
 import uuid
 from fastapi import APIRouter, Depends, HTTPException
-
-from app.schemas.user import UserCreate, UserOut
+from sqlalchemy import select, func
+from app.schemas.user import UserCreate, UserOut, UsersPublic
 from app.services.user import create_user, get_user_by_id
 from app.api.deps import SessionDep, get_current_active_superuser
+from app.models import User
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+
+@router.get(
+    "/",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=UsersPublic,
+)
+def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+    """
+    Retrieve users.
+    """
+
+    count_statement = select(func.count()).select_from(User)
+    count = session.execute(count_statement).scalar_one()
+
+    statement = select(User).offset(skip).limit(limit)
+    users = session.scalars(statement).all()
+
+    return UsersPublic(data=users, count=count)
 
 
 @router.get(
