@@ -41,6 +41,18 @@ def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
     return db_user
 
 
+def update_user_me(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
+    user_data = user_in.model_dump(exclude_unset=True)
+
+    for field, value in user_data.items():
+        setattr(db_user, field, value)
+
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
+
+
 def get_user_by_email(*, session: Session, email: str) -> User | None:
     statement = select(User).where(User.email == email)
     session_user = session.scalars(statement).first()

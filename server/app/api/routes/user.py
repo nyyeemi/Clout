@@ -99,10 +99,9 @@ def update_user_me(
             )
         current_user.username = user_in.username
 
-    session.add(current_user)
-    session.commit()
-    session.refresh(current_user)
-    return current_user
+    user = crud.update_user_me(session=session, db_user=current_user, user_in=user_in)
+
+    return user
 
 
 @router.patch("/me/password", response_model=Message)
