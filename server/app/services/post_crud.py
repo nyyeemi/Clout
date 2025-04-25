@@ -1,8 +1,9 @@
 from uuid import UUID
+from pydantic import HttpUrl
 from sqlalchemy.orm import Session
 
 from app.models.post import Post
-from app.schemas.posts import PostCreate
+from app.schemas.posts import PostCreate, PostUpdate
 
 
 def create_post(*, session: Session, post_in: PostCreate, owner_id: UUID) -> Post:
@@ -16,3 +17,17 @@ def create_post(*, session: Session, post_in: PostCreate, owner_id: UUID) -> Pos
     session.commit()
     session.refresh(db_obj)
     return db_obj
+
+
+def update_post(*, session: Session, db_post: Post, post_in: PostUpdate) -> Post:
+    post_data = post_in.model_dump(exclude_unset=True)
+
+    for field, value in post_data.items():
+        if isinstance(value, HttpUrl):  # convert for sqlalchemy
+            value = str(value)
+        setattr(db_post, field, value)
+
+    session.add(db_post)
+    session.commit()
+    session.refresh(db_post)
+    return db_post

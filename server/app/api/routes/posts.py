@@ -21,7 +21,7 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import and_, func, select
 
-from app.schemas.posts import PostCreate, PostPublic, PostsPublic
+from app.schemas.posts import PostCreate, PostPublic, PostUpdate, PostsPublic
 from app.services import post_crud as crud
 from app.api.deps import CurrentUser, SessionDep
 from app.models.post import Post
@@ -84,9 +84,30 @@ def read_post_by_id(
     Get details from a post.
     """
     post = session.get(Post, post_id)
-    if post is None:
+    if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    if not post.is_visible and post.owner_id != current_user.id:
+    if not post.is_visible and (post.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="This post is not visible to you")
+
+    return post
+
+
+@router.patch("/{post_id}", response_model=PostPublic)
+def update_post(
+    post_id: uuid.UUID,
+    session: SessionDep,
+    current_user: CurrentUser,
+    post_in: PostUpdate,
+) -> Any:
+    """
+    Update own post.
+    """
+    post = session.get(Post, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if not current_user.is_superuser and (post.owner_id != current_user.id):
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+
+    post = crud.update_post(session=session, db_post=post, post_in=post_in)
 
     return post
