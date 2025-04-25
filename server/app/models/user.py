@@ -6,6 +6,7 @@ from app.models.base import Base
 from sqlalchemy import Boolean, String
 
 from app.models.follower import Follower
+from app.models.post import Post
 
 
 class User(Base):
@@ -34,7 +35,7 @@ class User(Base):
 
     # Relationships
 
-    # images: Mapped[List["Image"]] = relationship(back_populates="user")
+    posts: Mapped[List["Post"]] = relationship(back_populates="owner")
 
     followers: Mapped[List["Follower"]] = relationship(
         back_populates="followed",

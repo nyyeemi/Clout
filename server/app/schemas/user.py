@@ -54,3 +54,12 @@ class UsersPublic(BaseModel):
 # Generic message
 class Message(BaseModel):
     message: str
+
+
+# For returning user details
+class UserInfoBasic(BaseModel):
+    id: uuid.UUID
+    username: str
+
+    class Config:
+        from_attributes = True

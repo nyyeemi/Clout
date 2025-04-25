@@ -1,14 +1,11 @@
 fastapi[standard]>=0.113.0,<0.114.0
 
-# Tietokantayhteys
 sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.0
 
-# Salasanan hashays
 passlib[bcrypt]>=1.7.4
 pyjwt<3.0.0,>=2.8.0
 
-# .env-tuki ja asetukset
 python-dotenv>=1.0.0
 pydantic-settings>=2.0.0
 
