@@ -278,11 +278,9 @@ def follow_user(
     if not user_to_follow:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    stmt = select(Follower).where(
-        Follower.user_id1 == current_user.id,
-        Follower.user_id2 == user_id,
+    already_following = crud.get_follower(
+        session=session, follower=current_user, followed=user_to_follow
     )
-    already_following = session.scalar(stmt)
     if already_following:
         raise HTTPException(status_code=409, detail="Already following this user.")
 
@@ -300,11 +298,14 @@ def unfollow_user(
     """
     Unfollow a user.
     """
-    stmt = select(Follower).where(
-        Follower.user_id1 == current_user.id,
-        Follower.user_id2 == user_id,
+
+    user_to_unfollow = session.get(User, user_id)
+    if not user_to_unfollow:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    follow = crud.get_follower(
+        session=session, follower=current_user, followed=user_to_unfollow
     )
-    follow = session.scalar(stmt)
 
     if not follow:
         raise HTTPException(status_code=404, detail="You are not following this user.")
