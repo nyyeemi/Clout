@@ -22,6 +22,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import and_, func, select
 
 from app.schemas.posts import PostCreate, PostPublic, PostUpdate, PostsPublic
+from app.schemas.user import Message
 from app.services import post_crud as crud
 from app.api.deps import CurrentUser, SessionDep
 from app.models.post import Post
@@ -111,3 +112,24 @@ def update_post(
     post = crud.update_post(session=session, db_post=post, post_in=post_in)
 
     return post
+
+
+@router.delete("/{post_id}")
+def delete_post(
+    post_id: uuid.UUID,
+    session: SessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Delete own post.
+    """
+    post = session.get(Post, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if not current_user.is_superuser and (post.owner_id != current_user.id):
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+
+    session.delete(post)
+    session.commit()
+
+    return Message(message="Post deleted succesfully")
