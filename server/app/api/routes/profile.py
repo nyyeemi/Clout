@@ -3,8 +3,9 @@ from app.api.deps import SessionDep
 from app.models import User
 from app.schemas.user import UserPublic, UsersPublic
 from app.models.follower import Follower
-from sqlalchemy import join, select, func
+from sqlalchemy import select, func
 from app.services import user_crud as crud
+from app.services import follower_crud
 # from app.schemas.image import ImagePublic  # You will need this
 
 
@@ -37,28 +38,14 @@ def get_user_followers(
     """
     Get followers for user by username
     """
-    # Find user
     user = crud.get_user_by_username(session=session, username=username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    # Join User -> Follower
-    follower_join = join(User, Follower, User.id == Follower.user_id1)
-
-    # Fetch paginated followers
-    # Select items which user table includes but from joined "table"
-    # and only lines where user is followed by other users.
-    # start with row number "skip" limits how many rows can be get from database.
-    stmt = (
-        select(User)
-        .select_from(follower_join)
-        .where(Follower.user_id2 == user.id)
-        .offset(skip)
-        .limit(limit)
+    followers = follower_crud.get_followers_for_user(
+        session=session, user_id=user.id, skip=skip, limit=limit
     )
-    followers = session.scalars(stmt).all()
 
-    # Count total followers
     count_stmt = (
         select(func.count()).select_from(Follower).where(Follower.user_id2 == user.id)
     )
@@ -81,16 +68,9 @@ def get_user_following(
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    following_join = join(User, Follower, User.id == Follower.user_id2)
-
-    stmt = (
-        select(User)
-        .select_from(following_join)
-        .where(Follower.user_id1 == user.id)
-        .offset(skip)
-        .limit(limit)
+    following_users = follower_crud.get_followings_for_user(
+        session=session, user_id=user.id, skip=skip, limit=limit
     )
-    following_users = session.scalars(stmt).all()
 
     count_stmt = (
         select(func.count()).select_from(Follower).where(Follower.user_id1 == user.id)
