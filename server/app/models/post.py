@@ -19,7 +19,7 @@ from app.models import Base
 if TYPE_CHECKING:
     from .user import User
     from .comment import Comment
-    # from .like import Like
+    from .like import Like
 
 
 class Post(Base):
@@ -49,11 +49,7 @@ class Post(Base):
 
     owner: Mapped["User"] = relationship(back_populates="posts")
     comments: Mapped[list["Comment"]] = relationship(
-        "Comment", back_populates="post", cascade="all, delete-orphan"
+        "Comment", cascade="all, delete-orphan"
     )
-    """
-    )
-    likes: Mapped[List["Like"]] = relationship(
-        "Like", back_populates="post", cascade="all, delete-orphan"
-    )
-    """
+
+    likes: Mapped[list["Like"]] = relationship("Like", cascade="all, delete-orphan")

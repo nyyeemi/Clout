@@ -61,3 +61,18 @@ class CommentsPublic(BaseModel):
 # request model
 class CommentCreate(BaseModel):
     content: str
+
+
+# Response model for like
+class LikePublic(BaseModel):
+    id: uuid.UUID
+    created_at: datetime
+    owner: UserInfoBasic
+
+    class Config:
+        from_attributes = True
+
+
+class LikesPublic(BaseModel):
+    data: list[LikePublic]
+    count: int

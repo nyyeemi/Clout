@@ -2,7 +2,7 @@ from uuid import UUID
 from pydantic import HttpUrl
 from sqlalchemy.orm import Session
 
-from app.models import Post, Comment
+from app.models import Post, Comment, Like
 from app.schemas.posts import CommentCreate, PostCreate, PostUpdate
 
 
@@ -37,6 +37,14 @@ def create_post_comment(
     *, session: Session, comment_in: CommentCreate, owner_id: UUID, post_id: UUID
 ) -> Comment:
     db_obj = Comment(post_id=post_id, owner_id=owner_id, content=comment_in.content)
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
+def create_post_like(*, session: Session, owner_id: UUID, post_id: UUID) -> Like:
+    db_obj = Like(post_id=post_id, owner_id=owner_id)
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)
