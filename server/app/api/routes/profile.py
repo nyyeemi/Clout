@@ -2,8 +2,6 @@ from fastapi import APIRouter, HTTPException, Query
 from app.api.deps import SessionDep
 from app.models import User
 from app.schemas.user import UserPublicProfile, UsersPublic
-from app.models.follower import Follower
-from sqlalchemy import select, func
 from app.services import user_crud as crud
 from app.services import follower_crud
 # from app.schemas.image import ImagePublic  # You will need this
@@ -58,10 +56,7 @@ def get_user_followers(
         session=session, user_id=user.id, skip=skip, limit=limit
     )
 
-    count_stmt = (
-        select(func.count()).select_from(Follower).where(Follower.user_id2 == user.id)
-    )
-    count = session.scalar(count_stmt)
+    count = len(followers)
 
     return UsersPublic(data=followers, count=count)
 
@@ -84,9 +79,6 @@ def get_user_following(
         session=session, user_id=user.id, skip=skip, limit=limit
     )
 
-    count_stmt = (
-        select(func.count()).select_from(Follower).where(Follower.user_id1 == user.id)
-    )
-    count = session.scalar(count_stmt)
+    count = len(following_users)
 
     return UsersPublic(data=following_users, count=count)
