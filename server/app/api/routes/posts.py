@@ -21,6 +21,7 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import and_, func, select
 from sqlalchemy.orm import selectinload
+from sqlalchemy.exc import NoResultFound
 
 from app.schemas.posts import (
     CommentCreate,
@@ -206,6 +207,12 @@ def create_post_comment(
     """
     Create a comment for post.
     """
+    try:
+        post = session.execute(
+            select(Post).where(Post.id == post_id).with_for_update()
+        ).scalar_one()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Post not found")
 
     comment = crud.create_post_comment(
         session=session,
@@ -214,4 +221,39 @@ def create_post_comment(
         post_id=post_id,
     )
 
+    post.num_comments += 1
+    session.commit()
+    session.refresh(post)
+
     return comment
+
+
+@router.delete("/{post_id}/comments/{comment_id}")
+def delete_post_comment(
+    comment_id: uuid.UUID,
+    post_id: uuid.UUID,
+    session: SessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Delete own comment.
+    """
+    try:
+        post = session.execute(
+            select(Post).where(Post.id == post_id).with_for_update()
+        ).scalar_one()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    comment = session.get(Comment, comment_id)
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    if not current_user.is_superuser and (comment.owner_id != current_user.id):
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+
+    session.delete(comment)
+    post.num_comments -= 1
+    session.commit()
+    session.refresh(post)
+
+    return Message(message="Comment deleted succesfully")
