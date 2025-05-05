@@ -46,6 +46,14 @@ class UserPublic(UserBase):
         from_attributes = True
 
 
+class UserPublicProfile(UserPublic):
+    num_followers: int = 0
+    num_following: int = 0
+
+    class Config:
+        from_attributes = True
+
+
 class UsersPublic(BaseModel):
     data: list[UserPublic]
     count: int

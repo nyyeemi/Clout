@@ -16,6 +16,7 @@ from app.services import user_crud as crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
 from app.models import User
 from app.core.security import get_password_hash, verify_password
+from app.models.follower import Follower
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -238,7 +239,11 @@ def update_user(
     return db_user
 
 
-@router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
+@router.delete(
+    "/{user_id}",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=Message,
+)
 def delete_user(
     session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID
 ) -> Message:
@@ -257,3 +262,54 @@ def delete_user(
     session.delete(user)
     session.commit()
     return Message(message="User deleted successfully")
+
+
+@router.post("/{user_id}/followers", status_code=201, response_model=Message)
+def follow_user(
+    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
+) -> Message:
+    """
+    Follow another user.
+    """
+    if current_user.id == user_id:
+        raise HTTPException(status_code=400, detail="Cannot follow yourself.")
+
+    user_to_follow = session.get(User, user_id)
+    if not user_to_follow:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    already_following = crud.get_follower(
+        session=session, follower=current_user, followed=user_to_follow
+    )
+    if already_following:
+        raise HTTPException(status_code=409, detail="Already following this user.")
+
+    follow = Follower(user_id1=current_user.id, user_id2=user_id)
+    session.add(follow)
+    session.commit()
+
+    return Message(message="Successfully followed the user.")
+
+
+@router.delete("/{user_id}/followers", response_model=Message)
+def unfollow_user(
+    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
+) -> Message:
+    """
+    Unfollow a user.
+    """
+
+    user_to_unfollow = session.get(User, user_id)
+    if not user_to_unfollow:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    follow = crud.get_follower(
+        session=session, follower=current_user, followed=user_to_unfollow
+    )
+
+    if not follow:
+        raise HTTPException(status_code=404, detail="You are not following this user.")
+
+    session.delete(follow)
+    session.commit()
+    return Message(message="Unfollowed user.")

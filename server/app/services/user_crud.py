@@ -1,14 +1,10 @@
 from typing import Any
-import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
 from app.core.security import get_password_hash, verify_password
-
-
-def get_user_by_id(db: Session, user_id: uuid.UUID) -> User | None:
-    return db.get(User, user_id)
+from app.models.follower import Follower
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -72,3 +68,13 @@ def authenticate(*, session: Session, email: str, password: str) -> User | None:
     if not verify_password(password, db_user.hashed_password):
         return None
     return db_user
+
+
+def get_follower(
+    *, session: Session, follower: User, followed: User
+) -> Follower | None:
+    stmt = select(Follower).where(
+        Follower.user_id1 == follower.id,
+        Follower.user_id2 == followed.id,
+    )
+    return session.scalar(stmt)
