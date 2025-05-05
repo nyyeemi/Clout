@@ -24,7 +24,7 @@ services:
   prestart:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     build:
-      context: ./backend
+      context: ./server
     networks:
       - default
     depends_on:
