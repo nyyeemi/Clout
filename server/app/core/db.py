@@ -6,7 +6,7 @@ import random
 from uuid import UUID
 
 from sqlalchemy.orm import Session
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 
 from app.services.user_crud import create_user
 from app.core.config import settings
@@ -15,6 +15,8 @@ from app.schemas.user import UserCreate
 from app.core.security import get_password_hash
 from app.models.post import Post
 from app.models.follower import Follower
+from app.models.comment import Comment
+from app.models.like import Like
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -38,8 +40,11 @@ def init_db(session: Session) -> None:
     if settings.ENVIRONMENT == "local":
         logger.info("Populating db with mock data.")
         base_dir = Path(__file__).resolve().parent.parent / "mock-data"
+        clear_all_data(session)
         create_mock_users(session, base_dir)
         create_mock_posts(session, base_dir)
+        create_mock_comments(session, base_dir)
+        create_mock_likes(session)
         create_mock_follower_relations(session)
         session.commit()
         logger.info("Finished populating db with mock data.")
@@ -52,6 +57,18 @@ def init_db(session: Session) -> None:
             is_superuser=True,
         )
         create_user(session=session, user_create=user_in)
+
+
+def clear_all_data(session):
+    logger.info("Clearing existing data...")
+
+    session.execute(delete(Follower))
+    session.execute(delete(Comment))
+    session.execute(delete(Post))
+    session.execute(delete(User))
+    session.commit()
+
+    logger.info("All data cleared.")
 
 
 def user_exists_by_email(email: str, current_session) -> bool:
@@ -81,10 +98,6 @@ def create_mock_users(session, base_dir):
 
 def create_mock_posts(session, base_dir):
     all_users = session.execute(select(User)).scalars().all()
-    post_count = session.execute(select(func.count(Post.id))).scalar_one()
-    if post_count > 0:
-        logger.info("Data already exists.")
-        return
 
     if not all_users:
         logger.warning("No users available to assign posts to.")
@@ -108,12 +121,6 @@ def create_mock_posts(session, base_dir):
 def create_mock_follower_relations(session, max_relations_per_user: int = 10):
     users = session.execute(select(User)).scalars().all()
     user_ids = [user.id for user in users]
-    follower_row_count = session.execute(select(func.count(Follower.id))).scalar_one()
-
-    if follower_row_count > 0:
-        logger.info("Follower data already exists.")
-        return
-
     created_relations = set()
     followers_to_add = []
 
@@ -135,3 +142,64 @@ def create_mock_follower_relations(session, max_relations_per_user: int = 10):
     session.add_all(followers_to_add)
     session.commit()
     logger.info(f"Created {len(followers_to_add)} follower relationships.")
+
+
+def create_mock_comments(session, base_dir, max_comments: int = 5):
+    comments_json_path = base_dir / "comments.json"
+    with open(comments_json_path) as f:
+        comment_data = json.load(f)
+
+    comment_list = [data["content"] for data in comment_data]
+    all_posts = session.execute(select(Post)).scalars().all()
+
+    users = session.execute(select(User)).scalars().all()
+    user_ids = [user.id for user in users]
+
+    all_comments_to_add = []
+    for post in all_posts:
+        num_comments = random.randint(0, max_comments)
+        if num_comments == 0:
+            continue
+
+        comment_owner_ids = random.sample(user_ids, num_comments)
+        comments_to_add = random.sample(comment_list, num_comments)
+        for i in range(num_comments):
+            all_comments_to_add.append(
+                Comment(
+                    content=comments_to_add[i],
+                    post_id=post.id,
+                    owner_id=comment_owner_ids[i],
+                )
+            )
+        post.num_comments += num_comments
+        session.commit()
+        session.refresh(post)
+
+    session.add_all(all_comments_to_add)
+    session.commit()
+    logger.info(f"Created {len(all_comments_to_add)} comments.")
+
+
+def create_mock_likes(session):
+    users = session.execute(select(User)).scalars().all()
+    posts = session.execute(select(Post)).scalars().all()
+    user_ids = [user.id for user in users]
+
+    all_likes_to_add = []
+    for post in posts:
+        num_likes = random.randint(0, len(users))
+        if num_likes == 0:
+            continue
+
+        like_owner_ids = random.sample(user_ids, num_likes)
+        for i in range(num_likes):
+            owner_id = like_owner_ids[i]
+            all_likes_to_add.append(Like(post_id=post.id, owner_id=owner_id))
+
+        post.num_likes += num_likes
+        session.commit()
+        session.refresh(post)
+
+    session.add_all(all_likes_to_add)
+    session.commit()
+    logger.info(f"Created {len(all_likes_to_add)} likes.")
