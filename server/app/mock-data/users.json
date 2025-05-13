@@ -1,0 +1,162 @@
+[
+  {
+    "first_name": "Alice",
+    "last_name": "Smith",
+    "username": "alice.smith",
+    "email": "alice@example.com",
+    "bio": "Music lover and coffee enthusiast.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=alice@example.com"
+  },
+  {
+    "first_name": "Bob",
+    "last_name": "Jones",
+    "username": "bobbyj",
+    "email": "bob@example.com",
+    "bio": "Runner, coder, dreamer.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=bob@example.com"
+  },
+  {
+    "first_name": "Carol",
+    "last_name": "Danvers",
+    "username": "carold",
+    "email": "carol@example.com",
+    "bio": "Photographer & traveler.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=carol@example.com"
+  },
+  {
+    "first_name": "David",
+    "last_name": "Nguyen",
+    "username": "davidn",
+    "email": "david@example.com",
+    "bio": "Tech nerd and blogger.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=david@example.com"
+  },
+  {
+    "first_name": "Eva",
+    "last_name": "Martinez",
+    "username": "evam",
+    "email": "eva@example.com",
+    "bio": "Fitness and lifestyle coach.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=eva@example.com"
+  },
+  {
+    "first_name": "Frank",
+    "last_name": "Wright",
+    "username": "frankw",
+    "email": "frank@example.com",
+    "bio": "Minimalist and nature walker.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=frank@example.com"
+  },
+  {
+    "first_name": "Grace",
+    "last_name": "Kim",
+    "username": "gracek",
+    "email": "grace@example.com",
+    "bio": "UX designer and tea lover.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=grace@example.com"
+  },
+  {
+    "first_name": "Henry",
+    "last_name": "Lee",
+    "username": "henryl",
+    "email": "henry@example.com",
+    "bio": "Aspiring musician.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=henry@example.com"
+  },
+  {
+    "first_name": "Ivy",
+    "last_name": "Chen",
+    "username": "ivychen",
+    "email": "ivy@example.com",
+    "bio": "Engineer and puzzle solver.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=ivy@example.com"
+  },
+  {
+    "first_name": "Jack",
+    "last_name": "Brown",
+    "username": "jackb",
+    "email": "jack@example.com",
+    "bio": "Amateur chef.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=jack@example.com"
+  },
+  {
+    "first_name": "Kira",
+    "last_name": "Johnson",
+    "username": "kira_j",
+    "email": "kira@example.com",
+    "bio": "Sci-fi fan and writer.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=kira@example.com"
+  },
+  {
+    "first_name": "Leo",
+    "last_name": "Scott",
+    "username": "leos",
+    "email": "leo@example.com",
+    "bio": "DJ and party planner.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=leo@example.com"
+  },
+  {
+    "first_name": "Mia",
+    "last_name": "Hernandez",
+    "username": "miam",
+    "email": "mia@example.com",
+    "bio": "Yoga teacher.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=mia@example.com"
+  },
+  {
+    "first_name": "Noah",
+    "last_name": "White",
+    "username": "noahwhite",
+    "email": "noah@example.com",
+    "bio": "Film critic and barista.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=noah@example.com"
+  },
+  {
+    "first_name": "Olivia",
+    "last_name": "Green",
+    "username": "oliviag",
+    "email": "olivia@example.com",
+    "bio": "Dancer and dog mom.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=olivia@example.com"
+  },
+  {
+    "first_name": "Paul",
+    "last_name": "Hall",
+    "username": "paulh",
+    "email": "paul@example.com",
+    "bio": "Vintage car collector.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=paul@example.com"
+  },
+  {
+    "first_name": "Quinn",
+    "last_name": "Evans",
+    "username": "quinnevans",
+    "email": "quinn@example.com",
+    "bio": "Board game geek.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=quinn@example.com"
+  },
+  {
+    "first_name": "Ruby",
+    "last_name": "Flores",
+    "username": "rubyf",
+    "email": "ruby@example.com",
+    "bio": "Calligraphy hobbyist.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=ruby@example.com"
+  },
+  {
+    "first_name": "Sam",
+    "last_name": "Clark",
+    "username": "samc",
+    "email": "sam@example.com",
+    "bio": "History buff.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=sam@example.com"
+  },
+  {
+    "first_name": "Tina",
+    "last_name": "Reed",
+    "username": "tinareed",
+    "email": "tina@example.com",
+    "bio": "Illustrator and plant lover.",
+    "profile_picture_url": "https://i.pravatar.cc/250?u=tina@example.com"
+  }
+]

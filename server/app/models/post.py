@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from .like import Like
 
 
+# TODO: add is_in_comp etc
 class Post(Base):
     __tablename__ = "posts"
 
