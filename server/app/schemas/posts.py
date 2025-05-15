@@ -40,6 +40,23 @@ class PostsPublic(BaseModel):
     count: int
 
 
+# response models for profile posts
+class ProfilePostPublic(PostBase):
+    id: uuid.UUID
+    created_at: datetime
+    num_likes: int = 0
+    num_comments: int = 0
+    owner: UserInfoBasic
+
+    class Config:
+        from_attributes = True
+
+
+class ProfilePostsPublic(BaseModel):
+    data: list[ProfilePostPublic]
+    count: int
+
+
 # Response model for comment
 class CommentPublic(BaseModel):
     id: uuid.UUID

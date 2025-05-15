@@ -8,6 +8,7 @@ import {verticalScale} from '../../assets/styles/scaling';
 import {Spinner} from '../../components/Spinner/Spinner';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ProfileStackParamList} from '../../navigation/Routes';
+import {useGetProfilePostsByUserNameQuery} from '../../redux/api/endpoints/profiles';
 import {useGetPostsQuery} from '../../redux/slices/mockApiSlice';
 import {FeedPost} from '../Feed/FeedPost';
 
@@ -16,14 +17,16 @@ import {PostType} from '../../types/types';
 type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ImageDetail'>;
 
 export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
-  const {imageId, userId} = route.params || {};
+  const {imageId, username} = route.params || {};
   const {
-    data: posts = [],
+    data: postData = {data: [], count: 0},
     isLoading: isPostsLoading,
     //isSuccess: isPostsSuccess,
     isError: isPostsError,
     error: postsError,
-  } = useGetPostsQuery(userId);
+  } = useGetProfilePostsByUserNameQuery(username);
+
+  const {data: posts} = postData;
 
   const postIndex = useMemo(() => {
     return imageId ? posts.findIndex(image => image.id === imageId) : 0;

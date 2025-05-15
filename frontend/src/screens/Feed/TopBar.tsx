@@ -22,7 +22,7 @@ export const TopBar = ({post}: Props): JSX.Element => {
   const handleNavigate = () => {
     navigation.navigate(Routes.ProfileStack, {
       screen: Routes.Profile,
-      params: {userId: post.user.id, username: post.user.username},
+      params: {userId: post.owner.id, username: post.owner.username},
     });
   };
 
@@ -30,10 +30,10 @@ export const TopBar = ({post}: Props): JSX.Element => {
     <ThemedView style={[globalStyle.flex]}>
       <Pressable style={style.container} onPress={() => handleNavigate()}>
         <ProfilePicture
-          uri={post.user.profile_picture_url}
+          uri={post.owner.profile_picture_url}
           style={style.profileImage}
         />
-        <ThemedText variant="heavy">{post.user.username}</ThemedText>
+        <ThemedText variant="heavy">{post.owner.username}</ThemedText>
       </Pressable>
     </ThemedView>
   );

@@ -4,15 +4,11 @@ import {CustomUser} from '../../../types/types';
 
 export const usersApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
-    getUsersByIds: builder.query<CustomUser[], number[]>({
-      query: userIds => ({
-        url: '/users/',
-        method: 'GET',
-        body: {userIds},
-      }),
+    getUsersMe: builder.query<CustomUser, void>({
+      query: () => 'users/me',
       providesTags: ['Users'],
     }),
   }),
 });
 
-export const {useGetUsersByIdsQuery} = usersApi;
+export const {useGetUsersMeQuery} = usersApi;

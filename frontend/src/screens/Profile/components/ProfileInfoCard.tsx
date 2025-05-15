@@ -1,13 +1,15 @@
-import React, {useMemo, useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {
-  StyleSheet,
-  View,
   ActivityIndicator,
   StyleProp,
+  StyleSheet,
+  View,
   ViewStyle,
 } from 'react-native';
+
 import {useTheme} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+
 import globalStyle from '../../../assets/styles/globalStyle';
 import {
   horizontalScale,
@@ -17,18 +19,26 @@ import {
 import {OpacityPressable} from '../../../components/OpacityPressable/OpacityPressable';
 import {ThemedView} from '../../../components/ui/themed-view';
 import {ThemedText} from '../../../components/ui/typography';
+import {useGetUsersMeQuery} from '../../../redux/api/endpoints/users';
 import {
-  useGetUserFollowingQuery,
   useFollowUserMutation,
+  useGetUserFollowingQuery,
   useUnFollowUserMutation,
 } from '../../../redux/slices/mockApiSlice';
-import {CustomUser} from '../../../types/types';
-import {ProfileStatsRow} from './ProfileStatsRow';
 import {RootState} from '../../../redux/store/store';
+import {ProfileStatsRow} from './ProfileStatsRow';
 
-export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
+import {CustomUser} from '../../../types/types';
+
+export const ProfileInfoCard = ({
+  user,
+  num_posts,
+}: {
+  user: CustomUser;
+  num_posts: number;
+}): JSX.Element => {
   const {colors} = useTheme();
-  const loggedInUser = useSelector((state: RootState) => state.user.user);
+  const {data: loggedInUser, isError, isLoading} = useGetUsersMeQuery();
   const loggedInUserId = loggedInUser?.id;
 
   const {
@@ -111,7 +121,7 @@ export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
 
   return (
     <ThemedView style={styles.container}>
-      <ProfileStatsRow user={user} />
+      <ProfileStatsRow user={user} num_posts={num_posts} />
       <View style={styles.defaultMargin}>
         <ThemedText style={styles.name}>{user.username}</ThemedText>
         {user.bio ? <ThemedText>{user.bio}</ThemedText> : null}

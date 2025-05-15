@@ -1,30 +1,35 @@
 import React, {useCallback} from 'react';
+import {StyleSheet} from 'react-native';
+
+import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {
-  createStackNavigator,
   StackNavigationProp,
+  createStackNavigator,
 } from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/store/store';
+
+import globalStyle from '../assets/styles/globalStyle';
+import {OpacityPressable} from '../components/OpacityPressable/OpacityPressable';
+import {ThemedView} from '../components/ui/themed-view';
+import {useGetUsersMeQuery} from '../redux/api/endpoints/users';
 import {EditProfileScreen} from '../screens/Profile/EditProfileScreen';
 import {FollowersScreen} from '../screens/Profile/FollowersScreen';
 import {ProfileFeedScreen} from '../screens/Profile/ProfileFeedScreen';
 import {ProfileScreen} from '../screens/Profile/ProfileScreen';
 import {SettingsScreen} from '../screens/Settings/SettingsScreen';
 import {ProfileStackParamList, Routes} from './Routes';
-import {faBars} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {ThemedView} from '../components/ui/themed-view';
-import {OpacityPressable} from '../components/OpacityPressable/OpacityPressable';
-import {StyleSheet} from 'react-native';
-import globalStyle from '../assets/styles/globalStyle';
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
 
 export const ProfileStackNavigator = () => {
-  const loggedInUser = useSelector((state: RootState) => state.user.user);
+  const {data: loggedInUser, isError, isLoading} = useGetUsersMeQuery();
   const theme = useTheme();
   const renderSettingsButton = useCallback(() => <SettingsButton />, []);
+  // TODO solve this better
+  if (isLoading && !isError) {
+    return;
+  }
   return (
     <ProfileStack.Navigator
       screenOptions={{
@@ -36,7 +41,7 @@ export const ProfileStackNavigator = () => {
         component={ProfileScreen}
         options={({route}) => ({
           headerRight:
-            route.params?.userId === loggedInUser?.id
+            route.params?.username === loggedInUser?.username
               ? renderSettingsButton
               : undefined,
           headerTitleAlign: 'left',

@@ -15,6 +15,7 @@ import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
 import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedIcon, ThemedText} from '../../components/ui/typography';
+import {useGetUsersMeQuery} from '../../redux/api/endpoints/users';
 import {
   useAddLikeMutation,
   useDeleteLikeMutation,
@@ -56,7 +57,7 @@ export const BottomBar = ({
     .toString()
     .padStart(2, '0')}.${date.getFullYear()}`;
 
-  const user = useSelector((state: RootState) => state.user.user);
+  const {data: user, isError, isLoading} = useGetUsersMeQuery();
 
   const like = likes.find(item => item.user_id === user?.id);
 

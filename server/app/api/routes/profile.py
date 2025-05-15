@@ -3,7 +3,9 @@ from app.api.deps import SessionDep
 from app.models import User
 from app.schemas.user import UserPublicProfile, UsersPublic
 from app.services import user_crud as crud
+from app.services import post_crud
 from app.services import follower_crud
+from app.schemas.posts import PostsPublic, ProfilePostsPublic
 # from app.schemas.image import ImagePublic  # You will need this
 
 
@@ -36,6 +38,29 @@ def get_public_profile(username: str, session: SessionDep) -> User:
 """
 MAKE HERE ROUTER FOR POSTS
 """
+
+
+@router.get("/{username}/posts", response_model=ProfilePostsPublic)
+def get_user_posts(
+    username: str,
+    session: SessionDep,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(15, ge=1, le=100),
+) -> PostsPublic:
+    """
+    Get posts for a user by username
+    """
+    user = crud.get_user_by_username(session=session, username=username)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    posts = post_crud.get_posts_by_user(
+        session=session, user_id=user.id, skip=skip, limit=limit
+    )
+
+    count = len(posts)
+
+    return ProfilePostsPublic(data=posts, count=count)
 
 
 @router.get("/{username}/followers", response_model=UsersPublic)

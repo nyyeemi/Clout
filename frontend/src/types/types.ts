@@ -91,3 +91,28 @@ export type GetLikesRequestType = {
   post_id: number;
   last_like_created_at: string;
 };
+
+export type ProfileType = CustomUser & {
+  num_followers: number;
+  num_following: number;
+};
+
+export type ProfilePostsType = {
+  data: PostType[];
+  count: number;
+};
+
+/*{
+  "data": [
+    {
+      "email": "user@example.com",
+      "username": "string",
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "first_name": "string",
+      "last_name": "string",
+      "bio": "string",
+      "profile_picture_url": "string"
+    }
+  ],
+  "count": 0
+}*/

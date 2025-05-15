@@ -13,19 +13,19 @@ import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
 import {imageHeight, style} from '../style';
 import {ProfileInfoCard} from './ProfileInfoCard';
 
-import {CustomUser, PostType} from '../../../types/types';
+import {CustomUser, PostType, ProfilePostsType} from '../../../types/types';
 
 const ITEM_HEIGHT = imageHeight;
 
 type ImageListProps = {
-  data: PostType[];
+  postData: ProfilePostsType;
   user: CustomUser;
   isLoadingPosts: boolean;
   isErrorPosts: boolean;
 };
 
 export const ImageList = ({
-  data,
+  postData,
   user,
   isLoadingPosts,
   isErrorPosts,
@@ -33,6 +33,7 @@ export const ImageList = ({
   const [refreshing, setRefreshing] = useState(false);
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
+  const {data: posts, count} = postData;
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -44,7 +45,7 @@ export const ImageList = ({
   const handlePress = (item: PostType) => {
     navigation.navigate(Routes.ImageDetail, {
       imageId: item.id,
-      userId: user.id,
+      username: user.username,
     });
   };
 
@@ -68,14 +69,14 @@ export const ImageList = ({
 
   return (
     <FlatList
-      ListHeaderComponent={<ProfileInfoCard user={user} />}
+      ListHeaderComponent={<ProfileInfoCard user={user} num_posts={count} />}
       ListEmptyComponent={renderListEmptyComponent()}
       getItemLayout={(_data, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
         index,
       })}
-      data={isLoadingPosts ? [] : data}
+      data={isLoadingPosts ? [] : posts}
       renderItem={renderItem}
       keyExtractor={item => String(item.id)}
       numColumns={3}
