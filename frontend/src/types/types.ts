@@ -1,6 +1,6 @@
 export type LikeType = {
   id: number;
-  user_id: number;
+  owner: CustomUser;
   image_id: number;
   created_at: string;
 };
@@ -33,9 +33,10 @@ export type PostType = {
 
 export type CommentType = {
   id: number;
-  user_id: number;
-  image_id: number;
-  comment: string;
+  owner: CustomUser;
+  owner_id: number;
+  post_id: number;
+  content: string;
   created_at: string;
 };
 
@@ -43,6 +44,52 @@ export type FollowType = {
   id: number;
   user_id1: number;
   user_id2: number;
+};
+
+//
+//REDUX TYPES
+//
+export type PostRequestType = {
+  image_url: string;
+  thumbnail_url: string;
+  caption: string;
+  is_visible: boolean;
+};
+
+export type PostTypeWithCount = {
+  data: PostType[];
+  count: number;
+};
+
+export type CommentTypeWithCount = {
+  data: CommentType[];
+  count: number;
+};
+
+export type GetCommentsRequestType = {
+  post_id: number;
+  last_comment_created_at: string;
+  created_at: string;
+};
+
+export type CommentRequestType = {
+  content: string;
+  post_id: number;
+};
+
+export type CommentDeleteRequestType = {
+  post_id: number;
+  comment_id: number;
+};
+
+export type LikeTypeWithCount = {
+  data: LikeType[];
+  count: number;
+};
+
+export type GetLikesRequestType = {
+  post_id: number;
+  last_like_created_at: string;
 };
 
 export type ProfileType = CustomUser & {
