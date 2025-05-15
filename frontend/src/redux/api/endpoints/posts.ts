@@ -7,6 +7,7 @@ import {
   CommentTypeWithCount,
   GetCommentsRequestType,
   GetLikesRequestType,
+  GetPostRequestType,
   LikeType,
   LikeTypeWithCount,
   PostRequestType,
@@ -16,9 +17,17 @@ import {
 
 export const postsApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
-    getFeedPosts: builder.query<PostTypeWithCount, string>({
-      query: last_post_created_at =>
-        `posts/?last_post_created_at=${last_post_created_at}`,
+    getFeedPosts: builder.query<PostTypeWithCount, GetPostRequestType>({
+      query: ({last_post_created_at}) => {
+        const params = new URLSearchParams();
+
+        if (last_post_created_at) {
+          params.append('last_post_created_at', last_post_created_at);
+        }
+
+        const queryString = params.toString();
+        return queryString ? `posts/?${queryString}` : 'posts/';
+      },
       providesTags: () => [{type: 'Posts'}],
     }),
     createPost: builder.mutation<PostType, PostRequestType>({
@@ -58,8 +67,22 @@ export const postsApi = apiSlice.injectEndpoints({
       CommentTypeWithCount,
       GetCommentsRequestType
     >({
-      query: ({post_id, last_comment_created_at, created_at}) =>
-        `posts/${post_id}/comments?last_comment_created_at=${last_comment_created_at}&order_by=${created_at}`,
+      query: ({post_id, last_comment_created_at, created_at}) => {
+        const params = new URLSearchParams();
+
+        if (last_comment_created_at) {
+          params.append('last_comment_created_at', last_comment_created_at);
+        }
+
+        if (created_at) {
+          params.append('order_by', created_at);
+        }
+
+        const queryString = params.toString();
+        return queryString
+          ? `posts/${post_id}/comments?${queryString}`
+          : `posts/${post_id}/comments`;
+      },
       providesTags: (result, error, {post_id}) => [
         {type: 'Posts', id: post_id},
       ],
@@ -84,8 +107,18 @@ export const postsApi = apiSlice.injectEndpoints({
       ],
     }),
     getLikes: builder.query<LikeTypeWithCount, GetLikesRequestType>({
-      query: ({post_id, last_like_created_at}) =>
-        `posts/${post_id}/likes?last_like_created_at=${last_like_created_at}`,
+      query: ({post_id, last_like_created_at}) => {
+        const params = new URLSearchParams();
+
+        if (last_like_created_at) {
+          params.append('last_like_created_at', last_like_created_at);
+        }
+
+        const queryString = params.toString();
+        return queryString
+          ? `posts/${post_id}/likes?${queryString}`
+          : `posts/${post_id}/likes`;
+      },
       providesTags: (result, error, {post_id}) => [
         {type: 'Posts', id: post_id},
       ],

@@ -56,6 +56,10 @@ export type PostRequestType = {
   is_visible: boolean;
 };
 
+export type GetPostRequestType = {
+  last_post_created_at?: string;
+};
+
 export type PostTypeWithCount = {
   data: PostType[];
   count: number;
@@ -68,8 +72,8 @@ export type CommentTypeWithCount = {
 
 export type GetCommentsRequestType = {
   post_id: number;
-  last_comment_created_at: string;
-  created_at: string;
+  last_comment_created_at?: string;
+  created_at?: string;
 };
 
 export type CommentRequestType = {
@@ -89,7 +93,7 @@ export type LikeTypeWithCount = {
 
 export type GetLikesRequestType = {
   post_id: number;
-  last_like_created_at: string;
+  last_like_created_at?: string;
 };
 
 export type ProfileType = CustomUser & {
