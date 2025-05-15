@@ -70,7 +70,20 @@ def read_posts_feed(
     )
     posts = session.scalars(statement).all()
 
-    return PostsPublic(data=posts, count=len(posts))
+    posts_data = []
+
+    user_likes = [like.post_id for like in current_user.likes]
+
+    for post in posts:
+        is_liked_by_current_user = post.id in user_likes
+        base_data = PostPublic.model_validate(post, from_attributes=True)
+        post_data = base_data.model_copy(
+            update={"is_liked_by_current_user": is_liked_by_current_user}
+        )
+
+        posts_data.append(post_data)
+
+    return PostsPublic(data=posts_data, count=len(posts))
 
 
 @router.post("/", response_model=PostPublic)
@@ -304,6 +317,13 @@ def create_like(
         ).scalar_one()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Post not found")
+
+    existing_like = session.execute(
+        select(Like).where(Like.owner_id == current_user.id, Like.post_id == post_id)
+    ).scalar_one_or_none()
+
+    if existing_like:
+        raise HTTPException(status_code=400, detail="Already liked")
 
     like = crud.create_post_like(
         session=session,

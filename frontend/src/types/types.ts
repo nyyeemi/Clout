@@ -27,8 +27,9 @@ export type PostType = {
   caption: string | null;
   created_at: string;
   is_visible: boolean;
-  num_likes: number | null;
-  num_comments: number | null;
+  num_likes: number;
+  num_comments: number;
+  is_liked_by_current_user: boolean;
 };
 
 export type CommentType = {

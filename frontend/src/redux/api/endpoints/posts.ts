@@ -134,7 +134,7 @@ export const postsApi = apiSlice.injectEndpoints({
     }),
     deleteLike: builder.mutation<string, number>({
       query: post_id => ({
-        url: `posts/${post_id}/comments/`,
+        url: `posts/${post_id}/likes/`,
         method: 'DELETE',
       }),
       invalidatesTags: (result, error, post_id) => [

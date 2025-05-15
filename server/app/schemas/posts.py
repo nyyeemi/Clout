@@ -30,6 +30,7 @@ class PostPublic(PostBase):
     created_at: datetime
     num_likes: int = 0
     num_comments: int = 0
+    is_liked_by_current_user: bool | None = None
 
     class Config:
         from_attributes = True
