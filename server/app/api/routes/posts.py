@@ -19,7 +19,7 @@ from typing import Annotated, Any, Literal
 import uuid
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
-from sqlalchemy import and_, func, select
+from sqlalchemy import and_, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import NoResultFound
 

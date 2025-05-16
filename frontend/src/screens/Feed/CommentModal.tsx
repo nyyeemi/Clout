@@ -10,7 +10,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {Backdrop} from '../../components/Backdrop/Backdrop';
 import {CommentList} from '../../components/Comment/CommentList';
-import {useAddCommentMutation} from '../../redux/slices/mockApiSlice';
+import {useCreateCommentMutation} from '../../redux/api/endpoints/posts';
 import {CommentInputFooter} from './CommentInputFooter';
 
 import {CommentType, PostType} from '../../types/types';
@@ -30,11 +30,11 @@ export const CommentModal = ({
   const insets = useSafeAreaInsets();
   const {colors} = useTheme();
 
-  const [addComment] = useAddCommentMutation();
+  const [addComment] = useCreateCommentMutation();
 
   const handleAddComment = useCallback(
     (input: string) => {
-      addComment({image_id: selectedPost.id, comment: input});
+      addComment({post_id: selectedPost.id, content: input});
     },
     [addComment, selectedPost.id],
   );
