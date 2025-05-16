@@ -48,8 +48,6 @@ export const BottomBar = ({
     .toString()
     .padStart(2, '0')}.${date.getFullYear()}`;
 
-  console.log(isLiked);
-
   const toggleLike = (newState: boolean) => {
     if (newState) {
       addLike(post.id);

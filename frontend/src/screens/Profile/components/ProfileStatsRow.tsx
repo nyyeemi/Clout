@@ -23,17 +23,20 @@ export const ProfileStatsRow = ({
 
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
-  const onPress = () => {
-    navigation.navigate('Followers', {username: user.username});
+  const onPressFollowing = () => {
+    navigation.navigate('Followers', {index: 0, username: user.username});
+  };
+  const onPressFollowers = () => {
+    navigation.navigate('Followers', {index: 1, username: user.username});
   };
   return (
     <View style={styles.container}>
       <ProfilePicture uri={user.profile_picture_url} />
       <ProfileStatItem value={num_posts} label={'posts'} />
-      <OpacityPressable onPress={onPress} style={styles.statItem}>
+      <OpacityPressable onPress={onPressFollowing} style={styles.statItem}>
         <ProfileStatItem value={user.num_following} label={'following'} />
       </OpacityPressable>
-      <OpacityPressable onPress={onPress} style={styles.statItem}>
+      <OpacityPressable onPress={onPressFollowers} style={styles.statItem}>
         <ProfileStatItem value={user.num_followers} label={'followers'} />
       </OpacityPressable>
     </View>

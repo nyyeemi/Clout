@@ -92,7 +92,7 @@ def get_user_followers(
             last_name=u.last_name,
             email=u.email,
             profile_picture_url=u.profile_picture_url,
-            is_following=u.id in current_user_following_ids,
+            is_followed_by_current_user=u.id in current_user_following_ids,
         )
         for u in followers
     ]
@@ -130,7 +130,7 @@ def get_user_following(
             last_name=u.last_name,
             email=u.email,
             profile_picture_url=u.profile_picture_url,
-            is_following=u.id in current_user_following_ids,
+            is_followed_by_current_user=u.id in current_user_following_ids,
         )
         for u in following_users
     ]

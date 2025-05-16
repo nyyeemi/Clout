@@ -1,12 +1,12 @@
 export type LikeType = {
-  id: number;
+  id: string;
   owner: CustomUser;
   image_id: number;
   created_at: string;
 };
 
 export type CustomUser = {
-  id: number;
+  id: string;
   username: string;
   first_name?: string;
   last_name?: string;
@@ -19,7 +19,7 @@ export type CustomUser = {
 };
 
 export type PostType = {
-  id: number;
+  id: string;
   owner: CustomUser;
   owner_id: string;
   image_url: string;
@@ -33,7 +33,7 @@ export type PostType = {
 };
 
 export type CommentType = {
-  id: number;
+  id: string;
   owner: CustomUser;
   owner_id: number;
   post_id: number;
@@ -42,7 +42,7 @@ export type CommentType = {
 };
 
 export type FollowType = {
-  id: number;
+  id: string;
   user_id1: number;
   user_id2: number;
 };
@@ -72,19 +72,19 @@ export type CommentTypeWithCount = {
 };
 
 export type GetCommentsRequestType = {
-  post_id: number;
+  post_id: string;
   last_comment_created_at?: string;
   created_at?: string;
 };
 
 export type CommentRequestType = {
   content: string;
-  post_id: number;
+  post_id: string;
 };
 
 export type CommentDeleteRequestType = {
-  post_id: number;
-  comment_id: number;
+  post_id: string;
+  comment_id: string;
 };
 
 export type LikeTypeWithCount = {
@@ -93,7 +93,7 @@ export type LikeTypeWithCount = {
 };
 
 export type GetLikesRequestType = {
-  post_id: number;
+  post_id: string;
   last_like_created_at?: string;
 };
 
@@ -108,7 +108,7 @@ export type ProfilePostsType = {
 };
 
 export type ProfileFollowerType = {
-  id: number;
+  id: string;
   username: string;
   first_name: string;
   last_name: string;
@@ -121,6 +121,15 @@ export type ProfileFollowerType = {
 export type ProfileFollowersType = {
   data: ProfileFollowerType[];
   count: number;
+};
+
+export type Message = {
+  message: string;
+};
+
+export type FollowMutationPayload = {
+  user_id: string;
+  username: string;
 };
 /*{
 "email": "user@example.com",

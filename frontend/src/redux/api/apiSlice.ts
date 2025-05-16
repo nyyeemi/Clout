@@ -15,6 +15,14 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Users', 'Likes', 'Comments', 'Posts', 'Profile'],
+  tagTypes: [
+    'Users',
+    'Likes',
+    'Comments',
+    'Posts',
+    'Profile',
+    'Followers',
+    'Following',
+  ],
   endpoints: () => ({}),
 });

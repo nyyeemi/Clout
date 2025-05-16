@@ -6,11 +6,10 @@ import {useTheme} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {verticalScale} from '../../assets/styles/scaling';
-import {useGetUsersMeQuery} from '../../redux/api/endpoints/users';
 import {
-  useFollowUserMutation,
-  useUnFollowUserMutation,
-} from '../../redux/slices/mockApiSlice';
+  useCreateFollowMutation,
+  useDeleteFollowMutation,
+} from '../../redux/api/endpoints/users';
 import {ThemedText} from '../ui/typography';
 import {UserListItem} from './UserListItem';
 
@@ -20,6 +19,8 @@ type UserListType = {
   data: CustomUser[] | ProfileFollowerType[];
   onItemPress?: () => void;
   onModal?: boolean;
+  currentProfileUserName?: string;
+  isFetchingData?: boolean;
 };
 
 // todo: add options for size and searchbarvisible
@@ -27,17 +28,18 @@ export const UserList = ({
   data,
   onItemPress,
   onModal = false,
+  currentProfileUserName,
+  isFetchingData,
 }: UserListType): JSX.Element => {
   const [value, setValue] = useState('');
   const {colors} = useTheme();
-  const {data: loggedInUser} = useGetUsersMeQuery();
   const insets = useSafeAreaInsets();
-  const [togglingUserId, setTogglingUserId] = useState<number | null>(null);
+  const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
 
   console.log(data);
-  const [followUser, {isLoading: isFollowingUser}] = useFollowUserMutation();
+  const [followUser, {isLoading: isFollowingUser}] = useCreateFollowMutation();
   const [unfollowUser, {isLoading: isUnfollowingUser}] =
-    useUnFollowUserMutation();
+    useDeleteFollowMutation();
 
   const isMutationLoading = isFollowingUser || isUnfollowingUser;
 
@@ -56,17 +58,16 @@ export const UserList = ({
   }, [value, data]);
 
   const handleFollowToggle = useCallback(
-    async (userIdToToggle: number, currentlyFollowing: boolean) => {
-      if (loggedInUser?.id === undefined || isMutationLoading) {
+    async (user_id: string, currentlyFollowing: boolean) => {
+      if (isMutationLoading) {
         return;
       }
-
-      setTogglingUserId(userIdToToggle);
-
       const mutationPayload = {
-        user_id1: loggedInUser.id,
-        user_id2: userIdToToggle,
+        user_id,
+        username: currentProfileUserName ?? '', //invalidatetag
       };
+      console.log(mutationPayload);
+      setTogglingUserId(user_id);
 
       try {
         if (currentlyFollowing) {
@@ -80,13 +81,14 @@ export const UserList = ({
         setTogglingUserId(null);
       }
     },
-    [loggedInUser?.id, followUser, unfollowUser, isMutationLoading],
+    [followUser, unfollowUser, isMutationLoading, currentProfileUserName],
   );
 
   const renderItem = useCallback(
     ({item}: {item: ProfileFollowerType}) => {
       const isFollowed = item.is_followed_by_current_user;
-      const isLoadingThisItem = isMutationLoading && togglingUserId === item.id;
+      const isLoadingThisItem =
+        (isMutationLoading && togglingUserId === item.id) || isFetchingData;
 
       return (
         <UserListItem
@@ -98,7 +100,13 @@ export const UserList = ({
         />
       );
     },
-    [handleFollowToggle, isMutationLoading, togglingUserId, onItemPress],
+    [
+      handleFollowToggle,
+      isMutationLoading,
+      togglingUserId,
+      onItemPress,
+      isFetchingData,
+    ],
   );
 
   const SearchInput = onModal ? BottomSheetTextInput : TextInput;

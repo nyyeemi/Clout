@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 
 import {useNavigation, useTheme} from '@react-navigation/native';
@@ -15,7 +15,7 @@ import {CustomUser, ProfileFollowerType} from '../../types/types';
 type UserListItemProps = {
   user: CustomUser | ProfileFollowerType;
   isFollowedByLoggedInUser: boolean;
-  onFollowToggle: (userId: number, currentlyFollowing: boolean) => void;
+  onFollowToggle: (user_id: string, currentlyFollowing: boolean) => void;
   isLoadingToggle?: boolean;
   size?: 'small' | 'medium' | 'large';
   onItemPress?: () => void;
@@ -32,7 +32,7 @@ export const UserListItem = ({
   const {colors} = useTheme();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const {data: loggedInUser} = useGetUsersMeQuery();
-
+  const [isFollowing, setIsFollowing] = useState(isFollowedByLoggedInUser);
   const handlePressProfile = () => {
     onItemPress?.();
     navigation.navigate(Routes.ProfileStack, {
@@ -42,10 +42,11 @@ export const UserListItem = ({
   };
   const handleFollowPress = () => {
     onFollowToggle(user.id, isFollowedByLoggedInUser);
+    setIsFollowing(!isFollowing);
   };
 
   const shouldShowFollowButton = loggedInUser && user.id !== loggedInUser.id;
-  const isFollowing = isFollowedByLoggedInUser;
+  //const isFollowing = isFollowedByLoggedInUser;
 
   const buttonStyle = isFollowing
     ? [

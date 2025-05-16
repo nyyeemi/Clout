@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import {StyleSheet, View, useWindowDimensions} from 'react-native';
 
 import {useTheme} from '@react-navigation/native';
@@ -22,16 +22,16 @@ type FollowersScreenProps = StackScreenProps<
 >;
 
 const routes = [
-  {key: 'followers', title: 'Followers'},
   {key: 'following', title: 'Following'},
+  {key: 'followers', title: 'Followers'},
 ];
 
 export const FollowersScreen = ({
   route: mainRoute,
 }: FollowersScreenProps): JSX.Element => {
-  const {username} = mainRoute.params;
+  const {index: initialIndex, username} = mainRoute.params;
   const layout = useWindowDimensions();
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = useState(initialIndex);
   const {colors} = useTheme();
 
   const {
@@ -49,15 +49,33 @@ export const FollowersScreen = ({
   const renderScene = useCallback(
     ({route}: {route: {key: string}}) => {
       switch (route.key) {
-        case 'followers':
-          return <FollowersList data={followers.data} />;
         case 'following':
-          return <FollowingList data={following.data} />;
+          return (
+            <FollowingList
+              data={following.data}
+              username={username}
+              isLoading={isLoadingFollowing}
+            />
+          );
+        case 'followers':
+          return (
+            <FollowersList
+              data={followers.data}
+              username={username}
+              isLoading={isLoadingFollowers}
+            />
+          );
         default:
           return null;
       }
     },
-    [followers, following],
+    [
+      followers.data,
+      following.data,
+      isLoadingFollowers,
+      isLoadingFollowing,
+      username,
+    ],
   );
 
   const renderTabBar = (props: any) => (
@@ -100,15 +118,33 @@ export const FollowersScreen = ({
   );
 };
 
+type FollowListProps = {
+  data: ProfileFollowerType[];
+  username: string;
+  isLoading: boolean;
+};
+
 export const FollowingList = memo(
-  ({data}: {data: ProfileFollowerType[]}): JSX.Element => {
-    return <UserList data={data} />;
+  ({data, username, isLoading}: FollowListProps): JSX.Element => {
+    return (
+      <UserList
+        data={data}
+        currentProfileUserName={username}
+        isFetchingData={isLoading}
+      />
+    );
   },
 );
 
 export const FollowersList = memo(
-  ({data}: {data: ProfileFollowerType[]}): JSX.Element => {
-    return <UserList data={data} />;
+  ({data, username, isLoading}: FollowListProps): JSX.Element => {
+    return (
+      <UserList
+        data={data}
+        currentProfileUserName={username}
+        isFetchingData={isLoading}
+      />
+    );
   },
 );
 

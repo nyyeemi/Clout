@@ -28,6 +28,8 @@ import {ProfileStatsRow} from './ProfileStatsRow';
 
 import {CustomUser} from '../../../types/types';
 
+// TODO: KORJAA TÄMÄ PERKELE
+
 export const ProfileInfoCard = ({
   user,
   num_posts,

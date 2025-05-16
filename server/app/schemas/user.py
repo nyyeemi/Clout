@@ -41,7 +41,7 @@ class UserPublic(UserBase):
     last_name: str | None = Field(default=None, max_length=40)
     bio: str | None = Field(default=None, max_length=500)
     profile_picture_url: str | None = Field(default=None, max_length=500)
-    is_following: bool | None = None
+    is_followed_by_current_user: bool | None = None
 
     class Config:
         from_attributes = True
