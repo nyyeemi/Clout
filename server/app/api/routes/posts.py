@@ -67,7 +67,11 @@ def read_posts_feed(
         base_filter = and_(base_filter, Post.created_at < last_post_created_at)
 
     statement = (
-        select(Post).where(base_filter).order_by(Post.created_at.desc()).limit(limit)
+        select(Post)
+        .where(base_filter)
+        .where(Post.is_visible)
+        .order_by(Post.created_at.desc())
+        .limit(limit)
     )
     posts = session.scalars(statement).all()
 

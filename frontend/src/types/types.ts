@@ -115,7 +115,7 @@ export type ProfileFollowerType = {
   email: string;
   bio: string;
   profile_picture_url: string;
-  is_following: boolean;
+  is_followed_by_current_user: boolean;
 };
 
 export type ProfileFollowersType = {

@@ -1,7 +1,6 @@
 import {apiSlice} from '../apiSlice';
 
 import {
-  CustomUser,
   ProfileFollowersType,
   ProfilePostsType,
   ProfileType,

@@ -85,7 +85,7 @@ export const UserList = ({
 
   const renderItem = useCallback(
     ({item}: {item: ProfileFollowerType}) => {
-      const isFollowed = item.is_following;
+      const isFollowed = item.is_followed_by_current_user;
       const isLoadingThisItem = isMutationLoading && togglingUserId === item.id;
 
       return (
