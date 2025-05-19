@@ -1,35 +1,39 @@
 import React, {useState} from 'react';
 import {FlatList, Pressable, StyleSheet} from 'react-native';
-import {imageHeight, style} from '../style';
-import {scaleFontSize, verticalScale} from '../../../assets/styles/scaling';
+
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
+import FastImage, {FastImageProps} from 'react-native-fast-image';
+
+import {scaleFontSize, verticalScale} from '../../../assets/styles/scaling';
+import {Spinner} from '../../../components/Spinner/Spinner';
 import {ThemedView} from '../../../components/ui/themed-view';
 import {ThemedText} from '../../../components/ui/typography';
+import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
+import {imageHeight, style} from '../style';
 import {ProfileInfoCard} from './ProfileInfoCard';
-import {Spinner} from '../../../components/Spinner/Spinner';
-import FastImage, {FastImageProps} from 'react-native-fast-image';
-import {CustomImage, CustomUser} from '../../../types/types';
+
+import {PostType, ProfilePostsType, ProfileType} from '../../../types/types';
 
 const ITEM_HEIGHT = imageHeight;
 
 type ImageListProps = {
-  data: CustomImage[];
-  user: CustomUser;
+  postData: ProfilePostsType;
+  profileUser: ProfileType;
   isLoadingPosts: boolean;
   isErrorPosts: boolean;
 };
 
 export const ImageList = ({
-  data,
-  user,
+  postData,
+  profileUser,
   isLoadingPosts,
   isErrorPosts,
 }: ImageListProps): JSX.Element => {
   const [refreshing, setRefreshing] = useState(false);
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
+  const {data: posts, count} = postData;
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -38,14 +42,14 @@ export const ImageList = ({
     }, 1000);
   };
 
-  const handlePress = (item: CustomImage) => {
+  const handlePress = (item: PostType) => {
     navigation.navigate(Routes.ImageDetail, {
       imageId: item.id,
-      userId: user.id,
+      username: profileUser.username,
     });
   };
 
-  const renderItem = ({item}: {item: CustomImage}) => {
+  const renderItem = ({item}: {item: PostType}) => {
     return <ImageListItem image={item} onPress={() => handlePress(item)} />;
   };
 
@@ -65,14 +69,18 @@ export const ImageList = ({
 
   return (
     <FlatList
-      ListHeaderComponent={<ProfileInfoCard user={user} />}
+      ListHeaderComponent={
+        profileUser && (
+          <ProfileInfoCard profileUser={profileUser} num_posts={count} />
+        )
+      }
       ListEmptyComponent={renderListEmptyComponent()}
       getItemLayout={(_data, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
         index,
       })}
-      data={isLoadingPosts ? [] : data}
+      data={isLoadingPosts ? [] : posts}
       renderItem={renderItem}
       keyExtractor={item => String(item.id)}
       numColumns={3}
@@ -83,7 +91,7 @@ export const ImageList = ({
 };
 
 type ImageBoxProps = {
-  image: CustomImage;
+  image: PostType;
   onPress: () => void;
   imageStyle?: FastImageProps['style'];
 };

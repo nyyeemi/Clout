@@ -1,9 +1,18 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {API_URL} from '../../services/utils';
+import {createApi} from '@reduxjs/toolkit/query/react';
+
+import {baseQueryWithReauth} from './config';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({baseUrl: API_URL}),
-  tagTypes: ['Users', 'Likes', 'Comments'],
+  baseQuery: baseQueryWithReauth,
+  tagTypes: [
+    'Users',
+    'Likes',
+    'Comments',
+    'Posts',
+    'Profile',
+    'Followers',
+    'Following',
+  ],
   endpoints: () => ({}),
 });

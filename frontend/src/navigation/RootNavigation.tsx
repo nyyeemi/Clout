@@ -1,35 +1,32 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../redux/store/store';
-import {loginUser} from '../redux/slices/userSlice';
-import {ThemedView} from '../components/ui/themed-view';
-import globalStyle from '../assets/styles/globalStyle';
+import React from 'react';
+
 import {createStackNavigator} from '@react-navigation/stack';
+import {useSelector} from 'react-redux';
+
+import globalStyle from '../assets/styles/globalStyle';
+import {ThemedView} from '../components/ui/themed-view';
+import {RootState} from '../redux/store/store';
 import {LoginScreen} from '../screens/LoginScreen/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen/RegisterScreen';
 import {BottomTabNavigator} from './BottomTabNavigator';
 import {RootStackParamList, Routes} from './Routes';
-import {mockUser} from '../mock/mock';
 
 const RootStack = createStackNavigator<RootStackParamList>();
 
 export const RootNavigation = () => {
-  const [loading, setLoading] = useState(true);
-
+  /*
   const dispatch = useDispatch();
   useEffect(() => {
     const data = {user: mockUser, accessToken: 'lol', refreshToken: 'lol'};
-    dispatch(loginUser(data));
+    dispatch(setCredentials(data));
     setLoading(false);
   }, [dispatch]);
+*/
+  const token = useSelector((state: RootState) => state.auth.accessToken);
 
-  const user = useSelector((state: RootState) => state.user);
-  if (loading) {
-    return <></>;
-  }
   return (
     <ThemedView style={globalStyle.flex}>
-      {user.isAuthenticated ? <AppStack /> : <AuthStack />}
+      {token ? <AppStack /> : <AuthStack />}
     </ThemedView>
   );
 };

@@ -16,7 +16,8 @@ class Settings(BaseSettings):
     API_STR: str = "/api"
     SECRET_KEY: str = secrets.token_urlsafe(32)  # set to env in prod
     # 60 minutes * 24 hours * 8 days = 8 days
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 14
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
 
     PROJECT_NAME: str

@@ -8,7 +8,6 @@ import {
 import {faHeart as fasHeart} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useTheme} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
 
 import globalStyle from '../../assets/styles/globalStyle';
 import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
@@ -18,17 +17,14 @@ import {ThemedIcon, ThemedText} from '../../components/ui/typography';
 import {
   useAddLikeMutation,
   useDeleteLikeMutation,
-  useGetCommentsByImageIdQuery,
-  useGetLikesByImageIdQuery,
-} from '../../redux/slices/mockApiSlice';
-import {RootState} from '../../redux/store/store';
+} from '../../redux/api/endpoints/posts';
 
-import {CustomImage} from '../../types/types';
+import {PostType} from '../../types/types';
 
 type Props = {
-  post: CustomImage;
-  onShowLikes: (post: CustomImage) => void;
-  onShowComments: (post: CustomImage) => void;
+  post: PostType;
+  onShowLikes: (post: PostType) => void;
+  onShowComments: (post: PostType) => void;
 };
 
 export const BottomBar = ({
@@ -37,18 +33,14 @@ export const BottomBar = ({
   onShowComments,
 }: Props): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
-  const {data: likes = []} = useGetLikesByImageIdQuery(post.id);
-  const {data: comments = []} = useGetCommentsByImageIdQuery(post.id);
+  const [isLiked, setIsLiked] = useState(post.is_liked_by_current_user);
+  const [likeCount, setLikeCount] = useState(post.num_likes);
   const [addLike] = useAddLikeMutation();
   const [deleteLike] = useDeleteLikeMutation();
   const {colors} = useTheme();
 
   const caption = post.caption;
-
-  // can and should clean this up in redux filtering and counting logic
-
-  const likeCount = likes.length;
-  const commentCount = comments.length;
+  const commentCount = post.num_comments;
   const date = new Date(post.created_at);
   const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(
     date.getMonth() + 1
@@ -56,16 +48,15 @@ export const BottomBar = ({
     .toString()
     .padStart(2, '0')}.${date.getFullYear()}`;
 
-  const user = useSelector((state: RootState) => state.user.user);
-
-  const like = likes.find(item => item.user_id === user?.id);
-
   const toggleLike = (newState: boolean) => {
-    console.log(like, user?.id, likes);
     if (newState) {
       addLike(post.id);
-    } else if (like?.id) {
-      deleteLike(like);
+      setIsLiked(true);
+      setLikeCount(likeCount + 1);
+    } else {
+      deleteLike(post.id);
+      setIsLiked(false);
+      setLikeCount(likeCount - 1);
     }
   };
 
@@ -78,8 +69,8 @@ export const BottomBar = ({
       <View style={styles.likeCommentDateContainer}>
         <View style={styles.likeCommentContainer}>
           <View style={styles.iconAndNumber}>
-            <OpacityPressable onPress={() => toggleLike(!like)}>
-              {like ? (
+            <OpacityPressable onPress={() => toggleLike(!isLiked)}>
+              {isLiked ? (
                 <FontAwesomeIcon
                   icon={fasHeart}
                   color={colors.primary}

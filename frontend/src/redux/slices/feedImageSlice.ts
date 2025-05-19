@@ -1,8 +1,9 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {CustomImage} from '../../types/types';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+
+import {PostType} from '../../types/types';
 
 type FeedImageState = {
-  feedImages: CustomImage[];
+  feedImages: PostType[];
 };
 
 const initialState: FeedImageState = {
@@ -13,7 +14,7 @@ export const feedImageSlice = createSlice({
   name: 'feedImages',
   initialState,
   reducers: {
-    setFeedImages: (state, action: PayloadAction<CustomImage[]>) => {
+    setFeedImages: (state, action: PayloadAction<PostType[]>) => {
       state.feedImages = [...state.feedImages, ...action.payload];
     },
   },

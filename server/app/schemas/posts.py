@@ -1,6 +1,6 @@
 from datetime import datetime
 import uuid
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, HttpUrl
 
 from app.schemas.user import UserInfoBasic
 
@@ -30,6 +30,7 @@ class PostPublic(PostBase):
     created_at: datetime
     num_likes: int = 0
     num_comments: int = 0
+    is_liked_by_current_user: bool | None = None
 
     class Config:
         from_attributes = True
@@ -37,6 +38,23 @@ class PostPublic(PostBase):
 
 class PostsPublic(BaseModel):
     data: list[PostPublic]
+    count: int
+
+
+# response models for profile posts
+class ProfilePostPublic(PostBase):
+    id: uuid.UUID
+    created_at: datetime
+    num_likes: int = 0
+    num_comments: int = 0
+    owner: UserInfoBasic
+
+    class Config:
+        from_attributes = True
+
+
+class ProfilePostsPublic(BaseModel):
+    data: list[ProfilePostPublic]
     count: int
 
 
@@ -64,10 +82,22 @@ class CommentCreate(BaseModel):
 
 
 # Response model for like
+class LikeOwnerPublic(BaseModel):
+    id: uuid.UUID
+    username: str
+    first_name: str
+    last_name: str
+    profile_picture_url: str | None
+    is_followed_by_current_user: bool | None = None
+
+    class Config:
+        from_attributes = True
+
+
 class LikePublic(BaseModel):
     id: uuid.UUID
     created_at: datetime
-    owner: UserInfoBasic
+    owner: LikeOwnerPublic
 
     class Config:
         from_attributes = True

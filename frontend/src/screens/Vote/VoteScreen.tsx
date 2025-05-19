@@ -1,38 +1,41 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {View, Dimensions} from 'react-native';
+import {Dimensions, View} from 'react-native';
+
+import {faArrowUp} from '@fortawesome/free-solid-svg-icons';
+import FastImage from 'react-native-fast-image';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  runOnJS,
-  SharedValue,
-  Extrapolation,
-  interpolate,
-  withRepeat,
   Easing,
+  Extrapolation,
+  SharedValue,
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import FastImage from 'react-native-fast-image';
-import globalStyle from '../../assets/styles/globalStyle';
-import {styles} from './style';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../redux/store/store';
+
+import globalStyle from '../../assets/styles/globalStyle';
+import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
+import {ThemedIcon, ThemedText} from '../../components/ui/typography';
+import extendedMockImageList from '../../mock/mock';
 import {
   setActiveVoteImages,
   setNextVoteImages,
   swapVoteImages,
 } from '../../redux/slices/voteImageSlice';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {ThemedIcon, ThemedText} from '../../components/ui/typography';
-import {faArrowUp} from '@fortawesome/free-solid-svg-icons';
-import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
-import extendedMockImageList from '../../mock/mock';
-import {CustomImage} from '../../types/types';
+import {RootState} from '../../redux/store/store';
+import {styles} from './style';
+
+import {PostType} from '../../types/types';
 
 const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
-type ImageTuple = [CustomImage, CustomImage];
+type ImageTuple = [PostType, PostType];
 
 export const VoteScreen = (): JSX.Element => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -121,7 +124,7 @@ export const VoteScreen = (): JSX.Element => {
     return activeVoteImages[currentIndex] ?? null;
   }, [currentIndex, activeVoteImages]);
 
-  const voteImage = (image: CustomImage) => {
+  const voteImage = (image: PostType) => {
     console.log(`Voted: ${image.id} image!`);
     setHasVoted(true);
 
@@ -147,7 +150,7 @@ export const VoteScreen = (): JSX.Element => {
   const createImageGesture = (
     translateY: SharedValue<number>,
     opacity: SharedValue<number>,
-    image: CustomImage,
+    image: PostType,
   ) =>
     Gesture.Pan()
       .onBegin(() => {

@@ -1,27 +1,31 @@
-import {Dimensions, FlatList} from 'react-native';
 import React, {useCallback, useMemo} from 'react';
-import {ProfileStackParamList} from '../../navigation/Routes';
+import {Dimensions, FlatList} from 'react-native';
 
-import {ThemedView} from '../../components/ui/themed-view';
-import {FeedPost} from '../Feed/FeedPost';
+import {StackScreenProps} from '@react-navigation/stack';
+
 import globalStyle from '../../assets/styles/globalStyle';
 import {verticalScale} from '../../assets/styles/scaling';
-import {useGetPostsQuery} from '../../redux/slices/mockApiSlice';
-import {StackScreenProps} from '@react-navigation/stack';
-import {CustomImage} from '../../types/types';
 import {Spinner} from '../../components/Spinner/Spinner';
+import {ThemedView} from '../../components/ui/themed-view';
+import {ProfileStackParamList} from '../../navigation/Routes';
+import {useGetProfilePostsByUserNameQuery} from '../../redux/api/endpoints/profiles';
+import {FeedPost} from '../Feed/FeedPost';
+
+import {PostType} from '../../types/types';
 
 type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ImageDetail'>;
 
 export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
-  const {imageId, userId} = route.params || {};
+  const {imageId, username} = route.params || {};
   const {
-    data: posts = [],
+    data: postData = {data: [], count: 0},
     isLoading: isPostsLoading,
     //isSuccess: isPostsSuccess,
     isError: isPostsError,
     error: postsError,
-  } = useGetPostsQuery(userId);
+  } = useGetProfilePostsByUserNameQuery(username);
+
+  const {data: posts} = postData;
 
   const postIndex = useMemo(() => {
     return imageId ? posts.findIndex(image => image.id === imageId) : 0;
@@ -31,7 +35,7 @@ export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
 
   //https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderItem = useCallback(
-    ({item}: {item: CustomImage}) => <FeedPost post={item} />,
+    ({item}: {item: PostType}) => <FeedPost post={item} />,
     [],
   );
 

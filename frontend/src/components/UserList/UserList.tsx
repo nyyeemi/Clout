@@ -4,66 +4,44 @@ import {FlatList, StyleSheet, TextInput} from 'react-native';
 import {BottomSheetFlatList, BottomSheetTextInput} from '@gorhom/bottom-sheet';
 import {useTheme} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useSelector} from 'react-redux';
 
 import {verticalScale} from '../../assets/styles/scaling';
 import {
-  useFollowUserMutation,
-  useGetUserFollowingQuery,
-  useUnFollowUserMutation,
-} from '../../redux/slices/mockApiSlice';
-import {RootState} from '../../redux/store/store';
-import {ThemedView} from '../ui/themed-view';
+  useCreateFollowMutation,
+  useDeleteFollowMutation,
+} from '../../redux/api/endpoints/users';
 import {ThemedText} from '../ui/typography';
 import {UserListItem} from './UserListItem';
 
-import {CustomUser} from '../../types/types';
+import {CustomUser, ProfileFollowerType} from '../../types/types';
 
 type UserListType = {
-  data: CustomUser[];
+  data: CustomUser[] | ProfileFollowerType[];
   onItemPress?: () => void;
-  onModal: boolean;
+  onModal?: boolean;
+  currentProfileUserName?: string;
+  isFetchingData?: boolean;
 };
 
 // todo: add options for size and searchbarvisible
 export const UserList = ({
   data,
   onItemPress,
-  onModal,
+  onModal = false,
+  currentProfileUserName,
+  isFetchingData,
 }: UserListType): JSX.Element => {
   const [value, setValue] = useState('');
   const {colors} = useTheme();
-  const loggedInUser = useSelector((state: RootState) => state.user.user);
   const insets = useSafeAreaInsets();
+  const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
 
-  const [togglingUserId, setTogglingUserId] = useState<number | null>(null);
-
-  const {
-    data: loggedInUserFollowingData = [],
-    isLoading: isLoadingLoggedInUserFollowing,
-    isError: isErrorFollowing,
-  } = useGetUserFollowingQuery(loggedInUser?.id ?? -1, {
-    skip: !loggedInUser?.id,
-  });
-
-  const [followUser, {isLoading: isFollowingUser}] = useFollowUserMutation();
+  //console.log(data);
+  const [followUser, {isLoading: isFollowingUser}] = useCreateFollowMutation();
   const [unfollowUser, {isLoading: isUnfollowingUser}] =
-    useUnFollowUserMutation();
+    useDeleteFollowMutation();
 
   const isMutationLoading = isFollowingUser || isUnfollowingUser;
-
-  const followedUserIds = useMemo(() => {
-    if (
-      !loggedInUserFollowingData ||
-      isLoadingLoggedInUserFollowing ||
-      !Array.isArray(loggedInUserFollowingData)
-    ) {
-      return new Set<number>();
-    }
-    return new Set(
-      loggedInUserFollowingData.map((user: CustomUser) => user.id),
-    );
-  }, [loggedInUserFollowingData, isLoadingLoggedInUserFollowing]);
 
   const filteredList = useMemo(() => {
     const searchTerm = value.trim().toLowerCase();
@@ -80,17 +58,16 @@ export const UserList = ({
   }, [value, data]);
 
   const handleFollowToggle = useCallback(
-    async (userIdToToggle: number, currentlyFollowing: boolean) => {
-      if (loggedInUser?.id === undefined || isMutationLoading) {
+    async (user_id: string, currentlyFollowing: boolean) => {
+      if (isMutationLoading) {
         return;
       }
-
-      setTogglingUserId(userIdToToggle);
-
       const mutationPayload = {
-        user_id1: loggedInUser.id,
-        user_id2: userIdToToggle,
+        user_id,
+        username: currentProfileUserName ?? '', //invalidatetag
       };
+      console.log(mutationPayload);
+      setTogglingUserId(user_id);
 
       try {
         if (currentlyFollowing) {
@@ -104,13 +81,14 @@ export const UserList = ({
         setTogglingUserId(null);
       }
     },
-    [loggedInUser?.id, followUser, unfollowUser, isMutationLoading],
+    [followUser, unfollowUser, isMutationLoading, currentProfileUserName],
   );
 
   const renderItem = useCallback(
-    ({item}: {item: CustomUser}) => {
-      const isFollowed = followedUserIds.has(item.id);
-      const isLoadingThisItem = isMutationLoading && togglingUserId === item.id;
+    ({item}: {item: ProfileFollowerType}) => {
+      const isFollowed = item.is_followed_by_current_user;
+      const isLoadingThisItem =
+        (isMutationLoading && togglingUserId === item.id) || isFetchingData;
 
       return (
         <UserListItem
@@ -123,11 +101,11 @@ export const UserList = ({
       );
     },
     [
-      followedUserIds,
       handleFollowToggle,
       isMutationLoading,
       togglingUserId,
       onItemPress,
+      isFetchingData,
     ],
   );
 
@@ -152,21 +130,6 @@ export const UserList = ({
       placeholderTextColor={colors.border}
     />
   );
-  /*
-  if (isLoadingLoggedInUserFollowing && !loggedInUserFollowingData?.length) {
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </ThemedView>
-    );
-  }*/
-  if (isErrorFollowing) {
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ThemedText>Error loading follow status.</ThemedText>
-      </ThemedView>
-    );
-  }
 
   const FlatListComponent = onModal ? BottomSheetFlatList : FlatList;
 
@@ -180,7 +143,6 @@ export const UserList = ({
       keyExtractor={item => String(item.id)}
       renderItem={renderItem}
       extraData={{
-        followedUserIds,
         togglingUserId,
         isMutationLoading,
       }}

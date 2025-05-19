@@ -1,30 +1,39 @@
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {ProfileStackParamList} from '../../../navigation/Routes';
+
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+
 import {OpacityPressable} from '../../../components/OpacityPressable/OpacityPressable';
 import {ProfilePicture} from '../../../components/ProfilePicture/ProfilePicture';
 import {ThemedText} from '../../../components/ui/typography';
-import {CustomUser} from '../../../types/types';
+import {ProfileStackParamList} from '../../../navigation/Routes';
 
-export const ProfileStatsRow = ({user}: {user: CustomUser}): JSX.Element => {
-  //  const {data: following = []} = useGetUserFollowingQuery(user.id);
-  //  const {data: followers = []} = useGetUserFollowersQuery(user.id);
+import {ProfileType} from '../../../types/types';
 
+export const ProfileStatsRow = ({
+  user,
+  num_posts,
+}: {
+  user: ProfileType;
+  num_posts: number;
+}): JSX.Element => {
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
-  const onPress = () => {
-    navigation.navigate('Followers', {userId: user.id});
+  const onPressFollowing = () => {
+    navigation.navigate('Followers', {index: 0, username: user.username});
+  };
+  const onPressFollowers = () => {
+    navigation.navigate('Followers', {index: 1, username: user.username});
   };
   return (
     <View style={styles.container}>
       <ProfilePicture uri={user.profile_picture_url} />
-      <ProfileStatItem value={user.num_posts} label={'posts'} />
-      <OpacityPressable onPress={onPress} style={styles.statItem}>
+      <ProfileStatItem value={num_posts} label={'posts'} />
+      <OpacityPressable onPress={onPressFollowing} style={styles.statItem}>
         <ProfileStatItem value={user.num_following} label={'following'} />
       </OpacityPressable>
-      <OpacityPressable onPress={onPress} style={styles.statItem}>
+      <OpacityPressable onPress={onPressFollowers} style={styles.statItem}>
         <ProfileStatItem value={user.num_followers} label={'followers'} />
       </OpacityPressable>
     </View>

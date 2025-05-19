@@ -64,6 +64,7 @@ def clear_all_data(session):
 
     session.execute(delete(Follower))
     session.execute(delete(Comment))
+    session.execute(delete(Like))
     session.execute(delete(Post))
     session.execute(delete(User))
     session.commit()

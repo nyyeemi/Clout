@@ -1,27 +1,33 @@
 import React, {useState} from 'react';
-import {TouchableOpacity} from 'react-native';
-import {useDispatch} from 'react-redux';
-import Input from '../../components/Input/Input'; // Omat Input-komponentit
-import Button from '../../components/Button/Button'; // Omat Button-komponentit
-import style from './style';
-import globalStyle from '../../assets/styles/globalStyle';
-import {RootStackParamList, Routes} from '../../navigation/Routes';
-import {loginHandler} from '../../services/auth/handlers/loginHandler';
+import {Alert, TouchableOpacity} from 'react-native';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+import globalStyle from '../../assets/styles/globalStyle';
+// Omat Input-komponentit
+import Button from '../../components/Button/Button';
+import Input from '../../components/Input/Input';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
+import {RootStackParamList, Routes} from '../../navigation/Routes';
+import {useLoginMutation} from '../../redux/api/endpoints/auth';
+// Omat Button-komponentit
+import style from './style';
 
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export const LoginScreen = ({navigation}: LoginScreenProps): JSX.Element => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
-  const handleLogin = async () => {
-    await loginHandler(username, password, dispatch, setLoading);
+
+  const [login, {isLoading, error}] = useLoginMutation();
+
+  error && Alert.alert('Wrong credentials');
+
+  const handleLogin = () => {
+    login({username, password});
   };
 
   return (
@@ -35,6 +41,7 @@ export const LoginScreen = ({navigation}: LoginScreenProps): JSX.Element => {
           value={username}
           onChangeText={setUsername}
           style={style.input}
+          autoCapitalize="none"
         />
 
         <Input
@@ -47,9 +54,9 @@ export const LoginScreen = ({navigation}: LoginScreenProps): JSX.Element => {
         />
 
         <Button
-          title={loading ? 'Logging in...' : 'Log in'}
+          title={isLoading ? 'Logging in...' : 'Log in'}
           onPress={handleLogin}
-          isDisabled={loading}
+          isDisabled={isLoading}
         />
 
         <TouchableOpacity onPress={() => navigation.navigate(Routes.Register)}>

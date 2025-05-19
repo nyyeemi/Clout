@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
 from app.models.base import Base
 from sqlalchemy import Boolean, String
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.models import Follower, Post, Comment, Like
 

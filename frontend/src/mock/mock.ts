@@ -1,4 +1,4 @@
-import {CustomImage, CustomUser} from '../types/types';
+import {CustomUser, PostType} from '../types/types';
 
 const IMAGELIST_LENGTH = 10;
 
@@ -201,7 +201,7 @@ export const mockUserList: CustomUser[] = [
   },
 ];
 
-export const baseImageMock: CustomImage = {
+export const baseImageMock: PostType = {
   id: 101,
   user: mockUserList[0],
   image_url:
@@ -215,7 +215,7 @@ export const baseImageMock: CustomImage = {
   num_comments: 3,
 };
 
-export const mockImageList: CustomImage[] = [
+export const mockImageList: PostType[] = [
   baseImageMock,
   {
     ...baseImageMock,
@@ -450,7 +450,7 @@ export let mockFollowRelations = [
   {id: 12, user_id1: 7, user_id2: 6},
 ];
 
-type TupleType = [CustomImage, CustomImage];
+type TupleType = [PostType, PostType];
 
 let extendedMockImageList: TupleType[] = [];
 let uri_idx: number;

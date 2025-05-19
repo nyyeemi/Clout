@@ -15,11 +15,11 @@ export type RootStackParamList = {
 };
 
 export type ProfileStackParamList = {
-  Profile: {userId: number; username: string};
+  Profile: {username: string};
   Settings: undefined;
-  Followers: {userId: number};
+  Followers: {index: number; username: string};
   EditProfile: undefined;
-  ImageDetail: {imageId: number; userId: number};
+  ImageDetail: {imageId: string; username: string};
 };
 
 export type FeedStackParamList = {

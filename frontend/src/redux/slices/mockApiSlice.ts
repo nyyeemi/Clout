@@ -10,10 +10,10 @@ import {
 
 import {
   CommentType,
-  CustomImage,
   CustomUser,
   FollowType,
   LikeType,
+  PostType,
 } from '../../types/types';
 
 let mutableMockLikes = [...mockLikes];
@@ -53,7 +53,7 @@ export const mockApiSlice = createApi({
   baseQuery: fetchBaseQuery({baseUrl: '/fakeApi'}),
   tagTypes: ['Likes', 'Following', 'Followers', 'Comments', 'FeedImages'],
   endpoints: builder => ({
-    getPosts: builder.query<CustomImage[], number>({
+    getPosts: builder.query<PostType[], number>({
       queryFn: async (userId: number) => {
         const posts = await getImagesByUser(userId);
         return {data: posts};
@@ -231,7 +231,7 @@ export const mockApiSlice = createApi({
      * --> mutation in follow table
      * --> updated data on refetch since feed image list depends on who the loggedin user follows
      */
-    getFeedImages: builder.query<CustomImage[], number>({
+    getFeedImages: builder.query<PostType[], number>({
       queryFn: async user_id => {
         const followedIds = mutableMockFollowRelations
           .filter(({user_id1}) => user_id1 === user_id)

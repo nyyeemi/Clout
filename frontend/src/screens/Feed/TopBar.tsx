@@ -11,10 +11,10 @@ import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
 import {FeedStackParamList, Routes} from '../../navigation/Routes';
 
-import {CustomImage} from '../../types/types';
+import {PostType} from '../../types/types';
 
 type Props = {
-  post: CustomImage;
+  post: PostType;
 };
 
 export const TopBar = ({post}: Props): JSX.Element => {
@@ -22,7 +22,7 @@ export const TopBar = ({post}: Props): JSX.Element => {
   const handleNavigate = () => {
     navigation.navigate(Routes.ProfileStack, {
       screen: Routes.Profile,
-      params: {userId: post.user.id, username: post.user.username},
+      params: {username: post.owner.username},
     });
   };
 
@@ -30,10 +30,10 @@ export const TopBar = ({post}: Props): JSX.Element => {
     <ThemedView style={[globalStyle.flex]}>
       <Pressable style={style.container} onPress={() => handleNavigate()}>
         <ProfilePicture
-          uri={post.user.profile_picture_url}
+          uri={post.owner.profile_picture_url}
           style={style.profileImage}
         />
-        <ThemedText variant="heavy">{post.user.username}</ThemedText>
+        <ThemedText variant="heavy">{post.owner.username}</ThemedText>
       </Pressable>
     </ThemedView>
   );

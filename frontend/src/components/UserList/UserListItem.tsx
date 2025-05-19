@@ -1,19 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
+
 import {useNavigation, useTheme} from '@react-navigation/native';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
-import {RootStackParamList, Routes} from '../../navigation/Routes';
-import {ThemedText} from '../ui/typography';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ProfilePicture} from '../ProfilePicture/ProfilePicture';
+
+import {RootStackParamList, Routes} from '../../navigation/Routes';
+import {useGetUsersMeQuery} from '../../redux/api/endpoints/users';
 import {OpacityPressable} from '../OpacityPressable/OpacityPressable';
-import {CustomUser} from '../../types/types';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store/store';
+import {ProfilePicture} from '../ProfilePicture/ProfilePicture';
+import {ThemedText} from '../ui/typography';
+
+import {CustomUser, ProfileFollowerType} from '../../types/types';
 
 type UserListItemProps = {
-  user: CustomUser;
+  user: CustomUser | ProfileFollowerType;
   isFollowedByLoggedInUser: boolean;
-  onFollowToggle: (userId: number, currentlyFollowing: boolean) => void;
+  onFollowToggle: (user_id: string, currentlyFollowing: boolean) => void;
   isLoadingToggle?: boolean;
   size?: 'small' | 'medium' | 'large';
   onItemPress?: () => void;
@@ -29,21 +31,22 @@ export const UserListItem = ({
 }: UserListItemProps) => {
   const {colors} = useTheme();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const loggedInUser = useSelector((state: RootState) => state.user.user);
-
+  const {data: loggedInUser} = useGetUsersMeQuery();
+  const [isFollowing, setIsFollowing] = useState(isFollowedByLoggedInUser);
   const handlePressProfile = () => {
     onItemPress?.();
     navigation.navigate(Routes.ProfileStack, {
       screen: Routes.Profile,
-      params: {userId: user.id, username: user.username},
+      params: {username: user.username},
     });
   };
   const handleFollowPress = () => {
     onFollowToggle(user.id, isFollowedByLoggedInUser);
+    setIsFollowing(!isFollowing);
   };
 
   const shouldShowFollowButton = loggedInUser && user.id !== loggedInUser.id;
-  const isFollowing = isFollowedByLoggedInUser;
+  //const isFollowing = isFollowedByLoggedInUser;
 
   const buttonStyle = isFollowing
     ? [

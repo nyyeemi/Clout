@@ -19,7 +19,7 @@ from typing import Annotated, Any, Literal
 import uuid
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
-from sqlalchemy import and_, func, select
+from sqlalchemy import and_, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import NoResultFound
 
@@ -27,6 +27,7 @@ from app.schemas.posts import (
     CommentCreate,
     CommentPublic,
     CommentsPublic,
+    LikeOwnerPublic,
     LikePublic,
     PostCreate,
     PostPublic,
@@ -66,11 +67,28 @@ def read_posts_feed(
         base_filter = and_(base_filter, Post.created_at < last_post_created_at)
 
     statement = (
-        select(Post).where(base_filter).order_by(Post.created_at.desc()).limit(limit)
+        select(Post)
+        .where(base_filter)
+        .where(Post.is_visible)
+        .order_by(Post.created_at.desc())
+        .limit(limit)
     )
     posts = session.scalars(statement).all()
 
-    return PostsPublic(data=posts, count=len(posts))
+    posts_data = []
+
+    user_likes = [like.post_id for like in current_user.likes]
+
+    for post in posts:
+        is_liked_by_current_user = post.id in user_likes
+        base_data = PostPublic.model_validate(post, from_attributes=True)
+        post_data = base_data.model_copy(
+            update={"is_liked_by_current_user": is_liked_by_current_user}
+        )
+
+        posts_data.append(post_data)
+
+    return PostsPublic(data=posts_data, count=len(posts))
 
 
 @router.post("/", response_model=PostPublic)
@@ -286,7 +304,21 @@ def read_post_likes(
     statement = statement.order_by(Like.created_at.desc())
     likes = session.scalars(statement).all()
 
-    return LikesPublic(data=likes, count=len(likes))
+    current_user_following_ids = {f.user_id2 for f in current_user.following}
+
+    like_responses = []
+    for like in likes:
+        like_pydantic = LikePublic.model_validate(like)
+
+        enriched_owner = LikeOwnerPublic.model_validate(like.owner)
+        enriched_owner.is_followed_by_current_user = (
+            like.owner.id in current_user_following_ids
+        )
+
+        like_pydantic.owner = enriched_owner
+        like_responses.append(like_pydantic)
+
+    return LikesPublic(data=like_responses, count=len(likes))
 
 
 @router.post("/{post_id}/likes", response_model=LikePublic)
@@ -304,6 +336,13 @@ def create_like(
         ).scalar_one()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Post not found")
+
+    existing_like = session.execute(
+        select(Like).where(Like.owner_id == current_user.id, Like.post_id == post_id)
+    ).scalar_one_or_none()
+
+    if existing_like:
+        raise HTTPException(status_code=400, detail="Already liked")
 
     like = crud.create_post_like(
         session=session,

@@ -1,19 +1,23 @@
 import {configureStore} from '@reduxjs/toolkit';
-import userReducer from '../slices/userSlice';
-import voteImageReducer from '../slices/voteImageSlice';
+
+import {apiSlice} from '../api/apiSlice';
+import authReducer from '../slices/authSlice';
 import feedImageReducer from '../slices/feedImageSlice';
 import {mockApiSlice} from '../slices/mockApiSlice';
-import {apiSlice} from '../api/apiSlice';
+import voteImageReducer from '../slices/voteImageSlice';
+
 const store = configureStore({
   reducer: {
-    user: userReducer,
+    auth: authReducer,
     voteImage: voteImageReducer,
     feedImage: feedImageReducer,
     [mockApiSlice.reducerPath]: mockApiSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(mockApiSlice.middleware),
+    getDefaultMiddleware()
+      .concat(mockApiSlice.middleware)
+      .concat(apiSlice.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

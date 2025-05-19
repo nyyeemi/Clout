@@ -1,8 +1,10 @@
 import {Alert} from 'react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import loginService from '../../../services/auth/login';
-import {loginUser} from '../../../redux/slices/userSlice';
+
+import {loginUser} from '../../../redux/slices/authSlice';
 import {AppDispatch} from '../../../redux/store/store';
+import loginService from '../../../services/auth/login';
 import {loginErrorHandler} from './errorHandlers/loginErrorHandler';
 
 export const loginHandler = async (

@@ -1,9 +1,10 @@
-import {register} from '../auth/register';
 import loginService from '../auth/login';
-import {getAccessToken, setAccessToken} from '../utils';
+import {register} from '../auth/register';
 import {deleteCustomUser} from '../user/users';
+import {getAccessToken, setAccessToken} from '../utils';
 import imageService from './images';
-import {CustomImage} from '../../types/types';
+
+import {PostType} from '../../types/types';
 
 jest.mock('@react-native-async-storage/async-storage');
 
@@ -15,7 +16,7 @@ describe('Image api integration', () => {
   };
 
   let user_id: number;
-  let img: CustomImage;
+  let img: PostType;
   const image_url =
     'https://www.paramountshop.com/cdn/shop/files/spongebob-squarepants-life-sized-cardboard-cutout-standee-725187.jpg?v=1718292084';
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {API_URL} from './utils';
+
+import {API_URL} from '../../redux/api/utils';
 
 type RegisterResponse = {
   id: number;

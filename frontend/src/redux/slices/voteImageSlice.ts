@@ -1,7 +1,8 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {CustomImage} from '../../types/types';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 
-type ImageTuple = [CustomImage, CustomImage];
+import {PostType} from '../../types/types';
+
+type ImageTuple = [PostType, PostType];
 
 type VoteImageState = {
   activeVoteImages: ImageTuple[];

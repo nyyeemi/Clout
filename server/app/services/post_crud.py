@@ -49,3 +49,16 @@ def create_post_like(*, session: Session, owner_id: UUID, post_id: UUID) -> Like
     session.commit()
     session.refresh(db_obj)
     return db_obj
+
+
+def get_posts_by_user(
+    session: Session, user_id: int, skip: int, limit: int
+) -> list[Post]:
+    return (
+        session.query(Post)
+        .filter(Post.owner_id == user_id)
+        .order_by(Post.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )

@@ -1,9 +1,12 @@
 import React, {useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {ThemedText} from '../ui/typography';
-import {CommentType} from '../../types/types';
-import {CommentListItem} from './CommentListItem';
+
 import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+
+import {ThemedText} from '../ui/typography';
+import {CommentListItem} from './CommentListItem';
+
+import {CommentType} from '../../types/types';
 
 type CommentListType = {
   data: CommentType[];

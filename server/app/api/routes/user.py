@@ -147,37 +147,6 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
     return Message(message="User deleted successfully")
 
 
-@router.post("/signup", response_model=UserPublic)
-def register_user(user_in: UserCreate, session: SessionDep) -> Any:
-    """
-    Create a new user without the need to be logged in.
-    """
-    try:
-        user = crud.create_user(session=session, user_create=user_in)
-        return user
-    except IntegrityError:
-        session.rollback()
-        user = crud.get_user_by_email(session=session, email=user_in.email)
-        if user:
-            raise HTTPException(
-                status_code=409,
-                detail="The user with this email already exists in the system.",
-            )
-
-        user = crud.get_user_by_username(session=session, email=user_in.username)
-        if user:
-            raise HTTPException(
-                status_code=409,
-                detail="The user with this username already exists in the system.",
-            )
-    except Exception:
-        session.rollback()
-        raise HTTPException(
-            status_code=500,
-            detail="An unexpected error occurred. Try again later.",
-        )
-
-
 @router.get("/{user_id}", response_model=UserPublic)
 def read_user_by_id(
     user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser

@@ -1,9 +1,11 @@
 import {Platform} from 'react-native';
-import {HOST} from '../../../localVariables';
 
 import axios, {AxiosResponse} from 'axios';
+
+import {HOST} from '../../../localVariables';
 import {getAccessToken} from '../utils';
-import {CustomImage} from '../../types/types';
+
+import {PostType} from '../../types/types';
 
 export const API_URL =
   Platform.OS === 'ios'
@@ -27,18 +29,18 @@ instance.interceptors.request.use(async config => {
   return config;
 });
 
-const getAll = async (): Promise<CustomImage[]> => {
-  const response = await instance.get<CustomImage[]>(API_URL);
+const getAll = async (): Promise<PostType[]> => {
+  const response = await instance.get<PostType[]>(API_URL);
   return response.data;
 };
 
-const getById = async (id: number): Promise<CustomImage> => {
-  const response = await instance.get<CustomImage>(`${API_URL}${id}/`);
+const getById = async (id: number): Promise<PostType> => {
+  const response = await instance.get<PostType>(`${API_URL}${id}/`);
   return response.data;
 };
 
-const create = async (image_url: string): Promise<CustomImage> => {
-  const response = await instance.post<CustomImage>(API_URL, {image_url});
+const create = async (image_url: string): Promise<PostType> => {
+  const response = await instance.post<PostType>(API_URL, {image_url});
   return response.data;
 };
 
@@ -50,12 +52,12 @@ const deleteImage = async (id: number): Promise<AxiosResponse> => {
 const updateImageCaption = async (
   id: number,
   updatedObject: ImageUpdateObject,
-): Promise<CustomImage> => {
+): Promise<PostType> => {
   const response = await instance.patch(`${API_URL}${id}/`, updatedObject);
   return response.data;
 };
 
-const updateImage = async (updatedImage: CustomImage): Promise<CustomImage> => {
+const updateImage = async (updatedImage: PostType): Promise<PostType> => {
   const response = await instance.put(
     `${API_URL}${updatedImage.id}/`,
     updatedImage,

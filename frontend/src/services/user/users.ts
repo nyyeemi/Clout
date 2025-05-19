@@ -1,6 +1,8 @@
 import axios from 'axios';
+
 import {getAccessToken} from '../utils';
-import {CustomImage, CustomUser} from '../../types/types';
+
+import {CustomUser, PostType} from '../../types/types';
 
 const API_URL = 'http://localhost:8000/api/CustomUsers/';
 
@@ -41,8 +43,8 @@ export const deleteCustomUser = async (id: number): Promise<void> => {
 
 export const getImagesByCustomUser = async (
   id: number,
-): Promise<CustomImage[]> => {
-  const response = await instance.get<CustomImage[]>(`${id}/images/`);
+): Promise<PostType[]> => {
+  const response = await instance.get<PostType[]>(`${id}/images/`);
   return response.data;
 };
 /* not implemented in backend|
@@ -57,13 +59,13 @@ Todo: table for storing followers relations: id: PK, CustomUser_id1: FK, CustomU
     │   ├── {id}/followers/        # Get list of followers for a CustomUser
     │   └── {id}/following/        # Get list of CustomUsers a CustomUser is following
 -----------------------------------------------------------------------------
-export const getCustomUserFollowers = async (id: number): Promise<CustomImage[]> => {
-  const response = await instance.get<CustomImage[]>(`${id}/`);
+export const getCustomUserFollowers = async (id: number): Promise<PostType[]> => {
+  const response = await instance.get<PostType[]>(`${id}/`);
   return response.data;
 };
 
-export const getCustomUserFollowing = async (id: number): Promise<CustomImage[]> => {
-  const response = await instance.get<CustomImage[]>(`${id}/`);
+export const getCustomUserFollowing = async (id: number): Promise<PostType[]> => {
+  const response = await instance.get<PostType[]>(`${id}/`);
   return response.data;
 };
 */

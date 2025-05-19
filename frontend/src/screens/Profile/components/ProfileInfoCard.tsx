@@ -1,13 +1,14 @@
-import React, {useMemo, useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
-  StyleSheet,
-  View,
   ActivityIndicator,
   StyleProp,
+  StyleSheet,
+  View,
   ViewStyle,
 } from 'react-native';
+
 import {useTheme} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+
 import globalStyle from '../../../assets/styles/globalStyle';
 import {
   horizontalScale,
@@ -18,81 +19,60 @@ import {OpacityPressable} from '../../../components/OpacityPressable/OpacityPres
 import {ThemedView} from '../../../components/ui/themed-view';
 import {ThemedText} from '../../../components/ui/typography';
 import {
-  useGetUserFollowingQuery,
-  useFollowUserMutation,
-  useUnFollowUserMutation,
-} from '../../../redux/slices/mockApiSlice';
-import {CustomUser} from '../../../types/types';
+  useCreateFollowMutation,
+  useDeleteFollowMutation,
+  useGetUsersMeQuery,
+} from '../../../redux/api/endpoints/users';
 import {ProfileStatsRow} from './ProfileStatsRow';
-import {RootState} from '../../../redux/store/store';
 
-export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
+import {ProfileType} from '../../../types/types';
+
+export const ProfileInfoCard = ({
+  profileUser,
+  num_posts,
+}: {
+  profileUser: ProfileType;
+  num_posts: number;
+}): JSX.Element => {
   const {colors} = useTheme();
-  const loggedInUser = useSelector((state: RootState) => state.user.user);
+  const {data: loggedInUser} = useGetUsersMeQuery();
   const loggedInUserId = loggedInUser?.id;
-
-  const {
-    data: loggedInUserFollowingData = [],
-    isLoading: isLoadingLoggedInUserFollowing,
-  } = useGetUserFollowingQuery(loggedInUserId ?? -1, {skip: !loggedInUserId});
-
-  const [followUser, {isLoading: isFollowingUser}] = useFollowUserMutation();
+  const [followUser, {isLoading: isFollowingUser}] = useCreateFollowMutation();
   const [unfollowUser, {isLoading: isUnfollowingUser}] =
-    useUnFollowUserMutation();
+    useDeleteFollowMutation();
   const isMutationLoading = isFollowingUser || isUnfollowingUser;
-
-  const followedUserIds = useMemo(() => {
-    if (
-      !loggedInUserFollowingData ||
-      isLoadingLoggedInUserFollowing ||
-      !Array.isArray(loggedInUserFollowingData)
-    ) {
-      return new Set<number>();
-    }
-    return new Set(loggedInUserFollowingData.map((u: CustomUser) => u.id));
-  }, [loggedInUserFollowingData, isLoadingLoggedInUserFollowing]);
-
-  const isFollowing = useMemo(() => {
-    if (!loggedInUserId || isLoadingLoggedInUserFollowing) {
-      return false;
-    }
-    return followedUserIds.has(user.id);
-  }, [
-    loggedInUserId,
-    user.id,
-    followedUserIds,
-    isLoadingLoggedInUserFollowing,
-  ]);
+  const [isFollowing, setIsFollowing] = useState(
+    profileUser.is_followed_by_current_user,
+  );
 
   const handleFollowToggle = useCallback(async () => {
-    if (
-      !loggedInUserId ||
-      isMutationLoading ||
-      isLoadingLoggedInUserFollowing
-    ) {
+    if (!loggedInUserId || isMutationLoading) {
       return;
     }
-    const mutationPayload = {user_id1: loggedInUserId, user_id2: user.id};
+    const mutationPayload = {
+      user_id: profileUser.id,
+      username: profileUser.username,
+    };
     try {
       if (isFollowing) {
         await unfollowUser(mutationPayload).unwrap();
       } else {
         await followUser(mutationPayload).unwrap();
       }
+      setIsFollowing(!isFollowing);
     } catch (error) {
       console.error('Failed to toggle follow state:', error);
     }
   }, [
     loggedInUserId,
-    user.id,
+    profileUser,
     isFollowing,
     followUser,
     unfollowUser,
     isMutationLoading,
-    isLoadingLoggedInUserFollowing,
   ]);
 
-  const showButton = loggedInUserId && loggedInUserId !== user.id;
+  const showButton = isFollowing !== null; //null field for current user
   const buttonText = isFollowing ? 'Following' : 'Follow';
 
   const dynamicButtonStyle: StyleProp<ViewStyle> = isFollowing
@@ -111,20 +91,18 @@ export const ProfileInfoCard = ({user}: {user: CustomUser}): JSX.Element => {
 
   return (
     <ThemedView style={styles.container}>
-      <ProfileStatsRow user={user} />
+      <ProfileStatsRow user={profileUser} num_posts={num_posts} />
       <View style={styles.defaultMargin}>
-        <ThemedText style={styles.name}>{user.username}</ThemedText>
-        {user.bio ? <ThemedText>{user.bio}</ThemedText> : null}
+        <ThemedText style={styles.name}>{profileUser.username}</ThemedText>
+        {profileUser.bio ? <ThemedText>{profileUser.bio}</ThemedText> : null}
       </View>
       {showButton && (
         <View style={styles.buttonContainer}>
           <OpacityPressable
             style={dynamicButtonStyle}
             onPress={handleFollowToggle}
-            disabled={isLoadingLoggedInUserFollowing || isMutationLoading}>
-            {isMutationLoading ||
-            (isLoadingLoggedInUserFollowing &&
-              !loggedInUserFollowingData.length) ? (
+            disabled={isMutationLoading}>
+            {isMutationLoading ? (
               <ActivityIndicator
                 size="small"
                 color={isFollowing ? colors.primary : colors.card}

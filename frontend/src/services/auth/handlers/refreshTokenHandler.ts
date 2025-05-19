@@ -1,8 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {logoutUser} from '../../../redux/slices/authSlice';
 import {AppDispatch} from '../../../redux/store/store';
 import {refreshAccessToken} from '../refreshToken';
-import {logoutUser} from '../../../redux/slices/userSlice';
 import {loginErrorHandler} from './errorHandlers/loginErrorHandler';
 
 const refreshTokenHandler = async (dispatch: AppDispatch): Promise<void> => {
