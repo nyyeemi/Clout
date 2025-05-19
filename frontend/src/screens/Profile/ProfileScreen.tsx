@@ -17,7 +17,6 @@ type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
 export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   const {username} = route.params;
-  //console.log('renders profilescreen');
 
   const {
     data: postData = {data: [], count: 0},
@@ -28,7 +27,7 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   } = useGetProfilePostsByUserNameQuery(username);
 
   const {
-    data: user = null,
+    data: profileUser = null,
     isLoading: isUserLoading,
     //isSuccess: isUserSuccess,
     isError: isUserError,
@@ -39,7 +38,7 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
     return <Spinner />;
   }
 
-  if (!user || isUserError) {
+  if (!profileUser || isUserError) {
     console.error('Error fetching data:', userError);
     return (
       <ThemedView>
@@ -58,7 +57,7 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
     <ThemedView style={[globalStyle.flex]}>
       <ImageList
         postData={postData}
-        user={user}
+        profileUser={profileUser}
         isLoadingPosts={isPostsLoading}
         isErrorPosts={isPostsError}
       />

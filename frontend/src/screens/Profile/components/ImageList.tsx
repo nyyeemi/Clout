@@ -13,20 +13,20 @@ import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
 import {imageHeight, style} from '../style';
 import {ProfileInfoCard} from './ProfileInfoCard';
 
-import {CustomUser, PostType, ProfilePostsType} from '../../../types/types';
+import {PostType, ProfilePostsType, ProfileType} from '../../../types/types';
 
 const ITEM_HEIGHT = imageHeight;
 
 type ImageListProps = {
   postData: ProfilePostsType;
-  user: CustomUser;
+  profileUser: ProfileType;
   isLoadingPosts: boolean;
   isErrorPosts: boolean;
 };
 
 export const ImageList = ({
   postData,
-  user,
+  profileUser,
   isLoadingPosts,
   isErrorPosts,
 }: ImageListProps): JSX.Element => {
@@ -45,7 +45,7 @@ export const ImageList = ({
   const handlePress = (item: PostType) => {
     navigation.navigate(Routes.ImageDetail, {
       imageId: item.id,
-      username: user.username,
+      username: profileUser.username,
     });
   };
 
@@ -69,7 +69,11 @@ export const ImageList = ({
 
   return (
     <FlatList
-      ListHeaderComponent={<ProfileInfoCard user={user} num_posts={count} />}
+      ListHeaderComponent={
+        profileUser && (
+          <ProfileInfoCard profileUser={profileUser} num_posts={count} />
+        )
+      }
       ListEmptyComponent={renderListEmptyComponent()}
       getItemLayout={(_data, index) => ({
         length: ITEM_HEIGHT,

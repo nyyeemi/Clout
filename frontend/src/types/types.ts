@@ -100,6 +100,7 @@ export type GetLikesRequestType = {
 export type ProfileType = CustomUser & {
   num_followers: number;
   num_following: number;
+  is_followed_by_current_user: boolean;
 };
 
 export type ProfilePostsType = {

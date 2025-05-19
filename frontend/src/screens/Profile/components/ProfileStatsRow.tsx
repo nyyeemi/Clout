@@ -9,18 +9,15 @@ import {ProfilePicture} from '../../../components/ProfilePicture/ProfilePicture'
 import {ThemedText} from '../../../components/ui/typography';
 import {ProfileStackParamList} from '../../../navigation/Routes';
 
-import {CustomUser} from '../../../types/types';
+import {ProfileType} from '../../../types/types';
 
 export const ProfileStatsRow = ({
   user,
   num_posts,
 }: {
-  user: CustomUser;
+  user: ProfileType;
   num_posts: number;
 }): JSX.Element => {
-  //  const {data: following = []} = useGetUserFollowingQuery(user.id);
-  //  const {data: followers = []} = useGetUserFollowersQuery(user.id);
-
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const onPressFollowing = () => {

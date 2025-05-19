@@ -36,7 +36,7 @@ export const UserList = ({
   const insets = useSafeAreaInsets();
   const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
 
-  console.log(data);
+  //console.log(data);
   const [followUser, {isLoading: isFollowingUser}] = useCreateFollowMutation();
   const [unfollowUser, {isLoading: isUnfollowingUser}] =
     useDeleteFollowMutation();

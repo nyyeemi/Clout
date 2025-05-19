@@ -13,7 +13,9 @@ router = APIRouter(prefix="/profiles", tags=["profiles"])
 
 
 @router.get("/{username}", response_model=UserPublicProfile)
-def get_public_profile(username: str, session: SessionDep) -> User:
+def get_public_profile(
+    username: str, current_user: CurrentUser, session: SessionDep
+) -> User:
     """
     Get profile by username
     """
@@ -27,10 +29,13 @@ def get_public_profile(username: str, session: SessionDep) -> User:
         session=session, user_id=user.id
     )
 
+    current_user_following_ids = {f.user_id2 for f in current_user.following}
+
     return UserPublicProfile.model_validate(user).model_copy(
         update={
             "num_followers": follower_count,
             "num_following": following_count,
+            "is_followed_by_current_user": user.id in current_user_following_ids,
         }
     )
 
