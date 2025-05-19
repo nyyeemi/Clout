@@ -37,7 +37,7 @@ export const UserListItem = ({
     onItemPress?.();
     navigation.navigate(Routes.ProfileStack, {
       screen: Routes.Profile,
-      params: {userId: user.id, username: user.username},
+      params: {username: user.username},
     });
   };
   const handleFollowPress = () => {
