@@ -11,7 +11,7 @@ import Input from '../../components/Input/Input';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
 import {RootStackParamList, Routes} from '../../navigation/Routes';
-import {useLoginMutation} from '../../redux/api/endpoints/login';
+import {useLoginMutation} from '../../redux/api/endpoints/auth';
 // Omat Button-komponentit
 import style from './style';
 

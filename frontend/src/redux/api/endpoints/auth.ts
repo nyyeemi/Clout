@@ -9,14 +9,31 @@ type LoginRequest = {
 type LoginResponse = {
   access_token: string;
   token_type: string;
-  refreshToken: null;
+  refresh_token: string;
+};
+
+type RegisterRequest = {
+  username: string;
+  email: string;
+  password: string;
+};
+
+type RegisterResponse = {
+  id: string;
+  username: string;
+  email: string;
+};
+
+type RefreshResponse = {
+  access_token: string;
+  refresh_token: string;
 };
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: credentials => ({
-        url: '/login/access-token',
+        url: '/auth/login/access-token',
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -32,7 +49,7 @@ export const authApi = apiSlice.injectEndpoints({
           dispatch(
             setCredentials({
               accessToken: data.access_token, // match FastAPI's return
-              refreshToken: null, // not used yet
+              refreshToken: data.refresh_token,
             }),
           );
         } catch (err) {
@@ -40,7 +57,26 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    register: builder.mutation<RegisterResponse, RegisterRequest>({
+      query: newUser => ({
+        url: '/auth/signup',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      }),
+    }),
+    refresh: builder.mutation<RefreshResponse, {refresh_token: string}>({
+      query: ({refresh_token}) => ({
+        url: '/auth/refresh',
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: {refresh_token},
+      }),
+    }),
   }),
 });
 
-export const {useLoginMutation} = authApi;
+export const {useLoginMutation, useRegisterMutation, useRefreshMutation} =
+  authApi;

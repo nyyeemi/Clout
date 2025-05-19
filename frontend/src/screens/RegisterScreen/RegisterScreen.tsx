@@ -1,17 +1,19 @@
 import React from 'react';
 import {Alert} from 'react-native';
-import {Formik, FormikProps} from 'formik';
-import * as Yup from 'yup';
-import Input from '../../components/Input/Input';
-import Button from '../../components/Button/Button';
-import style from './style';
-import globalStyle from '../../assets/styles/globalStyle';
-import {RootStackParamList, Routes} from '../../navigation/Routes';
-import {registerHandler} from '../../services/auth/handlers/registerHandler';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {Formik, FormikProps} from 'formik';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import * as Yup from 'yup';
+
+import globalStyle from '../../assets/styles/globalStyle';
+import Button from '../../components/Button/Button';
+import Input from '../../components/Input/Input';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
+import {RootStackParamList, Routes} from '../../navigation/Routes';
+import {useRegisterMutation} from '../../redux/api/endpoints/auth';
+import style from './style';
 
 type RegisterScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -27,6 +29,7 @@ type FormValues = {
 
 export const RegisterScreen = ({navigation}: RegisterScreenProps) => {
   const insets = useSafeAreaInsets();
+  const [signUp] = useRegisterMutation();
   return (
     <ThemedView style={[globalStyle.flex, {paddingTop: insets.top}]}>
       <Formik
@@ -39,15 +42,12 @@ export const RegisterScreen = ({navigation}: RegisterScreenProps) => {
         validationSchema={RegisterSchema}
         onSubmit={async (values, {setSubmitting}) => {
           try {
-            const success = await registerHandler(
-              values.email,
-              values.password,
-              values.confirmPassword,
-              values.username,
-            );
-            if (success === 0) {
-              navigation.navigate(Routes.Login);
-            }
+            await signUp({
+              email: values.email,
+              password: values.password,
+              username: values.username,
+            });
+            navigation.navigate(Routes.Login);
           } catch (error: any) {
             Alert.alert(
               'Registration Failed',
