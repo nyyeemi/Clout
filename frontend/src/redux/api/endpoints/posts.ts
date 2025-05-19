@@ -123,7 +123,7 @@ export const postsApi = apiSlice.injectEndpoints({
         {type: 'Posts', id: post_id},
       ],
     }),
-    addLike: builder.mutation<LikeType, number>({
+    addLike: builder.mutation<LikeType, string>({
       query: post_id => ({
         url: `posts/${post_id}/likes`,
         method: 'POST',
@@ -132,7 +132,7 @@ export const postsApi = apiSlice.injectEndpoints({
         {type: 'Posts', id: post_id},
       ],
     }),
-    deleteLike: builder.mutation<string, number>({
+    deleteLike: builder.mutation<string, string>({
       query: post_id => ({
         url: `posts/${post_id}/likes/`,
         method: 'DELETE',

@@ -15,7 +15,7 @@ export type RootStackParamList = {
 };
 
 export type ProfileStackParamList = {
-  Profile: {userId: number; username: string};
+  Profile: {username: string};
   Settings: undefined;
   Followers: {index: number; username: string};
   EditProfile: undefined;

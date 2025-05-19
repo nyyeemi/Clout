@@ -22,7 +22,7 @@ export const TopBar = ({post}: Props): JSX.Element => {
   const handleNavigate = () => {
     navigation.navigate(Routes.ProfileStack, {
       screen: Routes.Profile,
-      params: {userId: post.owner.id, username: post.owner.username},
+      params: {username: post.owner.username},
     });
   };
 
