@@ -40,7 +40,6 @@ export const CommentListItem = ({
     navigation.navigate(Routes.ProfileStack, {
       screen: Routes.Profile,
       params: {
-        userId: comment.owner_id,
         username: user?.username ?? '',
       },
     });

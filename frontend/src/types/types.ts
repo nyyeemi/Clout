@@ -1,7 +1,7 @@
 export type LikeType = {
   id: string;
   owner: CustomUser;
-  image_id: number;
+  image_id: string;
   created_at: string;
 };
 
@@ -35,16 +35,16 @@ export type PostType = {
 export type CommentType = {
   id: string;
   owner: CustomUser;
-  owner_id: number;
-  post_id: number;
+  owner_id: string;
+  post_id: string;
   content: string;
   created_at: string;
 };
 
 export type FollowType = {
   id: string;
-  user_id1: number;
-  user_id2: number;
+  user_id1: string;
+  user_id2: string;
 };
 
 //

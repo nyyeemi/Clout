@@ -41,6 +41,7 @@ export const LoginScreen = ({navigation}: LoginScreenProps): JSX.Element => {
           value={username}
           onChangeText={setUsername}
           style={style.input}
+          autoCapitalize="none"
         />
 
         <Input
