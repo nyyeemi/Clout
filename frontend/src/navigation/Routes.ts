@@ -2,7 +2,6 @@ import {NavigatorScreenParams} from '@react-navigation/native';
 
 export type RootStackParamList = {
   Login: undefined;
-  Home: undefined;
   Register: undefined;
   Leaderboard: undefined;
   Vote: undefined;
@@ -28,7 +27,6 @@ export type FeedStackParamList = {
 };
 
 export const Routes = {
-  Home: 'Home',
   Login: 'Login',
   Register: 'Register',
   Leaderboard: 'Leaderboard',

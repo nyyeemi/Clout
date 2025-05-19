@@ -72,7 +72,7 @@ export const ProfileInfoCard = ({
     isMutationLoading,
   ]);
 
-  const showButton = isFollowing !== null; //null field for current user
+  const showButton = loggedInUser && profileUser.id !== loggedInUser.id;
   const buttonText = isFollowing ? 'Following' : 'Follow';
 
   const dynamicButtonStyle: StyleProp<ViewStyle> = isFollowing

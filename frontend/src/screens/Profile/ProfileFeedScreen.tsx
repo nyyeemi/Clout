@@ -34,6 +34,7 @@ export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
   console.log('render profilefeedscreen');
 
   //https://reactnative.dev/docs/optimizing-flatlist-configuration
+  // TODO: fix modal view
   const renderItem = useCallback(
     ({item}: {item: PostType}) => <FeedPost post={item} />,
     [],
