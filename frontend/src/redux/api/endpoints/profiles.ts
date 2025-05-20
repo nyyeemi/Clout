@@ -16,9 +16,9 @@ export const profileApi = apiSlice.injectEndpoints({
     }),
     getProfilePostsByUserName: builder.query<ProfilePostsType, string>({
       query: username => `profiles/${username}/posts`,
-      /*providesTags: (result, error, username) => [
+      providesTags: (result, error, username) => [
         {type: 'ProfilePosts', id: username},
-      ],*/
+      ],
     }),
     getProfileFollowers: builder.query<ProfileFollowersType, string>({
       query: username => `profiles/${username}/followers`,

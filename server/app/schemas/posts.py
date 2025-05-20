@@ -6,8 +6,8 @@ from app.schemas.user import UserInfoBasic
 
 
 class PostBase(BaseModel):
-    image_url: HttpUrl
-    thumbnail_url: HttpUrl | None = None
+    image_url: str
+    thumbnail_url: str | None = None
     caption: str | None = None
     is_visible: bool = True
 

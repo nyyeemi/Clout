@@ -1,9 +1,11 @@
 import React from 'react';
+import {Pressable} from 'react-native';
+
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import {
-  faHouse,
   faAward,
   faCamera,
+  faHouse,
   faImages,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -13,13 +15,13 @@ import {
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
 import {RouteProp, useTheme} from '@react-navigation/native';
-import {Pressable} from 'react-native';
+
 import {CameraScreen} from '../screens/Camera/CameraScreen';
 import {LeaderboardScreen} from '../screens/LeaderboardScreen/LeaderboardScreen';
 import {VoteScreen} from '../screens/Vote/VoteScreen';
-import {RootStackParamList, Routes} from './Routes';
 import {FeedStackNavigator} from './FeedStackNavigator';
 import {ProfileStackNavigator} from './ProfileStackNavigator';
+import {RootStackParamList, Routes} from './Routes';
 
 type tabBarIconProps = {
   route: RouteProp<RootStackParamList, keyof RootStackParamList>;
@@ -91,7 +93,7 @@ export const BottomTabNavigator = () => {
       <Tab.Screen
         name={Routes.Camera}
         component={CameraScreen}
-        options={{tabBarStyle: {display: 'none'}}}
+        //options={{tabBarStyle: {display: 'none'}}}
       />
       <Tab.Screen name={Routes.FeedStack} component={FeedStackNavigator} />
       <Tab.Screen

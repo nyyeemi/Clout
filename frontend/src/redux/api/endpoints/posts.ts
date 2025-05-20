@@ -1,3 +1,4 @@
+import type {RootState} from '../../store/store';
 import {apiSlice} from '../apiSlice';
 
 import {
@@ -30,12 +31,29 @@ export const postsApi = apiSlice.injectEndpoints({
       },
       providesTags: () => [{type: 'Posts'}],
     }),
-    createPost: builder.mutation<PostType, PostRequestType>({
-      query: ({image_url, thumbnail_url, caption, is_visible}) => ({
+    createPost: builder.mutation<PostType, Partial<PostRequestType>>({
+      query: body => ({
         url: 'posts/',
         method: 'POST',
-        body: {image_url, thumbnail_url, caption, is_visible},
+        body,
       }),
+      async onQueryStarted(arg, {dispatch, queryFulfilled, getState}) {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const {data} = await queryFulfilled;
+
+          const username = (getState() as RootState).auth.username;
+
+          dispatch(
+            apiSlice.util.invalidateTags([
+              {type: 'Posts'},
+              {type: 'ProfilePosts', id: username},
+            ]),
+          );
+        } catch {
+          // Handle error if needed
+        }
+      },
     }),
     getPostById: builder.query<PostType, number>({
       query: post_id => `posts/${post_id}/`,

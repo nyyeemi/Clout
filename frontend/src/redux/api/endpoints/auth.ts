@@ -1,5 +1,6 @@
-import {setCredentials} from '../../slices/authSlice';
+import {setCredentials, setUsername} from '../../slices/authSlice';
 import {apiSlice} from '../apiSlice';
+import {usersApi} from './users';
 
 type LoginRequest = {
   username: string;
@@ -52,6 +53,14 @@ export const authApi = apiSlice.injectEndpoints({
               refreshToken: data.refresh_token,
             }),
           );
+
+          const result = await dispatch(
+            usersApi.endpoints.getUsersMe.initiate(),
+          );
+
+          if ('data' in result && result.data?.username) {
+            dispatch(setUsername(result.data.username));
+          }
         } catch (err) {
           console.error('Login failed', err);
         }

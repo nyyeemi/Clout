@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+
 import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
 
 export const Style = StyleSheet.create({
@@ -25,6 +26,7 @@ export const Style = StyleSheet.create({
   },
   previewContainer: {
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
@@ -36,8 +38,8 @@ export const Style = StyleSheet.create({
   },
   previewControls: {
     flexDirection: 'row',
-    position: 'absolute',
-    bottom: verticalScale(40),
+    //position: 'absolute',
+    //bottom: verticalScale(20),
     width: '100%',
     justifyContent: 'space-evenly',
   },
