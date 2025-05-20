@@ -238,6 +238,38 @@ def create_post_comment(
     return comment
 
 
+@router.patch("/{post_id}/comments/{comment_id}", response_model=CommentPublic)
+def update_post_comment(
+    post_id: uuid.UUID,
+    comment_id: uuid.UUID,
+    session: SessionDep,
+    current_user: CurrentUser,
+    comment_in: CommentCreate,
+) -> CommentPublic:
+    """
+    Update a comment's content.
+    """
+    try:
+        comment = session.execute(
+            select(Comment).where(Comment.id == comment_id, Comment.post_id == post_id)
+        ).scalar_one()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Comment not found")
+
+    if comment.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=403, detail="Not authorized to update this comment"
+        )
+
+    updated_comment = crud.update_post_comment(
+        session=session,
+        db_obj=comment,
+        comment_in=comment_in,
+    )
+
+    return updated_comment
+
+
 @router.delete("/{post_id}/comments/{comment_id}")
 def delete_post_comment(
     comment_id: uuid.UUID,

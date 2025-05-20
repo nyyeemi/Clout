@@ -1,4 +1,6 @@
-import React, {useCallback} from 'react';
+// === Updated CommentModal.tsx ===
+import React, {useCallback, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {
   BottomSheetFooterProps,
@@ -15,21 +17,19 @@ import {CommentInputFooter} from './CommentInputFooter';
 
 import {CommentType, PostType} from '../../types/types';
 
-type CommentModalProps = Omit<BottomSheetModalProps, 'children'> & {
-  comments: CommentType[];
-  commentSheetRef: React.RefObject<BottomSheetModal>;
-  selectedPost: PostType;
-};
-
 export const CommentModal = ({
   comments,
   commentSheetRef,
   selectedPost,
   ...props
-}: CommentModalProps): JSX.Element => {
+}: {
+  comments: CommentType[];
+  commentSheetRef: React.RefObject<BottomSheetModal>;
+  selectedPost: PostType;
+} & Omit<BottomSheetModalProps, 'children'>): JSX.Element => {
   const insets = useSafeAreaInsets();
   const {colors} = useTheme();
-
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [addComment] = useCreateCommentMutation();
 
   const handleAddComment = useCallback(
@@ -44,9 +44,10 @@ export const CommentModal = ({
       <CommentInputFooter
         {...footerProps}
         handleAddComment={handleAddComment}
+        blurred={!!editingCommentId}
       />
     ),
-    [handleAddComment],
+    [editingCommentId, handleAddComment],
   );
 
   return (
@@ -57,13 +58,28 @@ export const CommentModal = ({
       index={0}
       backgroundStyle={{backgroundColor: colors.card}}
       handleIndicatorStyle={{backgroundColor: colors.border}}
-      footerComponent={renderFooter}
       topInset={insets.top}
-      backdropComponent={Backdrop}>
-      <CommentList data={comments} />
+      backdropComponent={Backdrop}
+      footerComponent={renderFooter}>
+      {editingCommentId && (
+        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+          <View style={styles.fullOverlay} />
+        </View>
+      )}
+      <CommentList
+        data={comments}
+        onItemPress={() => {}}
+        editingCommentId={editingCommentId}
+        onStartEdit={id => setEditingCommentId(id)}
+        onStopEdit={() => setEditingCommentId(null)}
+      />
     </BottomSheetModal>
   );
 };
 
-//REMOVED BOTTOMSHEETVIEW.
-//BottomSheetFlatList HAS TO BE STRAIGHT AFTER THE MODAL COMPONENT.
+const styles = StyleSheet.create({
+  fullOverlay: {
+    flex: 1,
+    zIndex: 2,
+  },
+});

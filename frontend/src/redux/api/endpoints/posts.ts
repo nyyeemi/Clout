@@ -14,6 +14,7 @@ import {
   PostRequestType,
   PostType,
   PostTypeWithCount,
+  UpdateCommentRequestType,
 } from '../../../types/types';
 
 export const postsApi = apiSlice.injectEndpoints({
@@ -115,6 +116,16 @@ export const postsApi = apiSlice.injectEndpoints({
         {type: 'Posts', id: post_id},
       ],
     }),
+    updateComment: builder.mutation<CommentType, UpdateCommentRequestType>({
+      query: ({post_id, content, comment_id}) => ({
+        url: `posts/${post_id}/comments/${comment_id}`,
+        method: 'PATCH',
+        body: {content},
+      }),
+      invalidatesTags: (result, error, {post_id}) => [
+        {type: 'Posts', id: post_id},
+      ],
+    }),
     deleteComment: builder.mutation<string, CommentDeleteRequestType>({
       query: ({post_id, comment_id}) => ({
         url: `posts/${post_id}/comments/${comment_id}`,
@@ -170,6 +181,7 @@ export const {
   useDeletePostMutation,
   useGetPostCommentsQuery,
   useCreateCommentMutation,
+  useUpdateCommentMutation,
   useDeleteCommentMutation,
   useGetLikesQuery,
   useAddLikeMutation,

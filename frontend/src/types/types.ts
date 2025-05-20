@@ -82,6 +82,12 @@ export type CommentRequestType = {
   post_id: string;
 };
 
+export type UpdateCommentRequestType = {
+  post_id: string;
+  content: string;
+  comment_id: string;
+};
+
 export type CommentDeleteRequestType = {
   post_id: string;
   comment_id: string;

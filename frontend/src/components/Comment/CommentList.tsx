@@ -11,17 +11,30 @@ import {CommentType} from '../../types/types';
 type CommentListType = {
   data: CommentType[];
   onItemPress?: () => void;
+  editingCommentId?: string | null;
+  onStartEdit?: (id: string) => void;
+  onStopEdit?: () => void;
 };
 
 export const CommentList = ({
   data,
   onItemPress,
+  editingCommentId,
+  onStartEdit,
+  onStopEdit,
 }: CommentListType): JSX.Element => {
   const renderItem = useCallback(
     ({item}: {item: CommentType}) => (
-      <CommentListItem comment={item} onItemPress={onItemPress} />
+      <CommentListItem
+        comment={item}
+        onItemPress={onItemPress}
+        isEditingExternally={editingCommentId === item.id}
+        onStartEdit={() => onStartEdit?.(item.id)}
+        onStopEdit={onStopEdit}
+        dimmed={!!editingCommentId && editingCommentId !== item.id}
+      />
     ),
-    [onItemPress],
+    [onItemPress, editingCommentId, onStartEdit, onStopEdit],
   );
 
   return (
@@ -46,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    paddingBottom: 80, //TODO IS THIS GOOD IN HERE
+    paddingBottom: 80,
   },
   listEmptyText: {
     fontSize: 17,

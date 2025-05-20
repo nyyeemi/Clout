@@ -43,6 +43,17 @@ def create_post_comment(
     return db_obj
 
 
+def update_post_comment(
+    session: Session,
+    db_obj: Comment,
+    comment_in: CommentCreate,
+) -> Comment:
+    db_obj.content = comment_in.content
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
 def create_post_like(*, session: Session, owner_id: UUID, post_id: UUID) -> Like:
     db_obj = Like(post_id=post_id, owner_id=owner_id)
     session.add(db_obj)
