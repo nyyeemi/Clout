@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Pressable,
@@ -34,7 +34,7 @@ type CommentListItemProps = {
   comment: CommentType;
   size?: 'small' | 'medium' | 'large';
   onItemPress?: () => void;
-  isEditingExternally?: boolean;
+  isEditing?: boolean;
   onStartEdit?: () => void;
   onStopEdit?: () => void;
   dimmed?: boolean;
@@ -45,7 +45,7 @@ export const CommentListItem = ({
   comment,
   size = 'small',
   onItemPress,
-  isEditingExternally,
+  isEditing,
   onStartEdit,
   onStopEdit,
   dimmed = false,
@@ -59,6 +59,15 @@ export const CommentListItem = ({
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const user = comment.owner;
+  const inputRef = useRef<React.ElementRef<typeof BottomSheetTextInput>>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50); // small delay ensures the input is rendered first
+    }
+  }, [isEditing]);
 
   const handlePress = () => {
     onItemPress?.();
@@ -108,7 +117,6 @@ export const CommentListItem = ({
     }
   };
 
-  const isEditing = isEditingExternally;
   const containerStyle: StyleProp<ViewStyle> = [
     styles.container,
     dimmed && styles.dimmed,
@@ -119,7 +127,7 @@ export const CommentListItem = ({
     },
   ];
 
-  const shouldCapturePress = editingActive && !isEditing;
+  const notUnderEditing = editingActive && !isEditing;
 
   return (
     <ContextMenu
@@ -133,17 +141,18 @@ export const CommentListItem = ({
       }>
       <Pressable
         style={containerStyle}
-        onPress={shouldCapturePress ? onStopEdit : undefined}>
-        <OpacityPressable onPress={handlePress}>
+        onPress={notUnderEditing ? onStopEdit : undefined}>
+        <OpacityPressable onPress={handlePress} disabled={notUnderEditing}>
           <ProfilePicture uri={user?.profile_picture_url ?? ''} size={size} />
         </OpacityPressable>
         <View style={styles.textContainer}>
-          <OpacityPressable onPress={handlePress}>
+          <OpacityPressable onPress={handlePress} disabled={notUnderEditing}>
             <ThemedText style={styles.username}>{user?.username}</ThemedText>
           </OpacityPressable>
           {isEditing ? (
             <View style={styles.commentAndButton}>
               <BottomSheetTextInput
+                ref={inputRef}
                 value={editedContent}
                 onChangeText={setEditedContent}
                 multiline
@@ -161,9 +170,9 @@ export const CommentListItem = ({
               </OpacityPressable>
             </View>
           ) : (
-            <Pressable>
+            <View>
               <ThemedText numberOfLines={2}>{comment.content}</ThemedText>
-            </Pressable>
+            </View>
           )}
         </View>
       </Pressable>

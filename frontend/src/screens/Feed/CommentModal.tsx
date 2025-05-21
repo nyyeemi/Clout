@@ -60,10 +60,11 @@ export const CommentModal = ({
       topInset={insets.top}
       backdropComponent={Backdrop}
       onDismiss={() => setEditingCommentId(null)}
-      footerComponent={renderFooter}>
+      footerComponent={!editingCommentId ? renderFooter : undefined}>
       <View style={styles.container}>
         <CommentList
           data={comments}
+          onItemPress={() => {}}
           editingCommentId={editingCommentId}
           onStartEdit={id => setEditingCommentId(id)}
           onStopEdit={() => setEditingCommentId(null)}
@@ -77,6 +78,5 @@ export const CommentModal = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
   },
 });
