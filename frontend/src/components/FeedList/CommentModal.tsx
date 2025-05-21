@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
+import {Keyboard, StyleSheet} from 'react-native';
 
 import {
   BottomSheetFooterProps,
@@ -62,12 +62,14 @@ export const CommentModal = ({
       backdropComponent={Backdrop}
       onDismiss={() => setEditingCommentId(null)}
       footerComponent={!editingCommentId ? renderFooter : undefined}>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          setEditingCommentId(null);
-          Keyboard.dismiss();
-        }}>
-        <View style={styles.container}>
+      {editingCommentId ? (
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setEditingCommentId(null);
+            Keyboard.dismiss();
+          }}
+          style={styles.touchableWithoutFeedback}
+          accessible={false}>
           <CommentList
             data={comments}
             onItemPress={() => {}}
@@ -76,14 +78,24 @@ export const CommentModal = ({
             onStopEdit={() => setEditingCommentId(null)}
             editingActive={!!editingCommentId}
           />
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      ) : (
+        <CommentList
+          data={comments}
+          onItemPress={() => {}}
+          editingCommentId={editingCommentId}
+          onStartEdit={id => setEditingCommentId(id)}
+          onStopEdit={() => setEditingCommentId(null)}
+          editingActive={!!editingCommentId}
+        />
+      )}
     </BottomSheetModal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  touchableWithoutFeedback: {
     flex: 1,
+    minHeight: '100%',
   },
 });

@@ -34,6 +34,7 @@ export const CommentInputFooter = ({
 
   const footerStyle: ViewStyle = {
     paddingBottom: insets.bottom,
+    backgroundColor: colors.card,
     ...(blurred ? {opacity: 0.1} : {}),
   };
 

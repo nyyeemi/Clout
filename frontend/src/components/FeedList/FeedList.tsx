@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {Dimensions, FlatList} from 'react-native';
+import {Dimensions, FlatList, View} from 'react-native';
 
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useTheme} from '@react-navigation/native';
@@ -14,6 +14,7 @@ import {
   useGetLikesQuery,
   useGetPostCommentsQuery,
 } from '../../redux/api/endpoints/posts';
+import {Spinner} from '../Spinner/Spinner';
 import {CommentModal} from './CommentModal';
 import {FeedPost} from './FeedPost';
 
@@ -40,14 +41,14 @@ export const FeedList = ({
 
   //const {data: posts = {data: [], count: 0}} = useGetFeedPostsQuery({});
 
-  const {data: likes = {data: [], count: 0}} = useGetLikesQuery(
-    selectedPost ? {post_id: selectedPost.id} : skipToken,
-  );
+  const {data: likes = {data: [], count: 0}, isLoading: isLikesLoading} =
+    useGetLikesQuery(selectedPost ? {post_id: selectedPost.id} : skipToken);
   const likedUsers = likes.data.map(like => like.owner);
 
-  const {data: comments = {data: [], count: 0}} = useGetPostCommentsQuery(
-    selectedPost ? {post_id: selectedPost.id} : skipToken,
-  );
+  const {data: comments = {data: [], count: 0}, isLoading: isCommentsLoading} =
+    useGetPostCommentsQuery(
+      selectedPost ? {post_id: selectedPost.id} : skipToken,
+    );
 
   const handleShowLikes = (post: PostType) => {
     setSelectedPost(post);

@@ -1,13 +1,18 @@
-import {useTheme} from '@react-navigation/native';
 import React from 'react';
 import {ActivityIndicator, StyleSheet} from 'react-native';
 
-export const Spinner = (): JSX.Element => {
+import {useTheme} from '@react-navigation/native';
+
+export const Spinner = ({
+  size = 'large',
+}: {
+  size?: number | 'small' | 'large' | undefined;
+}): JSX.Element => {
   const {colors} = useTheme();
   return (
     <ActivityIndicator
       style={styles.activityIndicator}
-      size="large"
+      size={size}
       color={colors.primary}
     />
   );
