@@ -40,6 +40,7 @@ import {Spinner} from '../../components/Spinner/Spinner';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
 import {useCreatePostMutation} from '../../redux/api/endpoints/posts';
+import {setNotification} from '../../redux/slices/notificationsSlice';
 import {Style} from './style';
 
 Reanimated.addWhitelistedNativeProps({zoom: true});
@@ -70,8 +71,6 @@ export const CameraScreen = (): JSX.Element => {
     () => ({zoom: zoom.value}),
     [zoom],
   );
-
-  console.log(frontCamera, backCamera);
 
   const [retryCount, setRetryCount] = useState(0);
 
@@ -166,9 +165,16 @@ export const CameraScreen = (): JSX.Element => {
       console.log('fulfilled:', payload);
     } catch (error) {
       console.log('error', error);
-      Alert.alert('Error saving photo');
+      setNotification({
+        type: 'error',
+        message: 'Error saving photo',
+      });
       return;
     }
+    setNotification({
+      type: 'success',
+      message: 'Photo taken successfully',
+    });
     setPhoto(null);
     setHasPosted(true);
   };
