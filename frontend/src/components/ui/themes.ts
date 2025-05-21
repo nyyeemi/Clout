@@ -1,5 +1,7 @@
-import {DefaultTheme, DarkTheme, Theme} from '@react-navigation/native';
 import {Platform} from 'react-native';
+
+import {DarkTheme, DefaultTheme, Theme} from '@react-navigation/native';
+
 /* example theme:
 export const DefaultTheme: Theme = {
   dark: false,
@@ -73,20 +75,28 @@ const fonts = Platform.select({
   },
 } as const satisfies Record<string, Theme['fonts']>);
 
-export const LightTheme = {
+export type ExtendedTheme = Theme & {
+  colors: Theme['colors'] & {
+    highlighted: string;
+  };
+};
+
+export const LightTheme: ExtendedTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     primary: '#E74C3C',
+    highlighted: 'rgb(215, 193, 193)',
   },
   fonts,
 };
 
-export const MyDarkTheme = {
+export const MyDarkTheme: ExtendedTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
     primary: '#E74C3C',
+    highlighted: 'rgb(64, 64, 64)',
   },
   fonts,
 };

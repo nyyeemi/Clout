@@ -1,22 +1,26 @@
 import React, {useState} from 'react';
+import {StyleSheet, View, ViewStyle} from 'react-native';
+
+import {faCircleUp} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   BottomSheetFooter,
   BottomSheetFooterProps,
   BottomSheetTextInput,
 } from '@gorhom/bottom-sheet';
-import {View, StyleSheet} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useTheme} from '@react-navigation/native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faCircleUp} from '@fortawesome/free-solid-svg-icons';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
 
 type CommentFooterType = BottomSheetFooterProps & {
   handleAddComment: (input: string) => void;
+  blurred?: boolean;
 };
 
 export const CommentInputFooter = ({
   handleAddComment,
+  blurred = false,
   ...props
 }: CommentFooterType) => {
   const [input, setInput] = useState('');
@@ -28,14 +32,21 @@ export const CommentInputFooter = ({
     setInput('');
   };
 
+  const footerStyle: ViewStyle = {
+    paddingBottom: insets.bottom,
+    ...(blurred ? {opacity: 0.1} : {}),
+  };
+
   return (
-    <BottomSheetFooter
-      {...props}
-      style={{paddingBottom: insets.bottom, backgroundColor: colors.card}}>
+    <BottomSheetFooter {...props} style={footerStyle}>
       <View style={[styles.footerContainer, {backgroundColor: colors.card}]}>
         <BottomSheetTextInput
-          style={[styles.input, {color: colors.text}]}
+          style={[
+            styles.input,
+            {color: colors.text, backgroundColor: colors.border},
+          ]}
           placeholder="Write a comment"
+          placeholderTextColor={colors.card}
           value={input}
           onChangeText={setInput}
         />
@@ -62,6 +73,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     padding: 8,
-    backgroundColor: 'rgba(151, 151, 151, 0.25)',
   },
 });

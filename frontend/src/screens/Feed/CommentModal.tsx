@@ -1,9 +1,11 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
+import {Keyboard, StyleSheet, View} from 'react-native';
 
 import {
   BottomSheetFooterProps,
   BottomSheetModal,
   BottomSheetModalProps,
+  TouchableWithoutFeedback,
 } from '@gorhom/bottom-sheet';
 import {useTheme} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -15,21 +17,19 @@ import {CommentInputFooter} from './CommentInputFooter';
 
 import {CommentType, PostType} from '../../types/types';
 
-type CommentModalProps = Omit<BottomSheetModalProps, 'children'> & {
-  comments: CommentType[];
-  commentSheetRef: React.RefObject<BottomSheetModal>;
-  selectedPost: PostType;
-};
-
 export const CommentModal = ({
   comments,
   commentSheetRef,
   selectedPost,
   ...props
-}: CommentModalProps): JSX.Element => {
+}: {
+  comments: CommentType[];
+  commentSheetRef: React.RefObject<BottomSheetModal>;
+  selectedPost: PostType;
+} & Omit<BottomSheetModalProps, 'children'>): JSX.Element => {
   const insets = useSafeAreaInsets();
   const {colors} = useTheme();
-
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [addComment] = useCreateCommentMutation();
 
   const handleAddComment = useCallback(
@@ -44,9 +44,10 @@ export const CommentModal = ({
       <CommentInputFooter
         {...footerProps}
         handleAddComment={handleAddComment}
+        blurred={!!editingCommentId}
       />
     ),
-    [handleAddComment],
+    [editingCommentId, handleAddComment],
   );
 
   return (
@@ -57,13 +58,32 @@ export const CommentModal = ({
       index={0}
       backgroundStyle={{backgroundColor: colors.card}}
       handleIndicatorStyle={{backgroundColor: colors.border}}
-      footerComponent={renderFooter}
       topInset={insets.top}
-      backdropComponent={Backdrop}>
-      <CommentList data={comments} />
+      backdropComponent={Backdrop}
+      onDismiss={() => setEditingCommentId(null)}
+      footerComponent={!editingCommentId ? renderFooter : undefined}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          setEditingCommentId(null);
+          Keyboard.dismiss();
+        }}>
+        <View style={styles.container}>
+          <CommentList
+            data={comments}
+            onItemPress={() => {}}
+            editingCommentId={editingCommentId}
+            onStartEdit={id => setEditingCommentId(id)}
+            onStopEdit={() => setEditingCommentId(null)}
+            editingActive={!!editingCommentId}
+          />
+        </View>
+      </TouchableWithoutFeedback>
     </BottomSheetModal>
   );
 };
 
-//REMOVED BOTTOMSHEETVIEW.
-//BottomSheetFlatList HAS TO BE STRAIGHT AFTER THE MODAL COMPONENT.
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
