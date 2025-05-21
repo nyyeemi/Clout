@@ -11,13 +11,13 @@ import {useTheme} from '@react-navigation/native';
 
 import globalStyle from '../../assets/styles/globalStyle';
 import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
-import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
-import {ThemedView} from '../../components/ui/themed-view';
-import {ThemedIcon, ThemedText} from '../../components/ui/typography';
 import {
   useAddLikeMutation,
   useDeleteLikeMutation,
 } from '../../redux/api/endpoints/posts';
+import {OpacityPressable} from '../OpacityPressable/OpacityPressable';
+import {ThemedView} from '../ui/themed-view';
+import {ThemedIcon, ThemedText} from '../ui/typography';
 
 import {PostType} from '../../types/types';
 

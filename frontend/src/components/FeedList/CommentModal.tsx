@@ -10,9 +10,9 @@ import {
 import {useTheme} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {Backdrop} from '../../components/Backdrop/Backdrop';
-import {CommentList} from '../../components/Comment/CommentList';
 import {useCreateCommentMutation} from '../../redux/api/endpoints/posts';
+import {Backdrop} from '../Backdrop/Backdrop';
+import {CommentList} from '../Comment/CommentList';
 import {CommentInputFooter} from './CommentInputFooter';
 
 import {CommentType, PostType} from '../../types/types';

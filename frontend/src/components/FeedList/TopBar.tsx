@@ -6,10 +6,10 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import globalStyle from '../../assets/styles/globalStyle';
 import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
-import {ProfilePicture} from '../../components/ProfilePicture/ProfilePicture';
-import {ThemedView} from '../../components/ui/themed-view';
-import {ThemedText} from '../../components/ui/typography';
 import {FeedStackParamList, Routes} from '../../navigation/Routes';
+import {ProfilePicture} from '../ProfilePicture/ProfilePicture';
+import {ThemedView} from '../ui/themed-view';
+import {ThemedText} from '../ui/typography';
 
 import {PostType} from '../../types/types';
 

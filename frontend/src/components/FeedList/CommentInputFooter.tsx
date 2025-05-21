@@ -11,7 +11,7 @@ import {
 import {useTheme} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
+import {OpacityPressable} from '../OpacityPressable/OpacityPressable';
 
 type CommentFooterType = BottomSheetFooterProps & {
   handleAddComment: (input: string) => void;

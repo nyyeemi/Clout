@@ -4,7 +4,7 @@ import {Dimensions, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import globalStyle from '../../assets/styles/globalStyle';
-import {ThemedView} from '../../components/ui/themed-view';
+import {ThemedView} from '../ui/themed-view';
 import {BottomBar} from './BottomBar';
 import {TopBar} from './TopBar';
 

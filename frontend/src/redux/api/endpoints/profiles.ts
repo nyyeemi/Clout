@@ -1,8 +1,8 @@
 import {apiSlice} from '../apiSlice';
 
 import {
+  PostTypeWithCount,
   ProfileFollowersType,
-  ProfilePostsType,
   ProfileType,
 } from '../../../types/types';
 
@@ -14,7 +14,7 @@ export const profileApi = apiSlice.injectEndpoints({
         {type: 'Profile', id: username},
       ],
     }),
-    getProfilePostsByUserName: builder.query<ProfilePostsType, string>({
+    getProfilePostsByUserName: builder.query<PostTypeWithCount, string>({
       query: username => `profiles/${username}/posts`,
       providesTags: (result, error, username) => [
         {type: 'ProfilePosts', id: username},
