@@ -69,6 +69,7 @@ export type PostRequestType = {
 
 export type GetPostRequestType = {
   last_post_created_at?: string;
+  limit?: number;
 };
 
 export type PostTypeWithCount = {

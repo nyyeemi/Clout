@@ -20,11 +20,15 @@ import {
 export const postsApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getFeedPosts: builder.query<PostTypeWithCount, GetPostRequestType>({
-      query: ({last_post_created_at}) => {
+      query: ({last_post_created_at, limit}) => {
         const params = new URLSearchParams();
 
         if (last_post_created_at) {
           params.append('last_post_created_at', last_post_created_at);
+        }
+
+        if (limit) {
+          params.append('limit', limit.toString());
         }
 
         const queryString = params.toString();

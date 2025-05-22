@@ -15,19 +15,28 @@ import {
   useGetLikesQuery,
   useGetPostCommentsQuery,
 } from '../../redux/api/endpoints/posts';
+import {Spinner} from '../Spinner/Spinner';
 import {CommentModal} from './CommentModal';
 import {FeedPost} from './FeedPost';
 
-import {PostType, PostTypeWithCount} from '../../types/types';
+import {PostType} from '../../types/types';
 
 type FeedListProps = {
-  posts: PostTypeWithCount;
+  posts: PostType[];
   initalScrollIndex?: number;
+  handleEndReached: () => void;
+  isFetchingPosts: boolean;
+  refreshing: boolean;
+  onRefresh: () => void;
 };
 
 export const FeedList = ({
   posts,
   initalScrollIndex,
+  handleEndReached,
+  isFetchingPosts,
+  refreshing,
+  onRefresh,
 }: FeedListProps): JSX.Element => {
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
   const [modalToRender, setModalToRender] = useState<
@@ -96,7 +105,7 @@ export const FeedList = ({
   return (
     <ThemeViewComponent style={[globalStyle.flex]}>
       <FlatList
-        data={posts.data}
+        data={posts}
         keyExtractor={item => String(item.id)}
         renderItem={renderItem}
         getItemLayout={(data, index) => ({
@@ -106,6 +115,13 @@ export const FeedList = ({
         })}
         showsVerticalScrollIndicator={false}
         initialScrollIndex={initalScrollIndex || null}
+        onEndReachedThreshold={0}
+        onEndReached={() => handleEndReached()}
+        ListFooterComponent={
+          isFetchingPosts ? <Spinner size={'small'} /> : null
+        }
+        refreshing={refreshing}
+        onRefresh={() => onRefresh()}
       />
 
       <BottomSheetModal
