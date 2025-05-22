@@ -48,7 +48,6 @@ export const ProfileStackNavigator = () => {
           title: route.params?.username,
         })}
         initialParams={{
-          userId: loggedInUser?.id,
           username: loggedInUser?.username,
         }}
       />
@@ -63,7 +62,7 @@ export const ProfileStackNavigator = () => {
         options={{title: 'Edit profile'}}
       />
       <ProfileStack.Screen
-        name={Routes.ImageDetail}
+        name={Routes.ProfileFeed}
         component={ProfileFeedScreen}
         options={{title: 'Posts', animation: 'scale_from_center'}}
       />

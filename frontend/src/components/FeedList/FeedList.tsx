@@ -2,14 +2,15 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Dimensions, FlatList} from 'react-native';
 
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {useTheme} from '@react-navigation/native';
+import {useRoute, useTheme} from '@react-navigation/native';
 import {skipToken} from '@reduxjs/toolkit/query';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import globalStyle from '../../assets/styles/globalStyle';
 import {Backdrop} from '../../components/Backdrop/Backdrop';
 import {UserList} from '../../components/UserList/UserList';
-import {ThemedSafeAreaView} from '../../components/ui/themed-view';
+import {ThemedSafeAreaView, ThemedView} from '../../components/ui/themed-view';
+import {Routes} from '../../navigation/Routes';
 import {
   useGetLikesQuery,
   useGetPostCommentsQuery,
@@ -37,11 +38,10 @@ export const FeedList = ({
   const snapPoints = useMemo(() => ['50%', '90%'], []);
   const {colors} = useTheme();
   const insets = useSafeAreaInsets();
+  const route = useRoute();
 
   //TODO: if feed downloads for example 20 images
   // -> when scrolled to 18th image then download more from backend
-
-  //const {data: posts = {data: [], count: 0}} = useGetFeedPostsQuery({});
 
   const shouldRenderLikesModal = modalToRender === 'likes';
   const shouldRenderCommentsModal = modalToRender === 'comments';
@@ -67,10 +67,6 @@ export const FeedList = ({
   );
   const commentList = !isFetchingComments ? comments.data : [];
 
-  console.log(`Liked users: ${likedUsers} \n selected post: ${selectedPost}`);
-
-  //console.log(`Liked users: ${likedUsers}`);
-
   const handleShowLikes = (post: PostType) => {
     setSelectedPost(post);
     setModalToRender('likes');
@@ -94,8 +90,11 @@ export const FeedList = ({
     [],
   );
 
+  const ThemeViewComponent =
+    route.name === Routes.ProfileFeed ? ThemedView : ThemedSafeAreaView;
+
   return (
-    <ThemedSafeAreaView style={[globalStyle.flex]}>
+    <ThemeViewComponent style={[globalStyle.flex]}>
       <FlatList
         data={posts.data}
         keyExtractor={item => String(item.id)}
@@ -134,7 +133,7 @@ export const FeedList = ({
         selectedPost={selectedPost || ({} as PostType)}
         index={1}
       />
-    </ThemedSafeAreaView>
+    </ThemeViewComponent>
   );
 };
 

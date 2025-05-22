@@ -40,7 +40,7 @@ import {Spinner} from '../../components/Spinner/Spinner';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
 import {useCreatePostMutation} from '../../redux/api/endpoints/posts';
-import {setNotification} from '../../redux/slices/notificationsSlice';
+import {setNotification} from '../../redux/slices/dispatchers/notificationDispatcher';
 import {Style} from './style';
 
 Reanimated.addWhitelistedNativeProps({zoom: true});

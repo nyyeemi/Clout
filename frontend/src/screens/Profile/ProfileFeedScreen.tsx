@@ -7,7 +7,7 @@ import {Spinner} from '../../components/Spinner/Spinner';
 import {ProfileStackParamList} from '../../navigation/Routes';
 import {useGetProfilePostsByUserNameQuery} from '../../redux/api/endpoints/profiles';
 
-type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ImageDetail'>;
+type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ProfileFeed'>;
 
 export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
   const {imageId, username} = route.params || {};

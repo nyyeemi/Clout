@@ -18,7 +18,7 @@ export type ProfileStackParamList = {
   Settings: undefined;
   Followers: {index: number; username: string};
   EditProfile: undefined;
-  ImageDetail: {imageId: string; username: string};
+  ProfileFeed: {imageId: string; username: string};
 };
 
 export type FeedStackParamList = {
@@ -39,6 +39,6 @@ export const Routes = {
   Settings: 'Settings',
   Followers: 'Followers',
   EditProfile: 'EditProfile',
-  ImageDetail: 'ImageDetail',
+  ProfileFeed: 'ProfileFeed',
   ProfileStack: 'ProfileStack',
 } as const;

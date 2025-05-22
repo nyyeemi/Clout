@@ -43,7 +43,7 @@ export const ImageList = ({
   };
 
   const handlePress = (item: PostType) => {
-    navigation.navigate(Routes.ImageDetail, {
+    navigation.navigate(Routes.ProfileFeed, {
       imageId: item.id,
       username: profileUser.username,
     });

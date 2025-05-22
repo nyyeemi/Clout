@@ -1,6 +1,5 @@
+// notificationsSlice.ts
 import {PayloadAction, createSlice, nanoid} from '@reduxjs/toolkit';
-
-import store from '../store/store';
 
 type NotificationType = 'success' | 'error' | 'info' | 'warning';
 
@@ -25,7 +24,7 @@ const notificationsSlice = createSlice({
       reducer: (state, action: PayloadAction<Notification>) => {
         state.push(action.payload);
       },
-      prepare: (payload: {type: NotificationType; message: string}) => {
+      prepare: (payload: NotificationPayload) => {
         const id = nanoid();
         return {payload: {id, ...payload}};
       },
@@ -39,7 +38,5 @@ const notificationsSlice = createSlice({
 export const {addNotification, removeNotification, clearNotifications} =
   notificationsSlice.actions;
 
-export const setNotification = (payload: NotificationPayload) => {
-  store.dispatch(addNotification(payload));
-};
 export default notificationsSlice.reducer;
+export type {NotificationType, NotificationPayload};
