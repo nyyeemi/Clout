@@ -79,6 +79,7 @@ export const ImageList = ({
       ListFooterComponent={isFetchingPosts ? <Spinner size={'small'} /> : null}
       refreshing={refreshing}
       onRefresh={() => onRefresh()}
+      estimatedItemSize={194}
     />
   );
 };

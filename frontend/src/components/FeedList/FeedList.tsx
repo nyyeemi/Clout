@@ -1,9 +1,9 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {Dimensions, FlatList} from 'react-native';
 
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useRoute, useTheme} from '@react-navigation/native';
 import {skipToken} from '@reduxjs/toolkit/query';
+import {FlashList} from '@shopify/flash-list';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import globalStyle from '../../assets/styles/globalStyle';
@@ -104,15 +104,10 @@ export const FeedList = ({
 
   return (
     <ThemeViewComponent style={[globalStyle.flex]}>
-      <FlatList
+      <FlashList
         data={posts}
         keyExtractor={item => String(item.id)}
         renderItem={renderItem}
-        getItemLayout={(data, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
         showsVerticalScrollIndicator={false}
         initialScrollIndex={initalScrollIndex || null}
         onEndReachedThreshold={0}
@@ -121,6 +116,7 @@ export const FeedList = ({
           isFetchingPosts ? <Spinner size={'small'} /> : null
         }
         refreshing={refreshing}
+        estimatedItemSize={709}
         onRefresh={() => onRefresh()}
       />
 
@@ -152,12 +148,3 @@ export const FeedList = ({
     </ThemeViewComponent>
   );
 };
-
-const {width} = Dimensions.get('window');
-const IMAGE_WIDTH = width;
-const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
-
-const TOP_BAR_HEIGHT = 50;
-const BOTTOM_BAR_HEIGHT = 69;
-// TODO: make sure the calculation is working on all devices
-const ITEM_HEIGHT = IMAGE_HEIGHT + TOP_BAR_HEIGHT + BOTTOM_BAR_HEIGHT;
