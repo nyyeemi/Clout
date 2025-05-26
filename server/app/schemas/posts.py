@@ -25,7 +25,6 @@ class PostUpdate(BaseModel):
 
 class PostPublic(PostBase):
     id: uuid.UUID
-    owner_id: uuid.UUID
     owner: UserInfoBasic
     created_at: datetime
     num_likes: int = 0
@@ -42,15 +41,8 @@ class PostsPublic(BaseModel):
 
 
 # response models for profile posts
-class ProfilePostPublic(PostBase):
-    id: uuid.UUID
-    created_at: datetime
-    num_likes: int = 0
-    num_comments: int = 0
-    owner: UserInfoBasic
-
-    class Config:
-        from_attributes = True
+class ProfilePostPublic(PostPublic):
+    pass
 
 
 class ProfilePostsPublic(BaseModel):

@@ -50,6 +50,7 @@ class UserPublic(UserBase):
 class UserPublicProfile(UserPublic):
     num_followers: int = 0
     num_following: int = 0
+    num_posts: int | None = None
 
     class Config:
         from_attributes = True

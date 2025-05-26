@@ -1,9 +1,15 @@
 import React from 'react';
-import {ImageStyle, StyleProp, StyleSheet} from 'react-native';
-import {useTheme} from '@react-navigation/native';
-import FastImage, {FastImageProps} from 'react-native-fast-image';
+import {
+  Image,
+  ImageProps,
+  ImageStyle,
+  StyleProp,
+  StyleSheet,
+} from 'react-native';
 
-type ProfilePictureProps = Omit<FastImageProps, 'source'> & {
+import {useTheme} from '@react-navigation/native';
+
+type ProfilePictureProps = Omit<ImageProps, 'source'> & {
   uri: string;
   style?: StyleProp<ImageStyle>;
   size?: 'small' | 'medium' | 'large';
@@ -18,7 +24,7 @@ export const ProfilePicture = ({
   const {colors} = useTheme();
 
   return (
-    <FastImage
+    <Image
       source={{uri}}
       resizeMode="cover"
       style={[lookupTable[size], {borderColor: colors.border}, style]}

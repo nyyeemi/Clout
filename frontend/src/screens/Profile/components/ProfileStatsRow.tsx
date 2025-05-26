@@ -11,13 +11,7 @@ import {ProfileStackParamList} from '../../../navigation/Routes';
 
 import {ProfileType} from '../../../types/types';
 
-export const ProfileStatsRow = ({
-  user,
-  num_posts,
-}: {
-  user: ProfileType;
-  num_posts: number;
-}): JSX.Element => {
+export const ProfileStatsRow = ({user}: {user: ProfileType}): JSX.Element => {
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const onPressFollowing = () => {
@@ -29,7 +23,7 @@ export const ProfileStatsRow = ({
   return (
     <View style={styles.container}>
       <ProfilePicture uri={user.profile_picture_url} />
-      <ProfileStatItem value={num_posts} label={'posts'} />
+      <ProfileStatItem value={user.num_posts} label={'posts'} />
       <OpacityPressable onPress={onPressFollowing} style={styles.statItem}>
         <ProfileStatItem value={user.num_following} label={'following'} />
       </OpacityPressable>

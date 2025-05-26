@@ -8,7 +8,6 @@ import {
   CommentTypeWithCount,
   GetCommentsRequestType,
   GetLikesRequestType,
-  GetPostRequestType,
   LikeType,
   LikeTypeWithCount,
   PostRequestType,
@@ -17,25 +16,53 @@ import {
   UpdateCommentRequestType,
 } from '../../../types/types';
 
+type FeedPageParam = {
+  last_post_created_at?: string;
+  limit: number;
+};
+
 export const postsApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
-    getFeedPosts: builder.query<PostTypeWithCount, GetPostRequestType>({
-      query: ({last_post_created_at, limit}) => {
-        const params = new URLSearchParams();
+    getFeedPosts: builder.infiniteQuery<PostTypeWithCount, void, FeedPageParam>(
+      {
+        query: ({pageParam: {last_post_created_at, limit}}) => {
+          const params = new URLSearchParams();
 
-        if (last_post_created_at) {
-          params.append('last_post_created_at', last_post_created_at);
-        }
+          if (last_post_created_at) {
+            params.append('last_post_created_at', last_post_created_at);
+          }
 
-        if (limit) {
-          params.append('limit', limit.toString());
-        }
+          if (limit) {
+            params.append('limit', limit.toString());
+          }
 
-        const queryString = params.toString();
-        return queryString ? `posts/?${queryString}` : 'posts/';
+          const queryString = params.toString();
+          return queryString ? `posts/?${queryString}` : 'posts/';
+        },
+        infiniteQueryOptions: {
+          initialPageParam: {last_post_created_at: '', limit: 18},
+          getNextPageParam: (lastPage, allPages, lastPageParam) => {
+            if (lastPage.count < lastPageParam.limit) {
+              return undefined;
+            }
+            const lastPost = lastPage.data.at(-1);
+
+            if (!lastPost) {
+              console.warn(
+                'No last post found on the last page, stopping pagination.',
+              );
+              return undefined;
+            }
+
+            return {
+              last_post_created_at: lastPost.created_at,
+              limit: lastPageParam.limit,
+            };
+          },
+        },
+        providesTags: () => [{type: 'Posts'}],
       },
-      providesTags: () => [{type: 'Posts'}],
-    }),
+    ),
     createPost: builder.mutation<PostType, Partial<PostRequestType>>({
       query: body => ({
         url: 'posts/',
@@ -178,7 +205,7 @@ export const postsApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetFeedPostsQuery,
+  useGetFeedPostsInfiniteQuery,
   useCreatePostMutation,
   useGetPostByIdQuery,
   useUpdatePostMutation,

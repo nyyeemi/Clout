@@ -17,7 +17,7 @@ type Props = {
   post: PostType;
 };
 
-export const TopBar = ({post}: Props): JSX.Element => {
+export const TopBar = ({post}: Props) => {
   const navigation = useNavigation<StackNavigationProp<FeedStackParamList>>();
   const handleNavigate = () => {
     navigation.navigate(Routes.ProfileStack, {
@@ -27,7 +27,7 @@ export const TopBar = ({post}: Props): JSX.Element => {
   };
 
   return (
-    <ThemedView style={[globalStyle.flex]}>
+    <ThemedView style={style.viewStyle}>
       <Pressable style={style.container} onPress={() => handleNavigate()}>
         <ProfilePicture
           uri={post.owner.profile_picture_url}
@@ -40,16 +40,16 @@ export const TopBar = ({post}: Props): JSX.Element => {
 };
 
 const style = StyleSheet.create({
+  viewStyle: {height: 60, flex: 1, justifyContent: 'center'},
   container: {
-    height: verticalScale(50),
     alignItems: 'center',
     flexDirection: 'row',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   profileImage: {
-    width: horizontalScale(45),
-    height: horizontalScale(45),
-    borderRadius: horizontalScale(45),
-    marginHorizontal: horizontalScale(10),
+    width: 45,
+    height: 45,
+    borderRadius: 45,
+    marginHorizontal: 10,
   },
 });

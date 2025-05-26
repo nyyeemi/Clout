@@ -1,9 +1,9 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {Dimensions, FlatList} from 'react-native';
 
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useRoute, useTheme} from '@react-navigation/native';
 import {skipToken} from '@reduxjs/toolkit/query';
+import {FlashList} from '@shopify/flash-list';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import globalStyle from '../../assets/styles/globalStyle';
@@ -17,16 +17,17 @@ import {
 } from '../../redux/api/endpoints/posts';
 import {Spinner} from '../Spinner/Spinner';
 import {CommentModal} from './CommentModal';
-import {FeedPost} from './FeedPost';
+import {FeedPost, IMAGE_HEIGHT} from './FeedPost';
 
 import {PostType} from '../../types/types';
 
 type FeedListProps = {
   posts: PostType[];
-  initalScrollIndex?: number;
+  initalScrollIndex?: number | null;
   handleEndReached: () => void;
   isFetchingPosts: boolean;
   refreshing: boolean;
+  hasNextPage: boolean;
   onRefresh: () => void;
 };
 
@@ -36,14 +37,15 @@ export const FeedList = ({
   handleEndReached,
   isFetchingPosts,
   refreshing,
+  hasNextPage,
   onRefresh,
-}: FeedListProps): JSX.Element => {
+}: FeedListProps) => {
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
   const [modalToRender, setModalToRender] = useState<
     'likes' | 'comments' | null
   >(null);
   const likeSheetRef = useRef<BottomSheetModal>(null);
-  const commentSheetRef = useRef<BottomSheetModal>(null);
+  const commentSheetRef = useRef<BottomSheetModal | null>(null);
   const snapPoints = useMemo(() => ['50%', '90%'], []);
   const {colors} = useTheme();
   const insets = useSafeAreaInsets();
@@ -99,29 +101,29 @@ export const FeedList = ({
     [],
   );
 
+  const itemSize = 60 + IMAGE_HEIGHT + 100; //topbar + image + bottombar
+
   const ThemeViewComponent =
     route.name === Routes.ProfileFeed ? ThemedView : ThemedSafeAreaView;
 
   return (
     <ThemeViewComponent style={[globalStyle.flex]}>
-      <FlatList
+      <FlashList
         data={posts}
         keyExtractor={item => String(item.id)}
         renderItem={renderItem}
-        getItemLayout={(data, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
         showsVerticalScrollIndicator={false}
         initialScrollIndex={initalScrollIndex || null}
         onEndReachedThreshold={0}
-        onEndReached={() => handleEndReached()}
+        onEndReached={hasNextPage ? () => handleEndReached() : null}
         ListFooterComponent={
           isFetchingPosts ? <Spinner size={'small'} /> : null
         }
         refreshing={refreshing}
+        estimatedItemSize={itemSize}
         onRefresh={() => onRefresh()}
+        key={refreshing ? 'refreshing' : 'stable'}
+        estimatedFirstItemOffset={0}
       />
 
       <BottomSheetModal
@@ -152,12 +154,3 @@ export const FeedList = ({
     </ThemeViewComponent>
   );
 };
-
-const {width} = Dimensions.get('window');
-const IMAGE_WIDTH = width;
-const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
-
-const TOP_BAR_HEIGHT = 50;
-const BOTTOM_BAR_HEIGHT = 69;
-// TODO: make sure the calculation is working on all devices
-const ITEM_HEIGHT = IMAGE_HEIGHT + TOP_BAR_HEIGHT + BOTTOM_BAR_HEIGHT;

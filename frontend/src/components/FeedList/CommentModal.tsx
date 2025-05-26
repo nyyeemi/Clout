@@ -24,9 +24,9 @@ export const CommentModal = ({
   ...props
 }: {
   comments: CommentType[];
-  commentSheetRef: React.RefObject<BottomSheetModal>;
+  commentSheetRef: React.RefObject<BottomSheetModal | null>;
   selectedPost: PostType;
-} & Omit<BottomSheetModalProps, 'children'>): JSX.Element => {
+} & Omit<BottomSheetModalProps, 'children'>) => {
   const insets = useSafeAreaInsets();
   const {colors} = useTheme();
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);

@@ -1,7 +1,5 @@
 import React from 'react';
-import {Dimensions, StyleSheet} from 'react-native';
-
-import FastImage from 'react-native-fast-image';
+import {Dimensions, Image, StyleSheet} from 'react-native';
 
 import globalStyle from '../../assets/styles/globalStyle';
 import {ThemedView} from '../ui/themed-view';
@@ -16,15 +14,11 @@ type Props = {
   onShowComments: (post: PostType) => void;
 };
 
-export const FeedPost = ({
-  post,
-  onShowLikes,
-  onShowComments,
-}: Props): JSX.Element => {
+export const FeedPost = ({post, onShowLikes, onShowComments}: Props) => {
   return (
     <ThemedView bottomBorder style={globalStyle.flex}>
       <TopBar post={post} />
-      <FastImage
+      <Image
         source={{uri: post.image_url}}
         resizeMode="cover"
         style={[style.image]}
@@ -39,8 +33,8 @@ export const FeedPost = ({
 };
 
 const {width} = Dimensions.get('window');
-const IMAGE_WIDTH = width;
-const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
+const IMAGE_WIDTH = Math.floor(width);
+export const IMAGE_HEIGHT = Math.floor((IMAGE_WIDTH / 3) * 4);
 
 const style = StyleSheet.create({
   image: {

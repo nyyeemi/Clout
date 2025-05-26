@@ -1,8 +1,7 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Dimensions, View} from 'react-native';
+import {Dimensions, Image, View} from 'react-native';
 
 import {faArrowUp} from '@fortawesome/free-solid-svg-icons';
-import FastImage from 'react-native-fast-image';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -33,11 +32,11 @@ import {styles} from './style';
 
 import {PostType} from '../../types/types';
 
-const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
-
 type ImageTuple = [PostType, PostType];
 
-export const VoteScreen = (): JSX.Element => {
+const AnimatedImage = Animated.createAnimatedComponent(Image);
+
+export const VoteScreen = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [hasVoted, setHasVoted] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -114,12 +113,13 @@ export const VoteScreen = (): JSX.Element => {
     const nextIndex = currentIndex + 1;
     const nextImages = activeVoteImages[nextIndex];
 
-    if (nextImages) {
+    /*    if (nextImages) {
       FastImage.preload([
         {uri: nextImages[0].image_url},
         {uri: nextImages[1].image_url},
       ]);
     }
+      */
 
     return activeVoteImages[currentIndex] ?? null;
   }, [currentIndex, activeVoteImages]);
@@ -296,19 +296,19 @@ export const VoteScreen = (): JSX.Element => {
           <View style={styles.container}>
             {leftImageGesture && (
               <GestureDetector gesture={leftImageGesture}>
-                <AnimatedFastImage
+                <AnimatedImage
                   source={{uri: currentImages[0].image_url}}
                   style={[styles.image, leftImageStyle]}
-                  resizeMode={FastImage.resizeMode.cover}
+                  resizeMode={'cover'}
                 />
               </GestureDetector>
             )}
             {rightImageGesture && (
               <GestureDetector gesture={rightImageGesture}>
-                <AnimatedFastImage
+                <AnimatedImage
                   source={{uri: currentImages?.[1].image_url}}
                   style={[styles.image, rightImageStyle]}
-                  resizeMode={FastImage.resizeMode.cover}
+                  resizeMode={'cover'}
                 />
               </GestureDetector>
             )}

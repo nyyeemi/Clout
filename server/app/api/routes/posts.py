@@ -75,20 +75,11 @@ def read_posts_feed(
     )
     posts = session.scalars(statement).all()
 
-    posts_data = []
+    posts_data = crud.populate_is_liked_by_current_user(
+        session=session, current_user=current_user, posts=posts
+    )
 
-    user_likes = [like.post_id for like in current_user.likes]
-
-    for post in posts:
-        is_liked_by_current_user = post.id in user_likes
-        base_data = PostPublic.model_validate(post, from_attributes=True)
-        post_data = base_data.model_copy(
-            update={"is_liked_by_current_user": is_liked_by_current_user}
-        )
-
-        posts_data.append(post_data)
-
-    return PostsPublic(data=posts_data, count=len(posts))
+    return PostsPublic(data=posts_data, count=len(posts_data))
 
 
 @router.post("/", response_model=PostPublic)

@@ -9,7 +9,7 @@ import {ThemedText} from '../../components/ui/typography';
 import {ProfileStackParamList} from '../../navigation/Routes';
 import {
   useGetProfileByUserNameQuery,
-  useGetProfilePostsByUserNameQuery,
+  useGetProfilePostsInfiniteQuery,
 } from '../../redux/api/endpoints/profiles';
 import {ImageList} from './components/ImageList';
 
@@ -19,17 +19,27 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   const {username} = route.params;
 
   const {
-    data: postData = {data: [], count: 0},
-    isLoading: isPostsLoading,
-    //isSuccess: isPostsSuccess,
+    data, // Contains { pages: PostTypeWithCount[], pageParams: ProfilePostsPageParam[] }
+    //isFetching,
+    isLoading,
     isError: isPostsError,
-    error: postsError,
-  } = useGetProfilePostsByUserNameQuery(username);
+    error,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useGetProfilePostsInfiniteQuery(username);
+
+  const allPosts = React.useMemo(
+    () => data?.pages?.flatMap(page => page.data) || [],
+    [data],
+  );
+
+  console.log({isLoading, isPostsError, postsLength: allPosts.length});
 
   const {
     data: profileUser = null,
     isLoading: isUserLoading,
-    //isSuccess: isUserSuccess,
     isError: isUserError,
     error: userError,
   } = useGetProfileByUserNameQuery(username);
@@ -48,18 +58,21 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   }
 
   if (isPostsError) {
-    if (isPostsError) {
-      console.error('Error fetching posts:', postsError);
-    }
+    console.error('Error fetching posts:', error);
   }
 
   return (
     <ThemedView style={[globalStyle.flex]}>
       <ImageList
-        postData={postData}
+        posts={allPosts}
         profileUser={profileUser}
-        isLoadingPosts={isPostsLoading}
+        isFetchingPosts={isFetchingNextPage}
+        isLoadingPosts={isLoading}
         isErrorPosts={isPostsError}
+        refreshing={isLoading}
+        onRefresh={refetch}
+        hasNextPage={hasNextPage}
+        handleEndReached={fetchNextPage}
       />
     </ThemedView>
   );

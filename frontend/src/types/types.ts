@@ -31,7 +31,6 @@ export type CustomUser = {
 export type PostType = {
   id: string;
   owner: CustomUser;
-  owner_id: string;
   image_url: string;
   thumbnail_url: string | null;
   caption: string | null;
@@ -70,6 +69,10 @@ export type PostRequestType = {
 export type GetPostRequestType = {
   last_post_created_at?: string;
   limit?: number;
+};
+
+export type GetProfilePostRequestType = GetPostRequestType & {
+  username: string;
 };
 
 export type PostTypeWithCount = {

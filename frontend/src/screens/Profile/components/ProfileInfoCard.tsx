@@ -29,10 +29,8 @@ import {ProfileType} from '../../../types/types';
 
 export const ProfileInfoCard = ({
   profileUser,
-  num_posts,
 }: {
   profileUser: ProfileType;
-  num_posts: number;
 }): JSX.Element => {
   const {colors} = useTheme();
   const {data: loggedInUser} = useGetUsersMeQuery();
@@ -91,7 +89,7 @@ export const ProfileInfoCard = ({
 
   return (
     <ThemedView style={styles.container}>
-      <ProfileStatsRow user={profileUser} num_posts={num_posts} />
+      <ProfileStatsRow user={profileUser} />
       <View style={styles.defaultMargin}>
         <ThemedText style={styles.name}>{profileUser.username}</ThemedText>
         {profileUser.bio ? <ThemedText>{profileUser.bio}</ThemedText> : null}

@@ -100,6 +100,8 @@ def create_mock_users(session, base_dir):
 def create_mock_posts(session, base_dir):
     all_users = session.execute(select(User)).scalars().all()
 
+    test_user = next((user for user in all_users if user.username == "rubyf"), None)
+
     if not all_users:
         logger.warning("No users available to assign posts to.")
     else:
@@ -111,6 +113,10 @@ def create_mock_posts(session, base_dir):
         for idx, post_data in enumerate(posts_data):
             assigned_user = all_users[idx % len(all_users)]
             posts_to_add.append(Post(**post_data, owner_id=assigned_user.id))
+
+        if test_user:
+            for post_data in posts_data:
+                posts_to_add.append(Post(**post_data, owner_id=test_user.id))
 
         if posts_to_add:
             session.add_all(posts_to_add)

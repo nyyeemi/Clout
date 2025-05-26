@@ -1,17 +1,22 @@
+from datetime import datetime
+from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
+from sqlalchemy import and_, select
 from app.api.deps import SessionDep, CurrentUser
 from app.models import User
 from app.schemas.user import (
     ProfileFollowerUser,
     ProfileFollowerUsers,
-    UserPublic,
     UserPublicProfile,
-    UsersPublic,
 )
 from app.services import user_crud as crud
 from app.services import post_crud
 from app.services import follower_crud
-from app.schemas.posts import PostsPublic, ProfilePostsPublic
+from app.schemas.posts import (
+    PostsPublic,
+    ProfilePostsPublic,
+)
+from app.models.post import Post
 # from app.schemas.image import ImagePublic  # You will need this
 
 
@@ -21,7 +26,7 @@ router = APIRouter(prefix="/profiles", tags=["profiles"])
 @router.get("/{username}", response_model=UserPublicProfile)
 def get_public_profile(
     username: str, current_user: CurrentUser, session: SessionDep
-) -> User:
+) -> UserPublicProfile:
     """
     Get profile by username
     """
@@ -42,6 +47,7 @@ def get_public_profile(
             "num_followers": follower_count,
             "num_following": following_count,
             "is_followed_by_current_user": user.id in current_user_following_ids,
+            "num_posts": len(user.posts),
         }
     )
 
@@ -55,8 +61,9 @@ MAKE HERE ROUTER FOR POSTS
 def get_user_posts(
     username: str,
     session: SessionDep,
-    skip: int = Query(0, ge=0),
-    limit: int = Query(15, ge=1, le=100),
+    current_user: CurrentUser,
+    last_post_created_at: datetime | None = None,
+    limit: Annotated[int, Query(gt=0, le=100)] = 18,
 ) -> PostsPublic:
     """
     Get posts for a user by username
@@ -64,14 +71,26 @@ def get_user_posts(
     user = crud.get_user_by_username(session=session, username=username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
+    base_filter = user.id == Post.owner_id
+    if last_post_created_at:
+        base_filter = and_(base_filter, Post.created_at < last_post_created_at)
 
-    posts = post_crud.get_posts_by_user(  # sorted by date
-        session=session, user_id=user.id, skip=skip, limit=limit
+    if user.id != current_user.id:
+        base_filter = and_(base_filter, Post.is_visible)
+
+    statement = (
+        select(Post).where(base_filter).order_by(Post.created_at.desc()).limit(limit)
     )
 
-    count = len(posts)
+    posts = session.scalars(statement).all()
 
-    return ProfilePostsPublic(data=posts, count=count)
+    posts_data = post_crud.populate_is_liked_by_current_user(
+        session=session, current_user=current_user, posts=posts
+    )
+
+    count = len(posts_data)
+
+    return ProfilePostsPublic(data=posts_data, count=count)
 
 
 @router.get("/{username}/followers", response_model=ProfileFollowerUsers)
