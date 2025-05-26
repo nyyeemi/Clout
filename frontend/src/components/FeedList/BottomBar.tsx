@@ -10,7 +10,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useTheme} from '@react-navigation/native';
 
 import globalStyle from '../../assets/styles/globalStyle';
-import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
 import {
   useAddLikeMutation,
   useDeleteLikeMutation,
@@ -35,6 +34,7 @@ export const BottomBar = ({
   const [expanded, setExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(post.is_liked_by_current_user);
   const [likeCount, setLikeCount] = useState(post.num_likes);
+  const [hasOverflowed, setHasOverflowed] = useState(false);
   const [addLike] = useAddLikeMutation();
   const [deleteLike] = useDeleteLikeMutation();
   const {colors} = useTheme();
@@ -47,6 +47,12 @@ export const BottomBar = ({
   )
     .toString()
     .padStart(2, '0')}.${date.getFullYear()}`;
+
+  const handleTextLayout = (event: any) => {
+    // Check if the number of lines rendered is greater than the `numberOfLines` prop
+    // In our case, `numberOfLines` is 1 when not expanded.
+    setHasOverflowed(event.nativeEvent.lines.length > 2);
+  };
 
   const toggleLike = (newState: boolean) => {
     if (newState) {
@@ -102,20 +108,23 @@ export const BottomBar = ({
       </View>
 
       {caption && (
-        <View>
-          <Pressable onPress={() => !expanded && setExpanded(true)}>
-            <ThemedText numberOfLines={expanded ? undefined : 2}>
+        <View style={styles.caption}>
+          <Pressable
+            onPress={() => !expanded && hasOverflowed && setExpanded(true)}>
+            <ThemedText
+              numberOfLines={expanded ? undefined : 2}
+              onTextLayout={handleTextLayout}>
               {caption}
             </ThemedText>
           </Pressable>
 
-          {caption.length > 100 && expanded && (
+          {expanded && (
             <OpacityPressable onPress={() => setExpanded(false)}>
               <ThemedText style={styles.showMoreText}>Show less</ThemedText>
             </OpacityPressable>
           )}
 
-          {!expanded && caption.length > 100 && (
+          {!expanded && hasOverflowed && (
             <OpacityPressable onPress={() => setExpanded(true)}>
               <ThemedText style={styles.showMoreText}>Show more...</ThemedText>
             </OpacityPressable>
@@ -130,10 +139,11 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between',
     flexDirection: 'column',
-    marginLeft: horizontalScale(10),
+    marginLeft: 10,
     gap: 8,
-    paddingVertical: verticalScale(3),
+    paddingVertical: 3,
   },
+  caption: {minHeight: 65},
   likeCommentContainer: {
     flexDirection: 'row',
     gap: 15,

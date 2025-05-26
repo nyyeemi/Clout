@@ -116,8 +116,9 @@ export const FeedList = ({
           isFetchingPosts ? <Spinner size={'small'} /> : null
         }
         refreshing={refreshing}
-        estimatedItemSize={709}
+        estimatedItemSize={726}
         onRefresh={() => onRefresh()}
+        estimatedFirstItemOffset={0}
       />
 
       <BottomSheetModal

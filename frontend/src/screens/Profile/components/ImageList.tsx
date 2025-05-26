@@ -22,6 +22,7 @@ type ImageListProps = {
   isLoadingPosts: boolean;
   isErrorPosts: boolean;
   refreshing: boolean;
+  hasNextPage: boolean;
   onRefresh: () => void;
   handleEndReached: () => void;
 };
@@ -33,6 +34,7 @@ export const ImageList = ({
   isLoadingPosts,
   isErrorPosts,
   refreshing,
+  hasNextPage,
   onRefresh,
   handleEndReached,
 }: ImageListProps): JSX.Element => {
@@ -75,7 +77,7 @@ export const ImageList = ({
       keyExtractor={item => String(item.id)}
       numColumns={3}
       onEndReachedThreshold={0.3}
-      onEndReached={() => handleEndReached()}
+      onEndReached={hasNextPage ? () => handleEndReached() : null}
       ListFooterComponent={isFetchingPosts ? <Spinner size={'small'} /> : null}
       refreshing={refreshing}
       onRefresh={() => onRefresh()}

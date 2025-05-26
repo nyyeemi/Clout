@@ -6,9 +6,11 @@ import globalStyle from '../../assets/styles/globalStyle';
 import {Spinner} from '../../components/Spinner/Spinner';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
-import {useProfilePosts} from '../../hooks/useProfilePosts';
 import {ProfileStackParamList} from '../../navigation/Routes';
-import {useGetProfileByUserNameQuery} from '../../redux/api/endpoints/profiles';
+import {
+  useGetProfileByUserNameQuery,
+  useGetProfilePostsInfiniteQuery,
+} from '../../redux/api/endpoints/profiles';
 import {ImageList} from './components/ImageList';
 
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
@@ -17,17 +19,23 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   const {username} = route.params;
 
   const {
-    posts,
-    onRefresh,
-    isFetching: isPostsFetching,
-    handleEndReached,
+    data, // Contains { pages: PostTypeWithCount[], pageParams: ProfilePostsPageParam[] }
+    //isFetching,
+    isLoading,
     isError: isPostsError,
-    error: postsError,
-    refreshing,
-    isLoading: isPostsLoading,
-  } = useProfilePosts(username);
+    error,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useGetProfilePostsInfiniteQuery(username);
 
-  console.log({isPostsLoading, postsLength: posts.length});
+  const allPosts = React.useMemo(
+    () => data?.pages?.flatMap(page => page.data) || [],
+    [data],
+  );
+
+  console.log({isLoading, isPostsError, postsLength: allPosts.length});
 
   const {
     data: profileUser = null,
@@ -50,20 +58,21 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
   }
 
   if (isPostsError) {
-    console.error('Error fetching posts:', postsError);
+    console.error('Error fetching posts:', error);
   }
 
   return (
     <ThemedView style={[globalStyle.flex]}>
       <ImageList
-        posts={posts}
+        posts={allPosts}
         profileUser={profileUser}
-        isFetchingPosts={isPostsFetching}
-        isLoadingPosts={isPostsLoading}
+        isFetchingPosts={isFetchingNextPage}
+        isLoadingPosts={isLoading}
         isErrorPosts={isPostsError}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        handleEndReached={handleEndReached}
+        refreshing={isLoading}
+        onRefresh={refetch}
+        hasNextPage={hasNextPage}
+        handleEndReached={fetchNextPage}
       />
     </ThemedView>
   );

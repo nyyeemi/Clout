@@ -3,35 +3,47 @@ import React, {useEffect, useState} from 'react';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {FeedList} from '../../components/FeedList/FeedList';
-import {useProfilePosts} from '../../hooks/useProfilePosts';
 import {ProfileStackParamList} from '../../navigation/Routes';
+import {useGetProfilePostsInfiniteQuery} from '../../redux/api/endpoints/profiles';
 
 type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ProfileFeed'>;
 
 export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
   const {imageId, username} = route.params || {};
   const [postIndex, setPostIndex] = useState<number | null>(null);
+
   const {
-    posts,
-    onRefresh,
-    isFetching,
-    refreshing,
-    handleEndReached,
+    data, // Contains { pages: PostTypeWithCount[], pageParams: ProfilePostsPageParam[] }
+    //isFetching,
     isLoading,
-  } = useProfilePosts(username);
+    isError,
+    //error,
+    //hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useGetProfilePostsInfiniteQuery(username);
+
+  // Flatten the data from all pages into a single array of posts
+  const allPosts = React.useMemo(
+    () => data?.pages?.flatMap(page => page.data) || [],
+    [data],
+  );
 
   useEffect(() => {
-    if (imageId && posts.length > 0) {
-      const index = posts.findIndex(post => post.id === imageId);
+    if (imageId && allPosts.length > 0 && postIndex == null) {
+      const index = allPosts.findIndex(post => post.id === imageId);
       if (index !== -1) {
         setPostIndex(index);
       }
     }
-  }, [imageId, posts]);
+  }, [imageId, allPosts, postIndex]);
+
+  console.log({isLoading, isError, postsLength: allPosts.length});
 
   const onRefreshPosts = () => {
     setPostIndex(0);
-    onRefresh();
+    refetch();
   };
 
   if (isLoading || (postIndex === null && imageId)) {
@@ -40,12 +52,12 @@ export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
 
   return (
     <FeedList
-      posts={posts}
+      posts={allPosts}
       initalScrollIndex={postIndex}
-      isFetchingPosts={isFetching}
-      refreshing={refreshing}
+      isFetchingPosts={isFetchingNextPage}
+      refreshing={isLoading}
       onRefresh={onRefreshPosts}
-      handleEndReached={handleEndReached}
+      handleEndReached={fetchNextPage}
     />
   );
 };

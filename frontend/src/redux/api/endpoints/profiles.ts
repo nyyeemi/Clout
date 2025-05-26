@@ -7,6 +7,11 @@ import {
   ProfileType,
 } from '../../../types/types';
 
+type ProfilePostsInitialPageParam = {
+  last_post_created_at?: string;
+  limit: number;
+};
+
 export const profileApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getProfileByUserName: builder.query<ProfileType, string>({
@@ -15,6 +20,62 @@ export const profileApi = apiSlice.injectEndpoints({
         {type: 'Profile', id: username},
       ],
     }),
+    getProfilePosts: builder.infiniteQuery<
+      PostTypeWithCount,
+      string,
+      ProfilePostsInitialPageParam
+    >({
+      query: ({
+        pageParam: {last_post_created_at, limit},
+        queryArg: username,
+      }) => {
+        const params = new URLSearchParams();
+
+        if (last_post_created_at) {
+          params.append('last_post_created_at', last_post_created_at);
+        }
+
+        if (limit) {
+          params.append('limit', limit.toString());
+        }
+
+        const queryString = params.toString();
+        return queryString
+          ? `profiles/${username}/posts?${queryString}`
+          : `profiles/${username}/posts`;
+      },
+      infiniteQueryOptions: {
+        initialPageParam: {last_post_created_at: '', limit: 18},
+        getNextPageParam: (
+          lastPage,
+          allPages,
+          lastPageParam,
+          //allPageParam,
+          //queryArg: string,
+        ) => {
+          if (lastPage.count < lastPageParam.limit) {
+            return undefined;
+          }
+          const lastPost = lastPage.data.at(-1);
+
+          if (!lastPost) {
+            console.warn(
+              'No last post found on the last page, stopping pagination.',
+            );
+            return undefined;
+          }
+
+          return {
+            last_post_created_at: lastPost.created_at,
+            limit: lastPageParam.limit,
+          };
+        },
+      },
+      providesTags: (result, error, username) => [
+        {type: 'ProfilePosts', id: username},
+      ],
+    }),
+
     getProfilePostsByUserName: builder.query<
       PostTypeWithCount,
       GetProfilePostRequestType
@@ -59,4 +120,5 @@ export const {
   useGetProfilePostsByUserNameQuery,
   useGetProfileFollowersQuery,
   useGetProfileFollowingQuery,
+  useGetProfilePostsInfiniteQuery,
 } = profileApi;

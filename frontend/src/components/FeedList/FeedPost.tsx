@@ -39,8 +39,8 @@ export const FeedPost = ({
 };
 
 const {width} = Dimensions.get('window');
-const IMAGE_WIDTH = width;
-const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
+const IMAGE_WIDTH = Math.floor(width);
+const IMAGE_HEIGHT = Math.floor((IMAGE_WIDTH / 3) * 4);
 
 const style = StyleSheet.create({
   image: {
