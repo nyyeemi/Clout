@@ -27,6 +27,7 @@ type FeedListProps = {
   handleEndReached: () => void;
   isFetchingPosts: boolean;
   refreshing: boolean;
+  hasNextPage: boolean;
   onRefresh: () => void;
 };
 
@@ -36,6 +37,7 @@ export const FeedList = ({
   handleEndReached,
   isFetchingPosts,
   refreshing,
+  hasNextPage,
   onRefresh,
 }: FeedListProps): JSX.Element => {
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
@@ -111,7 +113,7 @@ export const FeedList = ({
         showsVerticalScrollIndicator={false}
         initialScrollIndex={initalScrollIndex || null}
         onEndReachedThreshold={0}
-        onEndReached={() => handleEndReached()}
+        onEndReached={hasNextPage ? () => handleEndReached() : null}
         ListFooterComponent={
           isFetchingPosts ? <Spinner size={'small'} /> : null
         }

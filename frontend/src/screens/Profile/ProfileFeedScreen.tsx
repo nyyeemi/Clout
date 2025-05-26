@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useMemo} from 'react';
 
 import {StackScreenProps} from '@react-navigation/stack';
 
@@ -10,41 +10,32 @@ type ImageDetailsProps = StackScreenProps<ProfileStackParamList, 'ProfileFeed'>;
 
 export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
   const {imageId, username} = route.params || {};
-  const [postIndex, setPostIndex] = useState<number | null>(null);
+  console.log(route.key);
 
   const {
-    data, // Contains { pages: PostTypeWithCount[], pageParams: ProfilePostsPageParam[] }
-    //isFetching,
+    data,
     isLoading,
     isError,
-    //error,
-    //hasNextPage,
+    hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
     refetch,
   } = useGetProfilePostsInfiniteQuery(username);
 
-  // Flatten the data from all pages into a single array of posts
-  const allPosts = React.useMemo(
+  const allPosts = useMemo(
     () => data?.pages?.flatMap(page => page.data) || [],
     [data],
   );
 
-  useEffect(() => {
-    if (imageId && allPosts.length > 0 && postIndex == null) {
-      const index = allPosts.findIndex(post => post.id === imageId);
-      if (index !== -1) {
-        setPostIndex(index);
-      }
+  const postIndex = useMemo(() => {
+    if (!imageId || allPosts.length === 0) {
+      return null;
     }
-  }, [imageId, allPosts, postIndex]);
+    const index = allPosts.findIndex(post => post.id === imageId);
+    return index !== -1 ? index : null;
+  }, [imageId, allPosts]);
 
   console.log({isLoading, isError, postsLength: allPosts.length});
-
-  const onRefreshPosts = () => {
-    setPostIndex(0);
-    refetch();
-  };
 
   if (isLoading || (postIndex === null && imageId)) {
     return <></>;
@@ -56,7 +47,8 @@ export const ProfileFeedScreen = ({route}: ImageDetailsProps): JSX.Element => {
       initalScrollIndex={postIndex}
       isFetchingPosts={isFetchingNextPage}
       refreshing={isLoading}
-      onRefresh={onRefreshPosts}
+      onRefresh={refetch}
+      hasNextPage={hasNextPage}
       handleEndReached={fetchNextPage}
     />
   );
