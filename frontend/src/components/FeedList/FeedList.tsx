@@ -1,4 +1,5 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useRoute, useTheme} from '@react-navigation/native';
@@ -16,6 +17,7 @@ import {
   useGetPostCommentsQuery,
 } from '../../redux/api/endpoints/posts';
 import {Spinner} from '../Spinner/Spinner';
+import {Title1Text} from '../ui/typography';
 import {CommentModal} from './CommentModal';
 import {FeedPost, IMAGE_HEIGHT} from './FeedPost';
 
@@ -113,6 +115,14 @@ export const FeedList = ({
   const ThemeViewComponent =
     route.name === Routes.ProfileFeed ? ThemedView : ThemedSafeAreaView;
 
+  const EmptyList = () => {
+    return (
+      <ThemedView style={style.emptyList}>
+        <Title1Text variant="heavy">No posts available</Title1Text>
+      </ThemedView>
+    );
+  };
+
   return (
     <ThemeViewComponent style={[globalStyle.flex]}>
       <FlashList
@@ -131,6 +141,7 @@ export const FeedList = ({
         onRefresh={() => onRefresh()}
         key={refreshing ? 'refreshing' : 'stable'}
         estimatedFirstItemOffset={0}
+        ListEmptyComponent={EmptyList()}
       />
 
       <BottomSheetModal
@@ -163,3 +174,11 @@ export const FeedList = ({
     </ThemeViewComponent>
   );
 };
+
+const style = StyleSheet.create({
+  emptyList: {
+    alignItems: 'center',
+    flex: 1,
+    marginTop: 150,
+  },
+});
