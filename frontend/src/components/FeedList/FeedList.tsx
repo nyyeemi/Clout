@@ -57,11 +57,18 @@ export const FeedList = ({
   const shouldRenderLikesModal = modalToRender === 'likes';
   const shouldRenderCommentsModal = modalToRender === 'comments';
 
-  const {data: likes = {data: [], count: 0}, isFetching} = useGetLikesQuery(
+  const {
+    data: likes = {data: [], count: 0},
+    isFetching,
+    isLoading: isLoadingLikes,
+    refetch: refetchLikes,
+  } = useGetLikesQuery(
     selectedPost && shouldRenderLikesModal
       ? {post_id: selectedPost.id}
       : skipToken,
   );
+
+  console.log('render feedlist', likes.data);
 
   const likedUsers =
     selectedPost && likes.data && !isFetching
@@ -140,6 +147,8 @@ export const FeedList = ({
           data={likedUsers}
           onItemPress={() => likeSheetRef.current?.dismiss()}
           onModal
+          onRefresh={refetchLikes}
+          isFetchingData={isLoadingLikes}
         />
       </BottomSheetModal>
 

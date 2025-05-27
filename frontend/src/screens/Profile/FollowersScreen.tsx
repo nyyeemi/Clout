@@ -26,9 +26,7 @@ const routes = [
   {key: 'followers', title: 'Followers'},
 ];
 
-export const FollowersScreen = ({
-  route: mainRoute,
-}: FollowersScreenProps): JSX.Element => {
+export const FollowersScreen = ({route: mainRoute}: FollowersScreenProps) => {
   const {index: initialIndex, username} = mainRoute.params;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(initialIndex);
@@ -38,12 +36,14 @@ export const FollowersScreen = ({
     data: following = {data: [], count: 0},
     isLoading: isLoadingFollowing,
     isError: isErrorFollowing,
+    refetch: refetchFollowing,
   } = useGetProfileFollowingQuery(username);
 
   const {
     data: followers = {data: [], count: 0},
     isLoading: isLoadingFollowers,
     isError: isErrorFollowers,
+    refetch: refetchFollowers,
   } = useGetProfileFollowersQuery(username);
 
   const renderScene = useCallback(
@@ -55,6 +55,7 @@ export const FollowersScreen = ({
               data={following.data}
               username={username}
               isLoading={isLoadingFollowing}
+              onRefresh={refetchFollowing}
             />
           );
         case 'followers':
@@ -63,6 +64,7 @@ export const FollowersScreen = ({
               data={followers.data}
               username={username}
               isLoading={isLoadingFollowers}
+              onRefresh={refetchFollowers}
             />
           );
         default:
@@ -93,10 +95,6 @@ export const FollowersScreen = ({
     />
   );
 
-  if (isLoadingFollowers || isLoadingFollowing) {
-    return <Spinner />;
-  }
-
   if (isErrorFollowers || isErrorFollowing) {
     return (
       <View style={styles.centered}>
@@ -122,27 +120,30 @@ type FollowListProps = {
   data: ProfileFollowerType[];
   username: string;
   isLoading: boolean;
+  onRefresh: () => void;
 };
 
 export const FollowingList = memo(
-  ({data, username, isLoading}: FollowListProps): JSX.Element => {
+  ({data, username, isLoading, onRefresh}: FollowListProps) => {
     return (
       <UserList
         data={data}
         currentProfileUserName={username}
         isFetchingData={isLoading}
+        onRefresh={onRefresh}
       />
     );
   },
 );
 
 export const FollowersList = memo(
-  ({data, username, isLoading}: FollowListProps): JSX.Element => {
+  ({data, username, isLoading, onRefresh}: FollowListProps) => {
     return (
       <UserList
         data={data}
         currentProfileUserName={username}
         isFetchingData={isLoading}
+        onRefresh={onRefresh}
       />
     );
   },

@@ -29,15 +29,16 @@ type Props = {
 export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
   const [expanded, setExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(post.is_liked_by_current_user);
-  const [likeCount, setLikeCount] = useState(post.num_likes);
+  //const [likeCount, setLikeCount] = useState(post.num_likes);
   const [hasOverflowed, setHasOverflowed] = useState(false);
   const [addLike] = useAddLikeMutation();
   const [deleteLike] = useDeleteLikeMutation();
   const {colors} = useTheme();
-
+  const likeCount = post.num_likes;
   const caption = post.caption;
   const commentCount = post.num_comments;
   const date = new Date(post.created_at);
+
   const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(
     date.getMonth() + 1
   )
@@ -54,13 +55,20 @@ export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
     if (newState) {
       addLike(post.id);
       setIsLiked(true);
-      setLikeCount(likeCount + 1);
+      //setLikeCount(likeCount + 1);
     } else {
       deleteLike(post.id);
       setIsLiked(false);
-      setLikeCount(likeCount - 1);
+      //setLikeCount(likeCount - 1);
     }
   };
+
+  console.log('||--------------------------------------||');
+  console.log('Bottombar: num_likes', post.num_likes);
+  console.log('Bottombar: likeCount', likeCount);
+  console.log('Bottombar: post_owner', post.owner.username);
+  console.log('Bottombar: post caption', post.caption);
+  console.log('||--------------------------------------||');
 
   const showLikes = () => onShowLikes(post);
 

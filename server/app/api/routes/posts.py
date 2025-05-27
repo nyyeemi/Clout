@@ -340,7 +340,8 @@ def read_post_likes(
         )
         if current_user_like:
             likes.insert(0, current_user_like)
-            likes.pop(-1)
+            if len(likes) > limit:
+                likes.pop(-1)
 
     current_user_following_ids = {f.user_id2 for f in current_user.following}
 
