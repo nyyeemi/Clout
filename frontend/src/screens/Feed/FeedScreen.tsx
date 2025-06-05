@@ -3,7 +3,7 @@ import React, {useMemo} from 'react';
 import {FeedList} from '../../components/FeedList/FeedList';
 import {useGetFeedPostsInfiniteQuery} from '../../redux/api/endpoints/posts';
 
-export const FeedScreen = (): JSX.Element => {
+export const FeedScreen = () => {
   const {
     data,
     isLoading,

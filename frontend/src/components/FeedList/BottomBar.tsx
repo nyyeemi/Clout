@@ -29,15 +29,15 @@ type Props = {
 export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
   const [expanded, setExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(post.is_liked_by_current_user);
-  const [likeCount, setLikeCount] = useState(post.num_likes);
   const [hasOverflowed, setHasOverflowed] = useState(false);
   const [addLike] = useAddLikeMutation();
   const [deleteLike] = useDeleteLikeMutation();
   const {colors} = useTheme();
-
+  const likeCount = post.num_likes;
   const caption = post.caption;
   const commentCount = post.num_comments;
   const date = new Date(post.created_at);
+
   const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(
     date.getMonth() + 1
   )
@@ -45,8 +45,6 @@ export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
     .padStart(2, '0')}.${date.getFullYear()}`;
 
   const handleTextLayout = (event: any) => {
-    // Check if the number of lines rendered is greater than the `numberOfLines` prop
-    // In our case, `numberOfLines` is 1 when not expanded.
     setHasOverflowed(event.nativeEvent.lines.length > 2);
   };
 
@@ -54,11 +52,9 @@ export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
     if (newState) {
       addLike(post.id);
       setIsLiked(true);
-      setLikeCount(likeCount + 1);
     } else {
       deleteLike(post.id);
       setIsLiked(false);
-      setLikeCount(likeCount - 1);
     }
   };
 

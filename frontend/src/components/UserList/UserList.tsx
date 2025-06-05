@@ -1,8 +1,13 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {FlatList, StyleSheet, TextInput} from 'react-native';
 
-import {BottomSheetFlatList, BottomSheetTextInput} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetFlashList,
+  BottomSheetFlatList,
+  BottomSheetTextInput,
+} from '@gorhom/bottom-sheet';
 import {useTheme} from '@react-navigation/native';
+import {FlashList} from '@shopify/flash-list';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {verticalScale} from '../../assets/styles/scaling';
@@ -22,6 +27,7 @@ type UserListType = {
   onModal?: boolean;
   currentProfileUserName?: string;
   isFetchingData?: boolean;
+  onRefresh: () => void;
 };
 
 // todo: add options for size and searchbarvisible
@@ -31,13 +37,13 @@ export const UserList = ({
   onModal = false,
   currentProfileUserName,
   isFetchingData,
-}: UserListType): JSX.Element => {
+  onRefresh,
+}: UserListType) => {
   const [value, setValue] = useState('');
   const {colors} = useTheme();
   const insets = useSafeAreaInsets();
   const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
 
-  //console.log(data);
   const [followUser, {isLoading: isFollowingUser}] = useCreateFollowMutation();
   const [unfollowUser, {isLoading: isUnfollowingUser}] =
     useDeleteFollowMutation();
@@ -67,7 +73,6 @@ export const UserList = ({
         user_id,
         username: currentProfileUserName ?? '', //invalidatetag
       };
-      console.log(mutationPayload);
       setTogglingUserId(user_id);
 
       try {
@@ -132,32 +137,27 @@ export const UserList = ({
     />
   );
 
-  const FlatListComponent = onModal ? BottomSheetFlatList : FlatList;
+  const FlatListComponent = onModal ? BottomSheetFlashList : FlashList;
 
   return (
     <FlatListComponent
       ListEmptyComponent={
-        data.length === 0 ? (
-          <Spinner size={'small'} />
-        ) : (
+        !isFetchingData ? (
           <ThemedText style={styles.listEmptyText}>No users found</ThemedText>
-        )
+        ) : null
       }
-      ListHeaderComponent={renderListHeader}
+      ListHeaderComponent={!isFetchingData ? renderListHeader : null}
       data={filteredList ?? []}
       keyExtractor={item => String(item.id)}
       renderItem={renderItem}
-      extraData={{
-        togglingUserId,
-        isMutationLoading,
-      }}
-      getItemLayout={(_data, index) => ({
-        length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
-        index,
-      })}
+      //extraData={{
+      //  togglingUserId,
+      //  isMutationLoading,
+      //}}
       keyboardDismissMode="on-drag"
       contentContainerStyle={onModal && {paddingBottom: insets.bottom}}
+      refreshing={onModal ? undefined : isFetchingData}
+      onRefresh={onModal ? undefined : () => onRefresh()}
     />
   );
 };

@@ -13,7 +13,7 @@ import {FlashList} from '@shopify/flash-list';
 
 import {Spinner} from '../../../components/Spinner/Spinner';
 import {ThemedView} from '../../../components/ui/themed-view';
-import {ThemedText} from '../../../components/ui/typography';
+import {ThemedText, Title1Text} from '../../../components/ui/typography';
 import {ProfileStackParamList, Routes} from '../../../navigation/Routes';
 import {ProfileInfoCard} from './ProfileInfoCard';
 
@@ -125,7 +125,7 @@ const ImageListItem = ({image, onPress, imageStyle}: ImageBoxProps) => {
 
 export const ListPlaceholder = () => (
   <ThemedView style={style.container}>
-    <ThemedText style={style.text}>No posts yet</ThemedText>
+    <Title1Text variant="heavy">No posts yet</Title1Text>
   </ThemedView>
 );
 
@@ -134,10 +134,6 @@ const style = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginVertical: 100,
-  },
-  text: {
-    fontSize: 28,
-    fontWeight: 'bold',
   },
   icon: {
     height: 100,

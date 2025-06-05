@@ -35,8 +35,6 @@ export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
     [data],
   );
 
-  console.log({isLoading, isPostsError, postsLength: allPosts.length});
-
   const {
     data: profileUser = null,
     isLoading: isUserLoading,
