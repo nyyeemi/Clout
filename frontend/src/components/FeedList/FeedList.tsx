@@ -70,8 +70,6 @@ export const FeedList = ({
       : skipToken,
   );
 
-  console.log('render feedlist', likes.data);
-
   const likedUsers =
     selectedPost && likes.data && !isFetching
       ? likes.data.map(like => like.owner)

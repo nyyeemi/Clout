@@ -44,7 +44,6 @@ export const UserList = ({
   const insets = useSafeAreaInsets();
   const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
 
-  //console.log(data);
   const [followUser, {isLoading: isFollowingUser}] = useCreateFollowMutation();
   const [unfollowUser, {isLoading: isUnfollowingUser}] =
     useDeleteFollowMutation();
@@ -74,7 +73,6 @@ export const UserList = ({
         user_id,
         username: currentProfileUserName ?? '', //invalidatetag
       };
-      console.log(mutationPayload);
       setTogglingUserId(user_id);
 
       try {
@@ -158,8 +156,8 @@ export const UserList = ({
       //}}
       keyboardDismissMode="on-drag"
       contentContainerStyle={onModal && {paddingBottom: insets.bottom}}
-      refreshing={isFetchingData}
-      onRefresh={() => onRefresh()}
+      refreshing={onModal ? undefined : isFetchingData}
+      onRefresh={onModal ? undefined : () => onRefresh()}
     />
   );
 };

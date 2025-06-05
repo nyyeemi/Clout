@@ -29,7 +29,6 @@ type Props = {
 export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
   const [expanded, setExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(post.is_liked_by_current_user);
-  //const [likeCount, setLikeCount] = useState(post.num_likes);
   const [hasOverflowed, setHasOverflowed] = useState(false);
   const [addLike] = useAddLikeMutation();
   const [deleteLike] = useDeleteLikeMutation();
@@ -46,8 +45,6 @@ export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
     .padStart(2, '0')}.${date.getFullYear()}`;
 
   const handleTextLayout = (event: any) => {
-    // Check if the number of lines rendered is greater than the `numberOfLines` prop
-    // In our case, `numberOfLines` is 1 when not expanded.
     setHasOverflowed(event.nativeEvent.lines.length > 2);
   };
 
@@ -55,20 +52,11 @@ export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
     if (newState) {
       addLike(post.id);
       setIsLiked(true);
-      //setLikeCount(likeCount + 1);
     } else {
       deleteLike(post.id);
       setIsLiked(false);
-      //setLikeCount(likeCount - 1);
     }
   };
-
-  console.log('||--------------------------------------||');
-  console.log('Bottombar: num_likes', post.num_likes);
-  console.log('Bottombar: likeCount', likeCount);
-  console.log('Bottombar: post_owner', post.owner.username);
-  console.log('Bottombar: post caption', post.caption);
-  console.log('||--------------------------------------||');
 
   const showLikes = () => onShowLikes(post);
 

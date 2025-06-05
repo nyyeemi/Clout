@@ -18,8 +18,6 @@ export const FeedScreen = () => {
     [data],
   );
 
-  console.log(feedPosts);
-
   return (
     <FeedList
       posts={feedPosts}

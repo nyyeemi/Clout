@@ -60,7 +60,15 @@ export const postsApi = apiSlice.injectEndpoints({
             };
           },
         },
-        providesTags: () => [{type: 'Posts'}],
+        providesTags: (result, error, arg) =>
+          result
+            ? [
+                ...result.pages.flatMap(page =>
+                  page.data.map(({id}) => ({type: 'Posts' as const, id})),
+                ),
+                {type: 'Posts' as const, id: 'LIST'},
+              ]
+            : [{type: 'Posts' as const, id: 'LIST'}],
       },
     ),
     createPost: builder.mutation<PostType, Partial<PostRequestType>>({
