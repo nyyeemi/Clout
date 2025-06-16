@@ -15,7 +15,7 @@ import {ImageList} from './components/ImageList';
 
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
-export const ProfileScreen = ({route}: ProfileProps): JSX.Element => {
+export const ProfileScreen = ({route}: ProfileProps) => {
   const {username} = route.params;
 
   const {

@@ -40,11 +40,14 @@ export const TopBar = ({post}: Props) => {
 };
 
 const style = StyleSheet.create({
-  viewStyle: {height: 60, flex: 1, justifyContent: 'center'},
+  viewStyle: {
+    height: 60,
+    flex: 1,
+    justifyContent: 'center',
+  },
   container: {
     alignItems: 'center',
     flexDirection: 'row',
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   profileImage: {
     width: 45,

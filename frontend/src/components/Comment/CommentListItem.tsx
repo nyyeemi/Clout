@@ -59,7 +59,9 @@ export const CommentListItem = ({
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const user = comment.owner;
-  const inputRef = useRef<React.ElementRef<typeof BottomSheetTextInput>>(null);
+  const isOwner = user.id === loggedInUser?.id;
+  const inputRef =
+    useRef<React.ComponentRef<typeof BottomSheetTextInput>>(null);
 
   useEffect(() => {
     if (commentIsUnderEditing) {
@@ -80,8 +82,6 @@ export const CommentListItem = ({
   };
 
   const handleMenuPress = (actionName: string) => {
-    const isOwner = user.id === loggedInUser?.id;
-
     switch (actionName) {
       case 'Edit comment':
         if (!isOwner) {
@@ -128,14 +128,13 @@ export const CommentListItem = ({
   ];
 
   const notUnderEditing = editingActive && !commentIsUnderEditing;
+  const contextMenuList = isOwner
+    ? [{title: 'Edit comment'}, {title: 'Delete comment', destructive: true}]
+    : [{title: 'Report comment'}];
 
   return (
     <ContextMenu
-      actions={[
-        {title: 'Edit comment'},
-        {title: 'Delete comment', destructive: true},
-        {title: 'Report comment'},
-      ]}
+      actions={contextMenuList}
       onPress={(event: NativeSyntheticEvent<ContextMenuOnPressNativeEvent>) =>
         handleMenuPress(event.nativeEvent.name)
       }>

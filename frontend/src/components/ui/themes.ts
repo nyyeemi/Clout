@@ -81,7 +81,7 @@ export type ExtendedTheme = Theme & {
   };
 };
 
-export const LightTheme: ExtendedTheme = {
+export const MyLightTheme: ExtendedTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,

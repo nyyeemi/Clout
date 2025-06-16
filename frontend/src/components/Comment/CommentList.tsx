@@ -2,7 +2,10 @@ import React, {useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import {skipToken} from '@reduxjs/toolkit/query/react';
 
+import {useSelectedFeedPost} from '../../hooks/useSelectedFeedPost';
+import {useGetPostCommentsInfiniteQuery} from '../../redux/api/endpoints/posts';
 import {Spinner} from '../Spinner/Spinner';
 import {ThemedText} from '../ui/typography';
 import {CommentListItem} from './CommentListItem';
@@ -10,7 +13,6 @@ import {CommentListItem} from './CommentListItem';
 import {CommentType} from '../../types/types';
 
 type CommentListType = {
-  data: CommentType[];
   onItemPress?: () => void;
   editingCommentId?: string | null;
   onStartEdit?: (id: string) => void;
@@ -19,13 +21,32 @@ type CommentListType = {
 };
 
 export const CommentList = ({
-  data,
   onItemPress,
   editingCommentId,
   onStartEdit,
   onStopEdit,
   editingActive,
-}: CommentListType): JSX.Element => {
+}: CommentListType) => {
+  const {selectedPost} = useSelectedFeedPost();
+
+  const {
+    data: comments,
+    isFetching: isFetchingComments,
+    isLoading: isLoadingComments,
+    isError: isPostsError,
+    hasNextPage: hasNextCommentPage,
+    fetchNextPage: fetchNextCommentPage,
+    isFetchingNextPage: isFetchingNextCommentPage,
+    refetch: refetchComments,
+  } = useGetPostCommentsInfiniteQuery(
+    selectedPost ? selectedPost.id : skipToken,
+  );
+
+  const data = React.useMemo(
+    () => comments?.pages?.flatMap(page => page.data) || [],
+    [comments],
+  );
+
   const renderItem = useCallback(
     ({item}: {item: CommentType}) => (
       <CommentListItem
@@ -58,6 +79,10 @@ export const CommentList = ({
         data={data}
         keyExtractor={item => String(item.id)}
         renderItem={renderItem}
+        onEndReached={
+          hasNextCommentPage ? () => fetchNextCommentPage() : undefined
+        }
+        onEndReachedThreshold={0.2}
       />
     </View>
   );

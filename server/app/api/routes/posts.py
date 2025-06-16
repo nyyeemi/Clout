@@ -305,7 +305,7 @@ def read_post_likes(
     session: SessionDep,
     current_user: CurrentUser,
     last_like_created_at: datetime | None = None,
-    limit: Annotated[int, Query(gt=0, le=100)] = 20,
+    limit: Annotated[int, Query(gt=0, le=200)] = 200,
 ) -> Any:
     """
     Retrieve likes for a post.

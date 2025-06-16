@@ -17,7 +17,7 @@ import {
 } from '../../../types/types';
 
 type FeedPageParam = {
-  last_post_created_at?: string;
+  last_created_at?: string;
   limit: number;
 };
 
@@ -25,11 +25,11 @@ export const postsApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getFeedPosts: builder.infiniteQuery<PostTypeWithCount, void, FeedPageParam>(
       {
-        query: ({pageParam: {last_post_created_at, limit}}) => {
+        query: ({pageParam: {last_created_at, limit}}) => {
           const params = new URLSearchParams();
 
-          if (last_post_created_at) {
-            params.append('last_post_created_at', last_post_created_at);
+          if (last_created_at) {
+            params.append('last_post_created_at', last_created_at);
           }
 
           if (limit) {
@@ -40,7 +40,7 @@ export const postsApi = apiSlice.injectEndpoints({
           return queryString ? `posts/?${queryString}` : 'posts/';
         },
         infiniteQueryOptions: {
-          initialPageParam: {last_post_created_at: '', limit: 18},
+          initialPageParam: {last_created_at: '', limit: 18},
           getNextPageParam: (lastPage, allPages, lastPageParam) => {
             if (lastPage.count < lastPageParam.limit) {
               return undefined;
@@ -55,7 +55,7 @@ export const postsApi = apiSlice.injectEndpoints({
             }
 
             return {
-              last_post_created_at: lastPost.created_at,
+              last_created_at: lastPost.created_at,
               limit: lastPageParam.limit,
             };
           },
@@ -121,19 +121,20 @@ export const postsApi = apiSlice.injectEndpoints({
         {type: 'Posts', id: post_id},
       ],
     }),
-    getPostComments: builder.query<
+    getPostComments: builder.infiniteQuery<
       CommentTypeWithCount,
-      GetCommentsRequestType
+      string,
+      FeedPageParam
     >({
-      query: ({post_id, last_comment_created_at, created_at}) => {
+      query: ({pageParam: {last_created_at, limit}, queryArg: post_id}) => {
         const params = new URLSearchParams();
 
-        if (last_comment_created_at) {
-          params.append('last_comment_created_at', last_comment_created_at);
+        if (last_created_at) {
+          params.append('last_comment_created_at', last_created_at);
         }
 
-        if (created_at) {
-          params.append('order_by', created_at);
+        if (limit) {
+          params.append('limit', limit.toString());
         }
 
         const queryString = params.toString();
@@ -141,9 +142,28 @@ export const postsApi = apiSlice.injectEndpoints({
           ? `posts/${post_id}/comments?${queryString}`
           : `posts/${post_id}/comments`;
       },
-      providesTags: (result, error, {post_id}) => [
-        {type: 'Posts', id: post_id},
-      ],
+      infiniteQueryOptions: {
+        initialPageParam: {last_created_at: '', limit: 20},
+        getNextPageParam: (lastPage, allPages, lastPageParam) => {
+          if (lastPage.count < lastPageParam.limit) {
+            return undefined;
+          }
+          const lastPost = lastPage.data.at(-1);
+
+          if (!lastPost) {
+            console.warn(
+              'No last post found on the last page, stopping pagination.',
+            );
+            return undefined;
+          }
+
+          return {
+            last_created_at: lastPost.created_at,
+            limit: lastPageParam.limit,
+          };
+        },
+      },
+      providesTags: (result, error, post_id) => [{type: 'Posts', id: post_id}],
     }),
     createComment: builder.mutation<CommentType, CommentRequestType>({
       query: ({post_id, content}) => ({
@@ -218,7 +238,7 @@ export const {
   useGetPostByIdQuery,
   useUpdatePostMutation,
   useDeletePostMutation,
-  useGetPostCommentsQuery,
+  useGetPostCommentsInfiniteQuery,
   useCreateCommentMutation,
   useUpdateCommentMutation,
   useDeleteCommentMutation,

@@ -11,10 +11,11 @@ import globalStyle from '../../assets/styles/globalStyle';
 import {Backdrop} from '../../components/Backdrop/Backdrop';
 import {UserList} from '../../components/UserList/UserList';
 import {ThemedSafeAreaView, ThemedView} from '../../components/ui/themed-view';
+import {useSelectedFeedPost} from '../../hooks/useSelectedFeedPost';
 import {Routes} from '../../navigation/Routes';
 import {
   useGetLikesQuery,
-  useGetPostCommentsQuery,
+  useGetPostCommentsInfiniteQuery,
 } from '../../redux/api/endpoints/posts';
 import {Spinner} from '../Spinner/Spinner';
 import {Title1Text} from '../ui/typography';
@@ -42,7 +43,7 @@ export const FeedList = ({
   hasNextPage,
   onRefresh,
 }: FeedListProps) => {
-  const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
+  const {selectedPost, setSelectedPost} = useSelectedFeedPost(); //useState<PostType | null>(null);
   const [modalToRender, setModalToRender] = useState<
     'likes' | 'comments' | null
   >(null);
@@ -75,16 +76,6 @@ export const FeedList = ({
       ? likes.data.map(like => like.owner)
       : [];
 
-  const {
-    data: comments = {data: [], count: 0},
-    isFetching: isFetchingComments,
-  } = useGetPostCommentsQuery(
-    selectedPost && shouldRenderCommentsModal
-      ? {post_id: selectedPost.id}
-      : skipToken,
-  );
-  const commentList = !isFetchingComments ? comments.data : [];
-
   const handleShowLikes = (post: PostType) => {
     setSelectedPost(post);
     setModalToRender('likes');
@@ -108,6 +99,8 @@ export const FeedList = ({
     [],
   );
 
+  console.log('feedlistan selected post', selectedPost);
+
   const itemSize = 60 + IMAGE_HEIGHT + 100; //topbar + image + bottombar
 
   const ThemeViewComponent =
@@ -129,7 +122,7 @@ export const FeedList = ({
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         initialScrollIndex={initalScrollIndex || null}
-        onEndReachedThreshold={0}
+        onEndReachedThreshold={0.2}
         onEndReached={hasNextPage ? () => handleEndReached() : null}
         ListFooterComponent={
           isFetchingPosts ? <Spinner size={'small'} /> : null
@@ -139,7 +132,7 @@ export const FeedList = ({
         onRefresh={() => onRefresh()}
         key={refreshing ? 'refreshing' : 'stable'}
         estimatedFirstItemOffset={0}
-        ListEmptyComponent={EmptyList()}
+        ListEmptyComponent={!refreshing ? EmptyList() : null}
       />
 
       <BottomSheetModal
@@ -162,11 +155,10 @@ export const FeedList = ({
       </BottomSheetModal>
 
       <CommentModal
-        comments={commentList}
         commentSheetRef={commentSheetRef}
         snapPoints={snapPoints}
         onDismiss={() => setSelectedPost(null)}
-        selectedPost={selectedPost || ({} as PostType)}
+        //selectedPost={selectedPost || ({} as PostType)}
         index={1}
       />
     </ThemeViewComponent>
