@@ -59,7 +59,9 @@ export const CommentListItem = ({
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const user = comment.owner;
-  const inputRef = useRef<React.ElementRef<typeof BottomSheetTextInput>>(null);
+  const isOwner = user.id === loggedInUser?.id;
+  const inputRef =
+    useRef<React.ComponentRef<typeof BottomSheetTextInput>>(null);
 
   useEffect(() => {
     if (commentIsUnderEditing) {
@@ -80,8 +82,6 @@ export const CommentListItem = ({
   };
 
   const handleMenuPress = (actionName: string) => {
-    const isOwner = user.id === loggedInUser?.id;
-
     switch (actionName) {
       case 'Edit comment':
         if (!isOwner) {

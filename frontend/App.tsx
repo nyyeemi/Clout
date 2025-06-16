@@ -12,7 +12,7 @@ import {Provider} from 'react-redux';
 
 import {NotificationListener} from './src/components/NotificationListener/NotificationListener';
 import {toastConfig} from './src/components/Toast/toastConfig';
-import {MyDarkTheme} from './src/components/ui/themes';
+import {MyDarkTheme, MyLightTheme} from './src/components/ui/themes';
 import {RootNavigation} from './src/navigation/RootNavigation';
 import store from './src/redux/store/store';
 
@@ -29,7 +29,7 @@ const App = (): React.JSX.Element => {
       <SafeAreaProvider>
         <Provider store={store}>
           <NavigationContainer
-            theme={scheme === 'dark' ? MyDarkTheme : DefaultTheme}>
+            theme={scheme === 'dark' ? MyDarkTheme : MyLightTheme}>
             <BottomSheetModalProvider>
               <StatusBar
                 translucent

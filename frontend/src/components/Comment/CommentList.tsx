@@ -29,8 +29,6 @@ export const CommentList = ({
 }: CommentListType) => {
   const {selectedPost} = useSelectedFeedPost();
 
-  console.log('comment list Selected postiii', selectedPost);
-
   const {
     data: comments,
     isFetching: isFetchingComments,
@@ -48,10 +46,6 @@ export const CommentList = ({
     () => comments?.pages?.flatMap(page => page.data) || [],
     [comments],
   );
-
-  console.log('commentlist comments', comments);
-
-  console.log('commentlist data', data);
 
   const renderItem = useCallback(
     ({item}: {item: CommentType}) => (
@@ -88,7 +82,7 @@ export const CommentList = ({
         onEndReached={
           hasNextCommentPage ? () => fetchNextCommentPage() : undefined
         }
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.2}
       />
     </View>
   );

@@ -122,7 +122,7 @@ export const FeedList = ({
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         initialScrollIndex={initalScrollIndex || null}
-        onEndReachedThreshold={0}
+        onEndReachedThreshold={0.2}
         onEndReached={hasNextPage ? () => handleEndReached() : null}
         ListFooterComponent={
           isFetchingPosts ? <Spinner size={'small'} /> : null
