@@ -100,6 +100,7 @@ export const MyDarkTheme: ExtendedTheme = {
     primary: '#E74C3C',
     highlighted: 'rgb(64, 64, 64)',
     warning: 'rgb(255, 0, 52)',
+    background: 'rgb(12, 12, 12)',
   },
   fonts,
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import {
@@ -11,32 +11,37 @@ import {
   faCircleInfo,
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useDispatch} from 'react-redux';
 
+import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
 import {ThemedView} from '../../components/ui/themed-view';
 import {
-  BodyText,
   HeadlineText,
   ThemedIcon,
   Title2Text,
-  Title3Text,
 } from '../../components/ui/typography';
 import {useTheme} from '../../hooks/useTheme';
+import {SettingsStackParamList} from '../../navigation/Routes';
+import {logout} from '../../redux/slices/authSlice';
 
 export const SettingsScreen = () => {
-  const titleList1 = [
+  const titleList1: SettingsCardItemType[] = [
     {icon: faGear, title: 'General'},
     //{icon: faGear, title: 'Privacy'},
     //{icon: faGear, title: 'Notifications'},
   ];
 
-  const titleList2 = [
+  const titleList2: SettingsCardItemType[] = [
     {icon: faCircleQuestion, title: 'Help'},
-    {icon: faCommentDots, title: 'Send feedback'},
+    {icon: faCommentDots, title: 'SendFeedback'},
     {icon: faCircleInfo, title: 'About'},
   ];
 
-  const titleList3 = [{icon: faArrowRightFromBracket, title: 'Logout'}];
+  const titleList3: SettingsCardItemType[] = [
+    {icon: faArrowRightFromBracket, title: 'Logout'},
+  ];
 
   return (
     <ThemedView style={styles.container}>
@@ -55,21 +60,42 @@ const styles = StyleSheet.create({
 
 type SettingsCardItemType = {
   icon: IconDefinition;
-  title: string;
+  title: 'General' | 'Help' | 'SendFeedback' | 'About' | 'Logout';
 };
 
 const SettingsCardItem = ({icon, title}: SettingsCardItemType) => {
   const {colors} = useTheme();
+  const dispatch = useDispatch();
+  const navigation =
+    useNavigation<StackNavigationProp<SettingsStackParamList>>();
+
+  const handlePress = () => {
+    if (title === 'Logout') {
+      Alert.alert('Logout', 'This action will log your account out.', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Logout', onPress: () => dispatch(logout())},
+      ]);
+    } else {
+      navigation.navigate(title);
+    }
+  };
+
   return (
-    <View style={stylesItems.container}>
+    <OpacityPressable
+      style={stylesItems.container}
+      onPress={() => handlePress()}>
       <ThemedIcon
         icon={icon}
         color={title === 'Logout' ? colors.warning : undefined}
       />
       <HeadlineText style={title === 'Logout' && {color: colors.warning}}>
-        {title}
+        {title === 'SendFeedback' ? 'Send feedback' : title}
       </HeadlineText>
-    </View>
+    </OpacityPressable>
   );
 };
 
@@ -82,7 +108,10 @@ const stylesItems = StyleSheet.create({
 
 type SettingsCardType = {
   header: string;
-  itemTitleList: {icon: IconDefinition; title: string}[];
+  itemTitleList: {
+    icon: IconDefinition;
+    title: 'General' | 'Help' | 'SendFeedback' | 'About' | 'Logout';
+  }[];
 };
 
 const SettingsCard = ({header, itemTitleList}: SettingsCardType) => {

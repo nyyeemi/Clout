@@ -19,6 +19,7 @@ import {ProfileFeedScreen} from '../screens/Profile/ProfileFeedScreen';
 import {ProfileScreen} from '../screens/Profile/ProfileScreen';
 import {SettingsScreen} from '../screens/Settings/SettingsScreen';
 import {ProfileStackParamList, Routes} from './Routes';
+import {SettingsStackNavigator} from './SettingsStackNavigator';
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
 
@@ -51,7 +52,11 @@ export const ProfileStackNavigator = () => {
           username: loggedInUser?.username,
         }}
       />
-      <ProfileStack.Screen name={Routes.Settings} component={SettingsScreen} />
+      <ProfileStack.Screen
+        name={Routes.SettingsStack}
+        component={SettingsStackNavigator}
+        options={{headerShown: false}}
+      />
       <ProfileStack.Screen
         name={Routes.Followers}
         component={FollowersScreen}
@@ -70,12 +75,12 @@ export const ProfileStackNavigator = () => {
   );
 };
 
-export const SettingsButton = (): JSX.Element => {
+export const SettingsButton = () => {
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const {colors} = useTheme();
   const onPress = () => {
-    navigation.navigate(Routes.Settings);
+    navigation.navigate(Routes.SettingsStack);
   };
   return (
     <ThemedView style={styles.button}>
