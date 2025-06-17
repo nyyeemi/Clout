@@ -80,7 +80,9 @@ export const SettingsButton = () => {
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const {colors} = useTheme();
   const onPress = () => {
-    navigation.navigate(Routes.SettingsStack);
+    navigation.navigate(Routes.SettingsStack, {
+      screen: Routes.Settings,
+    });
   };
   return (
     <ThemedView style={styles.button}>
