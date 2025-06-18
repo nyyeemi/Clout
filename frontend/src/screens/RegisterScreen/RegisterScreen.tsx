@@ -101,7 +101,7 @@ const RenderForm = ({
   errors,
   touched,
   isSubmitting,
-}: FormikProps<FormValues>): JSX.Element => (
+}: FormikProps<FormValues>) => (
   <ThemedView style={style.container}>
     <ThemedText style={style.title}>Register</ThemedText>
 

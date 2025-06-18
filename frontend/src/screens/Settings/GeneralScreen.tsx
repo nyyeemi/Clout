@@ -1,79 +1,199 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Alert, StyleSheet, TextInput, TextInputProps, View} from 'react-native';
 
-import {faCircleRight} from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronDown,
+  faChevronUp,
+  faCircleRight,
+} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useFormik} from 'formik';
+import * as Yup from 'yup';
 
 import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
 import {ThemedView} from '../../components/ui/themed-view';
-import {Title2Text} from '../../components/ui/typography';
+import {
+  BodyText,
+  FootnoteText,
+  ThemedIcon,
+  Title2Text,
+} from '../../components/ui/typography';
 import {useTheme} from '../../hooks/useTheme';
 
 export const GeneralScreen = () => {
   const {colors} = useTheme();
+  const [submitType, setSubmitType] = useState<'username' | 'password' | null>(
+    null,
+  );
+  const [focusedCard, setFocusedCard] = useState<
+    'username' | 'password' | null
+  >(null);
 
-  const formik = useFormik({
+  console.log('submittypeee', submitType);
+
+  const UsernameSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(3, 'Username must be at least 3 characters')
+      .max(30, 'Username must be at most 30 characters')
+      .matches(/^[a-zA-Z0-9_]+$/, 'Only letters, numbers, underscores allowed')
+      .required('Username is required')
+      .trim(),
+  });
+
+  const PasswordSchema = Yup.object().shape({
+    currentPassword: Yup.string().required('Current password is required'),
+    newPassword: Yup.string()
+      .min(8, 'Min 8 characters')
+      .max(64, 'Max 64 characters')
+      .matches(/[a-z]/, 'At least one lowercase')
+      .matches(/[A-Z]/, 'At least one uppercase')
+      .matches(/[0-9]/, 'At least one number')
+      .matches(/[@$!%*?&]/, 'At least one special char (@$!%*?&)'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('newPassword')], 'Passwords must match')
+      .required('Confirm new password'),
+  });
+
+  const usernameFormik = useFormik({
+    initialValues: {username: ''},
+    validationSchema: UsernameSchema,
+    onSubmit: values => {
+      Alert.alert('Change username', 'You can only change once in 30 days.', [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Continue',
+          onPress: () => console.log('Username changed to:', values.username),
+        },
+      ]);
+    },
+  });
+
+  const passwordFormik = useFormik({
     initialValues: {
-      username: '',
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
     },
+    validationSchema: PasswordSchema,
     onSubmit: values => {
-      Alert.alert(
-        'Change username',
-        'You can only change your username once in 30 days.',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'Continue',
-            onPress: () => console.log('Submitted values:', values),
-          },
-        ],
-      );
+      Alert.alert('Change password', 'Are you sure?', [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Confirm',
+          onPress: () =>
+            console.log('Change password:', {
+              current: values.currentPassword,
+              new: values.newPassword,
+            }),
+        },
+      ]);
     },
   });
 
   return (
     <ThemedView style={styles.container}>
-      <Title2Text variant="bold">Change username</Title2Text>
-      <InputWithButton
-        name="username"
-        value={formik.values.username}
-        onChangeText={formik.handleChange('username')}
-        handleSubmit={formik.handleSubmit}
-        placeholder="username"
-      />
-      <Title2Text variant="bold">Change Password</Title2Text>
-      <InputWithButton
-        name="currentPassword"
-        value={formik.values.currentPassword}
-        onChangeText={formik.handleChange('currentPassword')}
-        placeholder="current password"
-        secureTextEntry
-        showButton={false}
-      />
-      <InputWithButton
-        name="newPassword"
-        value={formik.values.newPassword}
-        onChangeText={formik.handleChange('newPassword')}
-        placeholder="new password"
-        secureTextEntry
-        showButton={false}
-      />
-      <InputWithButton
-        name="confirmPassword"
-        value={formik.values.confirmPassword}
-        onChangeText={formik.handleChange('confirmPassword')}
-        handleSubmit={formik.handleSubmit}
-        placeholder="new password again"
-        secureTextEntry
-      />
+      <View style={[styles.usernameCard, {borderBottomColor: colors.border}]}>
+        <OpacityPressable
+          onPress={() =>
+            focusedCard === 'username'
+              ? setFocusedCard(null)
+              : setFocusedCard('username')
+          }
+          style={styles.headerStyle}>
+          <Title2Text variant="bold">Change username</Title2Text>
+          <ThemedIcon
+            icon={focusedCard === 'username' ? faChevronUp : faChevronDown}
+            size={20}
+          />
+        </OpacityPressable>
+        {focusedCard === 'username' && (
+          <View>
+            <FootnoteText style={{color: colors.border}}>
+              You can change your username once in 30 days.
+            </FootnoteText>
+
+            <InputWithButton
+              name="username"
+              value={usernameFormik.values.username}
+              onChangeText={usernameFormik.handleChange('username')}
+              onFocus={() => usernameFormik.setFieldTouched('username')}
+              handleSubmit={usernameFormik.handleSubmit}
+              placeholder="username"
+              disableButton={!!usernameFormik.errors.username}
+            />
+            {usernameFormik.touched.username &&
+              usernameFormik.errors.username && (
+                <FootnoteText style={{color: colors.border}}>
+                  {usernameFormik.errors.username}
+                </FootnoteText>
+              )}
+          </View>
+        )}
+      </View>
+      <View style={[styles.passwordCard, {borderBottomColor: colors.border}]}>
+        <OpacityPressable
+          onPress={() =>
+            focusedCard === 'password'
+              ? setFocusedCard(null)
+              : setFocusedCard('password')
+          }
+          style={styles.headerStyle}>
+          <Title2Text variant="bold">Change Password</Title2Text>
+          <ThemedIcon
+            icon={focusedCard === 'password' ? faChevronUp : faChevronDown}
+            size={20}
+          />
+        </OpacityPressable>
+        {focusedCard === 'password' && (
+          <View style={styles.passwordInputs}>
+            <InputWithButton
+              name="currentPassword"
+              value={passwordFormik.values.currentPassword}
+              onChangeText={passwordFormik.handleChange('currentPassword')}
+              onFocus={() => passwordFormik.setFieldTouched('currentPassword')}
+              placeholder="current password"
+              secureTextEntry
+              showButton={false}
+            />
+            {passwordFormik.touched.currentPassword &&
+              passwordFormik.errors.currentPassword && (
+                <FootnoteText style={{color: colors.border}}>
+                  {passwordFormik.errors.currentPassword}
+                </FootnoteText>
+              )}
+            <InputWithButton
+              name="newPassword"
+              value={passwordFormik.values.newPassword}
+              onChangeText={passwordFormik.handleChange('newPassword')}
+              onFocus={() => passwordFormik.setFieldTouched('newPassword')}
+              placeholder="new password"
+              secureTextEntry
+              showButton={false}
+            />
+            {passwordFormik.touched.newPassword &&
+              passwordFormik.errors.newPassword && (
+                <FootnoteText style={{color: colors.border}}>
+                  {passwordFormik.errors.newPassword}
+                </FootnoteText>
+              )}
+            <InputWithButton
+              name="confirmPassword"
+              value={passwordFormik.values.confirmPassword}
+              onChangeText={passwordFormik.handleChange('confirmPassword')}
+              onFocus={() => passwordFormik.setFieldTouched('confirmPassword')}
+              handleSubmit={passwordFormik.handleSubmit}
+              placeholder="new password again"
+              secureTextEntry
+            />
+            {passwordFormik.touched.confirmPassword &&
+              passwordFormik.errors.confirmPassword && (
+                <FootnoteText style={{color: colors.border}}>
+                  {passwordFormik.errors.confirmPassword}
+                </FootnoteText>
+              )}
+          </View>
+        )}
+      </View>
     </ThemedView>
   );
 };
@@ -84,6 +204,7 @@ type InputCardProps = {
   name: string;
   value: string;
   onChangeText: (text: string) => void;
+  disableButton?: boolean;
 } & TextInputProps;
 
 const InputWithButton = ({
@@ -91,6 +212,7 @@ const InputWithButton = ({
   showButton = true,
   value,
   onChangeText,
+  disableButton,
   ...props
 }: InputCardProps) => {
   const {colors} = useTheme();
@@ -122,7 +244,7 @@ const InputWithButton = ({
         {...props}
       />
       {showButton && handleSubmit && (
-        <OpacityPressable onPress={handleSubmit}>
+        <OpacityPressable onPress={handleSubmit} disabled={disableButton}>
           <FontAwesomeIcon
             icon={faCircleRight}
             color={colors.primary}
@@ -138,9 +260,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    gap: 10,
+    gap: 20,
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 20,
   },
   input: {
     flex: 1,
@@ -152,5 +274,24 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
     padding: 10,
+  },
+  usernameCard: {
+    gap: 10,
+    paddingBottom: 20,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  passwordCard: {
+    gap: 10,
+    paddingBottom: 20,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  passwordInputs: {
+    gap: 10,
+  },
+  headerStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 10,
   },
 });

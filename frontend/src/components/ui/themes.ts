@@ -101,6 +101,7 @@ export const MyDarkTheme: ExtendedTheme = {
     highlighted: 'rgb(64, 64, 64)',
     warning: 'rgb(255, 0, 52)',
     background: 'rgb(12, 12, 12)',
+    border: 'rgb(73, 73, 77)',
   },
   fonts,
 };
