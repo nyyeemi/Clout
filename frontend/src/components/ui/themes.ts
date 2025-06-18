@@ -79,6 +79,8 @@ export type ExtendedTheme = Theme & {
   colors: Theme['colors'] & {
     highlighted: string;
     warning: string;
+    iosBlue: string;
+    textSecondary: string;
   };
 };
 
@@ -89,6 +91,8 @@ export const MyLightTheme: ExtendedTheme = {
     primary: '#E74C3C',
     highlighted: 'rgb(215, 193, 193)',
     warning: 'rgb(255, 0, 52)',
+    iosBlue: '#007AFF',
+    textSecondary: '#6e6e6e', // #999999 #8e8e93
   },
   fonts,
 };
@@ -102,6 +106,8 @@ export const MyDarkTheme: ExtendedTheme = {
     warning: 'rgb(255, 0, 52)',
     background: 'rgb(12, 12, 12)',
     border: 'rgb(73, 73, 77)',
+    iosBlue: '#007AFF',
+    textSecondary: 'rgba(255, 255, 255, 0.6)',
   },
   fonts,
 };

@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   body: {
-    fontSize: 17,
+    fontSize: 15,
     lineHeight: 22,
   },
   subhead: {
