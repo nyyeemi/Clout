@@ -32,7 +32,7 @@ import {
 } from '../../components/ui/typography';
 import {useTheme} from '../../hooks/useTheme';
 
-export const GeneralScreen = () => {
+export const AccountScreen = () => {
   const {colors} = useTheme();
   const scheme = useColorScheme();
 
@@ -227,22 +227,7 @@ export const GeneralScreen = () => {
             </View>
           )}
         </View>
-        <View
-          style={[
-            styles.headerStyle,
-            styles.cardContainer,
-            {borderBottomColor: colors.border},
-          ]}>
-          <Title3Text variant="bold">Dark mode</Title3Text>
-          <Switch
-            trackColor={{false: '#767577', true: colors.primary}}
-            //thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-            style={styles.switch}
-          />
-        </View>
+
         <OpacityPressable
           onPress={() =>
             focusedCard === 'delete-account'
@@ -403,9 +388,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingRight: 10,
-  },
-  switch: {
-    transform: [{scaleX: 0.8}, {scaleY: 0.8}],
   },
   deleteAccountButton: {
     paddingVertical: 4,

@@ -23,7 +23,7 @@ export type ProfileStackParamList = {
 
 export type SettingsStackParamList = {
   Settings: undefined;
-  General: undefined;
+  Account: undefined;
   Help: undefined;
   SendFeedback: undefined;
   About: undefined;
@@ -50,7 +50,7 @@ export const Routes = {
   ProfileFeed: 'ProfileFeed',
   ProfileStack: 'ProfileStack',
   SettingsStack: 'SettingsStack',
-  General: 'General',
+  Account: 'Account',
   Help: 'Help',
   SendFeedBack: 'SendFeedback',
   About: 'About',
