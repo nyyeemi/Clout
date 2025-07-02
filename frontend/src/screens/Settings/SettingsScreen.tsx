@@ -130,7 +130,22 @@ const SettingsCardItem = ({
       style={stylesItems.accountContainer}
       onPress={() => handlePress()}>
       <ProfilePicture uri={currentUser?.profile_picture_url} size="small" />
-      <HeadlineText>{account}</HeadlineText>
+      <View
+        style={[
+          stylesItems.divider,
+          !isLastItem && {
+            borderBottomColor: colors.border,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+          },
+        ]}>
+        <HeadlineText>{account}</HeadlineText>
+        <ThemedIcon
+          icon={faChevronRight}
+          size={15}
+          color={colors.border}
+          containerStyle={{paddingHorizontal: 10}}
+        />
+      </View>
     </OpacityPressable>
   ) : (
     <OpacityPressable
@@ -209,9 +224,9 @@ const SettingsCard = ({header, itemTitleList}: SettingsCardType) => {
         stylesCard.container,
         {borderBottomColor: colors.border, backgroundColor: colors.card},
       ]}>
-      <Title2Text variant="bold" style={stylesCard.headerTextContainer}>
+      <Title3Text variant="bold" style={stylesCard.headerTextContainer}>
         {header}
-      </Title2Text>
+      </Title3Text>
       {itemTitleList.map((item, index) => (
         <SettingsCardItem
           icon={item.icon}
@@ -230,6 +245,6 @@ const stylesCard = StyleSheet.create({
     borderRadius: 10,
   },
   headerTextContainer: {
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
 });
