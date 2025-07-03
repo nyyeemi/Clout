@@ -23,7 +23,7 @@ export const DeleteAccountMenu = ({
   setFocusedCard,
 }: DeleteAccountMenuProps) => {
   const [showFullDisclaimer, setShowFullDisclaimer] = useState(false);
-  const [deleteAccount] = useDeleteAccountMutation();
+  //const [deleteAccount] = useDeleteAccountMutation();
   const {colors} = useTheme();
 
   const handleDeleteAccount = () =>
@@ -33,7 +33,7 @@ export const DeleteAccountMenu = ({
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Delete', onPress: () => deleteAccount()},
+      {text: 'Delete', onPress: () => console.log()}, //deleteAccount()},
     ]);
 
   return (

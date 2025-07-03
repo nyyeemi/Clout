@@ -14,6 +14,7 @@ import {
   ThemedIcon,
 } from '../../../components/ui/typography';
 import {useTheme} from '../../../hooks/useTheme';
+import {useUpdateUserMeMutation} from '../../../redux/api/endpoints/users';
 
 type UsernameFormProps = {
   focusedCard: string | null;
@@ -27,7 +28,7 @@ export const UsernameForm = ({
   setFocusedCard,
 }: UsernameFormProps) => {
   const {colors} = useTheme();
-  const [updateUsername] = useUpdateUsernameMutation();
+  const [updateUsername, {isLoading, isError}] = useUpdateUserMeMutation();
 
   const UsernameSchema = Yup.object().shape({
     username: Yup.string()
@@ -46,7 +47,11 @@ export const UsernameForm = ({
         {text: 'Cancel', style: 'cancel'},
         {
           text: 'Continue',
-          onPress: () => updateUsername(values.username),
+          onPress: async () => {
+            await updateUsername({
+              username: values.username,
+            });
+          },
         },
       ]);
     },
@@ -82,7 +87,7 @@ export const UsernameForm = ({
             onFocus={() => usernameFormik.setFieldTouched('username')}
             handleSubmit={usernameFormik.handleSubmit}
             placeholder="username"
-            disableButton={!!usernameFormik.errors.username}
+            disableButton={!!usernameFormik.errors.username || isLoading}
           />
           {usernameFormik.touched.username &&
             usernameFormik.errors.username && (

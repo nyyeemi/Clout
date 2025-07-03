@@ -24,6 +24,7 @@ export const SettingsCard = ({header, itemTitleList}: SettingsCardType) => {
       </Title3Text>
       {itemTitleList.map((item, index) => (
         <SettingsCardItem
+          key={item.title}
           icon={item.icon}
           title={item.title}
           contentType={item.contentType}

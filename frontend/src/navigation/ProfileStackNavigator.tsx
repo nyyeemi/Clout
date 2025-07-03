@@ -24,13 +24,14 @@ import {SettingsStackNavigator} from './SettingsStackNavigator';
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
 
 export const ProfileStackNavigator = () => {
-  const {data: loggedInUser, isError, isLoading} = useGetUsersMeQuery();
+  //const {data: loggedInUser, isError, isLoading} = useGetUsersMeQuery();
+  //console.log(loggedInUser);
   const theme = useTheme();
   const renderSettingsButton = useCallback(() => <SettingsButton />, []);
   // TODO solve this better
-  if (isLoading && !isError) {
+  /*if (isLoading && !isError) {
     return;
-  }
+  }*/
   return (
     <ProfileStack.Navigator
       screenOptions={{
@@ -41,16 +42,15 @@ export const ProfileStackNavigator = () => {
         name={Routes.Profile}
         component={ProfileScreen}
         options={({route}) => ({
-          headerRight:
-            route.params?.username === loggedInUser?.username
-              ? renderSettingsButton
-              : undefined,
+          headerRight: route.params?.username
+            ? undefined
+            : renderSettingsButton,
           headerTitleAlign: 'left',
-          title: route.params?.username,
+          title: route.params?.username || '',
         })}
-        initialParams={{
-          username: loggedInUser?.username,
-        }}
+        //initialParams={{
+        //  username: loggedInUser?.username,
+        //}}
       />
       <ProfileStack.Screen
         name={Routes.SettingsStack}

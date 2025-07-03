@@ -41,7 +41,7 @@ export const usersApi = apiSlice.injectEndpoints({
         method: 'PATCH',
         body,
       }),
-      invalidatesTags: ['Users'],
+      invalidatesTags: [{type: 'Users'}, {type: 'Posts' as const, id: 'LIST'}],
     }),
   }),
 });

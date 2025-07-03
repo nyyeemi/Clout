@@ -24,7 +24,7 @@ export const PasswordForm = ({
   focusedCard,
   setFocusedCard,
 }: PasswordFormProps) => {
-  const [updatePassword] = useUpdatePasswordMutation();
+  //const [updatePassword] = useUpdatePasswordMutation();
   const {colors} = useTheme();
 
   const PasswordSchema = Yup.object().shape({
@@ -53,8 +53,8 @@ export const PasswordForm = ({
         {text: 'Cancel', style: 'cancel'},
         {
           text: 'Confirm',
-          onPress: () =>
-            updatePassword(values.currentPassword, values.newPassword),
+          onPress: () => console.log(),
+          //updatePassword(values.currentPassword, values.newPassword),
         },
       ]);
     },
