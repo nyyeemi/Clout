@@ -1,6 +1,7 @@
 import React from 'react';
-import {useTheme} from '@react-navigation/native';
 import {StyleProp, StyleSheet, View, ViewProps, ViewStyle} from 'react-native';
+
+import {useTheme} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type ThemedViewProps = ViewProps & {
@@ -19,7 +20,7 @@ export const ThemedView = ({
   style,
   bottomBorder = false,
   ...props
-}: ThemedViewProps): JSX.Element => {
+}: ThemedViewProps) => {
   const theme = useTheme();
 
   return (
@@ -42,7 +43,7 @@ export const ThemedSafeAreaView = ({
   children,
   style,
   ...props
-}: ThemedSafeAreaViewProps): JSX.Element => {
+}: ThemedSafeAreaViewProps) => {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
 
@@ -63,7 +64,7 @@ export const ThemedSafeAreaView = ({
   );
 };
 
-export const CardView = ({children, style}: ThemedViewProps): JSX.Element => {
+export const CardView = ({children, style}: ThemedViewProps) => {
   //const insets = useSafeAreaInsets();
   const {colors} = useTheme();
   return (

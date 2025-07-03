@@ -10,7 +10,7 @@ import {
 import {useTheme} from '@react-navigation/native';
 
 type ProfilePictureProps = Omit<ImageProps, 'source'> & {
-  uri: string;
+  uri: string | undefined;
   style?: StyleProp<ImageStyle>;
   size?: 'small' | 'medium' | 'large';
 };

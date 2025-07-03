@@ -15,10 +15,18 @@ export type RootStackParamList = {
 
 export type ProfileStackParamList = {
   Profile: {username: string};
-  Settings: undefined;
+  SettingsStack: NavigatorScreenParams<SettingsStackParamList>;
   Followers: {index: number; username: string};
   EditProfile: undefined;
   ProfileFeed: {imageId: string; username: string};
+};
+
+export type SettingsStackParamList = {
+  Settings: undefined;
+  Account: undefined;
+  Help: undefined;
+  SendFeedback: undefined;
+  About: undefined;
 };
 
 export type FeedStackParamList = {
@@ -41,4 +49,9 @@ export const Routes = {
   EditProfile: 'EditProfile',
   ProfileFeed: 'ProfileFeed',
   ProfileStack: 'ProfileStack',
+  SettingsStack: 'SettingsStack',
+  Account: 'Account',
+  Help: 'Help',
+  SendFeedBack: 'SendFeedback',
+  About: 'About',
 } as const;

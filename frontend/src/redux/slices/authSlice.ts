@@ -1,5 +1,8 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 
+import {apiSlice} from '../api/apiSlice';
+import {AppDispatch} from '../store/store';
+
 type AuthState = {
   accessToken: string | null;
   refreshToken: string | null;
@@ -44,6 +47,11 @@ const authSlice = createSlice({
     },
   },
 });
+
+export const logoutAndReset = () => (dispatch: AppDispatch) => {
+  dispatch(logout());
+  dispatch(apiSlice.util.resetApiState());
+};
 
 export const {setCredentials, setUsername, logout} = authSlice.actions;
 export default authSlice.reducer;

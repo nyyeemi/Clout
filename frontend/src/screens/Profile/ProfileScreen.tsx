@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {skipToken} from '@reduxjs/toolkit/query';
 
 import globalStyle from '../../assets/styles/globalStyle';
 import {Spinner} from '../../components/Spinner/Spinner';
@@ -11,12 +13,27 @@ import {
   useGetProfileByUserNameQuery,
   useGetProfilePostsInfiniteQuery,
 } from '../../redux/api/endpoints/profiles';
+import {useGetUsersMeQuery} from '../../redux/api/endpoints/users';
 import {ImageList} from './components/ImageList';
 
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
-export const ProfileScreen = ({route}: ProfileProps) => {
-  const {username} = route.params;
+export const ProfileScreen = ({route, navigation}: ProfileProps) => {
+  const {
+    data: loggedInUser,
+    isError,
+    isLoading: isLoadingMe,
+  } = useGetUsersMeQuery(undefined, {skip: !!route.params});
+
+  const username = route.params?.username
+    ? route.params.username
+    : loggedInUser?.username;
+
+  useEffect(() => {
+    if (loggedInUser) {
+      navigation.setOptions({title: loggedInUser.username});
+    }
+  }, [loggedInUser]);
 
   const {
     data, // Contains { pages: PostTypeWithCount[], pageParams: ProfilePostsPageParam[] }
@@ -28,7 +45,7 @@ export const ProfileScreen = ({route}: ProfileProps) => {
     fetchNextPage,
     isFetchingNextPage,
     refetch,
-  } = useGetProfilePostsInfiniteQuery(username);
+  } = useGetProfilePostsInfiniteQuery(username ? username : skipToken);
 
   const allPosts = React.useMemo(
     () => data?.pages?.flatMap(page => page.data) || [],
@@ -40,7 +57,7 @@ export const ProfileScreen = ({route}: ProfileProps) => {
     isLoading: isUserLoading,
     isError: isUserError,
     error: userError,
-  } = useGetProfileByUserNameQuery(username);
+  } = useGetProfileByUserNameQuery(username ? username : skipToken);
 
   if (isUserLoading) {
     return <Spinner />;

@@ -7,9 +7,9 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import {faHeart as fasHeart} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {useTheme} from '@react-navigation/native';
 
 import globalStyle from '../../assets/styles/globalStyle';
+import {useTheme} from '../../hooks/useTheme';
 import {
   useAddLikeMutation,
   useDeleteLikeMutation,
@@ -112,13 +112,19 @@ export const BottomBar = ({post, onShowLikes, onShowComments}: Props) => {
 
           {expanded && (
             <OpacityPressable onPress={() => setExpanded(false)}>
-              <ThemedText style={styles.showMoreText}>Show less</ThemedText>
+              <ThemedText
+                style={[styles.showMoreText, {color: colors.iosBlue}]}>
+                Show less
+              </ThemedText>
             </OpacityPressable>
           )}
 
           {!expanded && hasOverflowed && (
             <OpacityPressable onPress={() => setExpanded(true)}>
-              <ThemedText style={styles.showMoreText}>Show more...</ThemedText>
+              <ThemedText
+                style={[styles.showMoreText, {color: colors.iosBlue}]}>
+                Show more...
+              </ThemedText>
             </OpacityPressable>
           )}
         </View>
@@ -148,7 +154,6 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   showMoreText: {
-    color: '#2889eb',
     marginTop: 5,
   },
   likeCommentDateContainer: {

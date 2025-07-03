@@ -19,17 +19,19 @@ import {ProfileFeedScreen} from '../screens/Profile/ProfileFeedScreen';
 import {ProfileScreen} from '../screens/Profile/ProfileScreen';
 import {SettingsScreen} from '../screens/Settings/SettingsScreen';
 import {ProfileStackParamList, Routes} from './Routes';
+import {SettingsStackNavigator} from './SettingsStackNavigator';
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
 
 export const ProfileStackNavigator = () => {
-  const {data: loggedInUser, isError, isLoading} = useGetUsersMeQuery();
+  //const {data: loggedInUser, isError, isLoading} = useGetUsersMeQuery();
+  //console.log(loggedInUser);
   const theme = useTheme();
   const renderSettingsButton = useCallback(() => <SettingsButton />, []);
   // TODO solve this better
-  if (isLoading && !isError) {
+  /*if (isLoading && !isError) {
     return;
-  }
+  }*/
   return (
     <ProfileStack.Navigator
       screenOptions={{
@@ -40,18 +42,21 @@ export const ProfileStackNavigator = () => {
         name={Routes.Profile}
         component={ProfileScreen}
         options={({route}) => ({
-          headerRight:
-            route.params?.username === loggedInUser?.username
-              ? renderSettingsButton
-              : undefined,
+          headerRight: route.params?.username
+            ? undefined
+            : renderSettingsButton,
           headerTitleAlign: 'left',
-          title: route.params?.username,
+          title: route.params?.username || '',
         })}
-        initialParams={{
-          username: loggedInUser?.username,
-        }}
+        //initialParams={{
+        //  username: loggedInUser?.username,
+        //}}
       />
-      <ProfileStack.Screen name={Routes.Settings} component={SettingsScreen} />
+      <ProfileStack.Screen
+        name={Routes.SettingsStack}
+        component={SettingsStackNavigator}
+        options={{headerShown: false}}
+      />
       <ProfileStack.Screen
         name={Routes.Followers}
         component={FollowersScreen}
@@ -70,12 +75,14 @@ export const ProfileStackNavigator = () => {
   );
 };
 
-export const SettingsButton = (): JSX.Element => {
+export const SettingsButton = () => {
   const navigation =
     useNavigation<StackNavigationProp<ProfileStackParamList>>();
   const {colors} = useTheme();
   const onPress = () => {
-    navigation.navigate(Routes.Settings);
+    navigation.navigate(Routes.SettingsStack, {
+      screen: Routes.Settings,
+    });
   };
   return (
     <ThemedView style={styles.button}>

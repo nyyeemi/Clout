@@ -150,6 +150,20 @@ export type FollowMutationPayload = {
   user_id: string;
   username: string;
 };
+
+export type UpdateUserPayload = {
+  username?: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  bio?: string;
+  profile_picture_url?: string;
+};
+
+export type UpdatePasswordPayload = {
+  current_password: string;
+  new_password: string;
+};
 /*{
 "email": "user@example.com",
       "username": "string",

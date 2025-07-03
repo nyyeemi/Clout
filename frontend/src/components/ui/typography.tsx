@@ -36,6 +36,7 @@ export const ThemedText = ({
 type ThemedIconProps = {
   icon: IconDefinition;
   size?: number;
+  color?: string;
   containerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   children?: string;
@@ -44,6 +45,7 @@ type ThemedIconProps = {
 export const ThemedIcon = ({
   icon,
   size = 24,
+  color,
   containerStyle,
   textStyle,
   children,
@@ -53,7 +55,11 @@ export const ThemedIcon = ({
 
   return (
     <View style={containerStyle} {...props}>
-      <FontAwesomeIcon icon={icon} size={size} color={theme.colors.text} />
+      <FontAwesomeIcon
+        icon={icon}
+        size={size}
+        color={color ?? theme.colors.text}
+      />
       {children && <ThemedText style={textStyle}>{children}</ThemedText>}
     </View>
   );
@@ -154,7 +160,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   body: {
-    fontSize: 17,
+    fontSize: 15,
     lineHeight: 22,
   },
   subhead: {
