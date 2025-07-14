@@ -64,9 +64,11 @@ def delete_competition(competition_id: uuid.UUID, session: SessionDep) -> Any:
     dependencies=[Depends(get_current_user)],
     response_model=CompetitionPublic,
 )
-def read_current_competition(session: SessionDep) -> Any:
+def read_current_competition(
+    session: SessionDep, status: CompetitionStatus = "capturing"
+) -> Any:
     """
-    Read current competition. (time now inside start_time-end_time)
+    Read current competition (status should be capturing or voting)
     """
 
 
