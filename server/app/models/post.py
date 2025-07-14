@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from .user import User
     from .comment import Comment
     from .like import Like
+    from .competition_entry import CompetitionEntry
 
 
 # TODO: add is_in_comp etc
@@ -54,3 +55,5 @@ class Post(Base):
     )
 
     likes: Mapped[list["Like"]] = relationship("Like", cascade="all, delete-orphan")
+
+    competition_entry: Mapped["CompetitionEntry"] = relationship(back_populates="post")
