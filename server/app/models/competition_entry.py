@@ -26,6 +26,7 @@ class CompetitionEntry(Base):
         ForeignKey("competitions.id"), nullable=False
     )
     post_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("posts.id"), nullable=False)
+    owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
 
     mu: Mapped[float] = mapped_column(Float, default=25.0, nullable=False)
     sigma: Mapped[float] = mapped_column(Float, default=8.333, nullable=False)

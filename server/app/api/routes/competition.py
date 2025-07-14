@@ -92,7 +92,17 @@ def read_entries_me(session: SessionDep) -> Any:
 
 
 @router.post("/vote", response_model=...)
-def create_vote(session: SessionDep, currentUser: CurrentUser) -> Any:
+def create_vote(
+    session: SessionDep,
+    currentUser: CurrentUser,
+    competition_pair_in: tuple[CompetitionEntry, CompetitionEntry],
+) -> Any:
     """
     Vote between one pair of posts.
     """
+    # get entries from db to orm objects
+    update_rating(
+        session=session,
+    )
+    # update pairwise vote table (create pairwise_vote)
+    return Message()
