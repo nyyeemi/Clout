@@ -19,14 +19,21 @@ class CompetitionsPublic(BaseModel):
     count: int
 
 
-class PostMinimal(BaseModel):
+class PostData(BaseModel):
     image_url: HttpUrl
 
+    class Config:
+        from_attributes = True
 
-# Competition entry for pairwise voting on frontend
-class CompetitionEntryPublic(BaseModel):
-    post: PostMinimal
+
+class PostMinimal(BaseModel):
+    id: uuid.UUID
+    post: PostData
+
+    class Config:
+        from_attributes = True
 
 
 class VotePair(BaseModel):
-    pair: tuple[CompetitionEntryPublic, CompetitionEntryPublic]
+    entry_1: PostMinimal
+    entry_2: PostMinimal

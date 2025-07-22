@@ -53,11 +53,16 @@ class Competition(Base):
     end_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     # is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
+    competition_number_seq = Sequence(
+        "competition_number_seq", metadata=Base.metadata, start=1
+    )
+
     competition_number: Mapped[int] = mapped_column(
         Integer,
-        Sequence("competition_number_seq", start=1),
+        competition_number_seq,
         unique=True,
         nullable=False,
+        server_default=competition_number_seq.next_value(),
     )
 
     entries: Mapped[list["CompetitionEntry"]] = relationship(

@@ -16,7 +16,7 @@ from app.db.session import SessionLocal
 from app.core.config import settings
 from app.models.user import User
 from app.schemas.utils import TokenPayload
-from app.models.competition import Competition
+from app.models.competition import Competition, CompetitionStatus
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_STR}/auth/login/access-token"
@@ -57,9 +57,11 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
-def get_competition_by_status(session: SessionDep, status: str) -> Competition:
-    statement = select(Competition).where(Competition.status == status)
+def get_competition_by_status(
+    session: Session, status: CompetitionStatus
+) -> Competition:
     try:
+        statement = select(Competition).where(Competition.status == status)
         competition = session.execute(statement).scalar_one()
     except NoResultFound:
         raise HTTPException(
@@ -68,15 +70,17 @@ def get_competition_by_status(session: SessionDep, status: str) -> Competition:
     return competition
 
 
-def get_voting_competition() -> Competition:
-    return get_competition_by_status(status="voting")
+def get_voting_competition(session: SessionDep) -> Competition:
+    return get_competition_by_status(session=session, status=CompetitionStatus.VOTING)
 
 
 CurrentVotingCompetition = Annotated[Competition, Depends(get_voting_competition)]
 
 
-def get_capturing_competition() -> Competition:
-    return get_competition_by_status(status="capturing")
+def get_capturing_competition(session: SessionDep) -> Competition:
+    return get_competition_by_status(
+        session=session, status=CompetitionStatus.CAPTURING
+    )
 
 
 CurrentCapturingCompetition = Annotated[Competition, Depends(get_capturing_competition)]

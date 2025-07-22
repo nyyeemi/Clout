@@ -154,7 +154,7 @@ def create_mock_competition_posts(session: Session, base_dir):
             posts_data = json.load(f)
 
         for idx, assigned_user in enumerate(all_users):
-            post_to_add = Post(**next(posts_data), owner_id=assigned_user.id)
+            post_to_add = Post(**posts_data[idx], owner_id=assigned_user.id)
             session.add(post_to_add)
             session.commit()
             session.refresh(post_to_add)

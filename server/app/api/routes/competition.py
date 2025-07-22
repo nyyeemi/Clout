@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 
 from app.api.deps import (
+    CurrentCapturingCompetition,
     CurrentUser,
     CurrentVotingCompetition,
     SessionDep,
@@ -27,16 +28,16 @@ router = APIRouter(prefix="/competition", tags=["competitions"])
 )
 def read_competitions(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     """
-    Read all competitions.
+    Read all finished competitions.
     """
     statement = (
         select(Competition)
-        .where(Competition.status == "finished")
+        .where(Competition.status == CompetitionStatus.FINISHED)
         .order_by(Competition.created_at.desc())
         .offset(skip)
         .limit(limit)
     )
-    competitions = session.execute(statement)
+    competitions = session.scalars(statement).all()
     return CompetitionsPublic(data=competitions, count=len(competitions))
 
 
@@ -51,7 +52,7 @@ def read_current_competition(
     """
     Read current competition (status should be capturing or voting)
     """
-    competition = get_competition_by_status(status=status)
+    competition = get_competition_by_status(session=session, status=status)
     return competition
 
 
@@ -66,12 +67,12 @@ def read_latest_competition(session: SessionDep) -> CompetitionPublic:
     """
     statement = (
         select(Competition)
-        .where(Competition.status == "finished")
+        .where(Competition.status == CompetitionStatus.FINISHED)
         .order_by(Competition.created_at.desc())
     )
-    competition = session.execute(statement).scalar_one_or_none()
+    competition = session.scalars(statement).first()
     if not competition:
-        raise HTTPException(status=404, detail="Competition not found")
+        raise HTTPException(status_code=404, detail="No finished competitions found.")
     return competition
 
 
@@ -88,9 +89,9 @@ def read_entries_me(
     )
     all_entries = session.scalars(statement).all()
 
-    pair = sample_pair(all_entries=all_entries)
+    entry1, entry2 = sample_pair(all_entries=all_entries)
 
-    return pair
+    return VotePair(entry_1=entry1, entry_2=entry2)
 
 
 @router.post("/vote", response_model=Message)
