@@ -1,5 +1,37 @@
 import { apiSlice } from "../apiSlice";
 
+type CustomUser = {
+  id: string;
+  username: string;
+  first_name?: string;
+  last_name?: string;
+  email: string;
+  bio?: string;
+  num_followers: number;
+  num_following: number;
+  profile_picture_url: string;
+  num_posts: number;
+  is_followed_by_current_user?: boolean;
+};
+
+type UpdateUserPayload = {
+  username?: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  bio?: string;
+  profile_picture_url?: string;
+};
+
+type UpdatePasswordPayload = {
+  current_password: string;
+  new_password: string;
+};
+
+type Message = {
+  message: string;
+};
+
 export const usersApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUsersMe: builder.query<CustomUser, void>({
@@ -35,8 +67,6 @@ export const usersApi = apiSlice.injectEndpoints({
 
 export const {
   useGetUsersMeQuery,
-  useCreateFollowMutation,
-  useDeleteFollowMutation,
   useUpdateUserMeMutation,
   useUpdatePasswordMutation,
   useDeleteAccountMutation,

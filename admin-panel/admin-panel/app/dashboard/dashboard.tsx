@@ -1,4 +1,25 @@
+import { useMemo } from "react";
+import {
+  useGetCompetitionEntriesInfiniteQuery,
+  useGetCompetitionsInfiniteQuery,
+} from "~/redux/api/endpoints/competitions";
+
 export function Dashboard() {
+  /*
+  const {
+    data,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useGetCompetitionsInfiniteQuery();
+
+  const feedPosts = useMemo(
+    () => data?.pages?.flatMap((page) => page.data) || [],
+    [data]
+  );*/
+
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
