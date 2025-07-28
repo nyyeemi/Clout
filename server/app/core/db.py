@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 import logging
 from pathlib import Path
@@ -16,6 +17,9 @@ from app.models.post import Post
 from app.models.follower import Follower
 from app.models.comment import Comment
 from app.models.like import Like
+from app.models.competition_entry import CompetitionEntry
+from app.models.competition import Competition
+from app.models.pairwise_vote import PairwiseVote
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -42,6 +46,7 @@ def init_db(session: Session) -> None:
         clear_all_data(session)
         create_mock_users(session, base_dir)
         create_mock_posts(session, base_dir)
+        create_mock_competition_posts(session, base_dir)
         create_mock_comments(session, base_dir)
         create_mock_likes(session)
         create_mock_follower_relations(session)
@@ -66,6 +71,9 @@ def clear_all_data(session):
     session.execute(delete(Like))
     session.execute(delete(Post))
     session.execute(delete(User))
+    session.execute(delete(CompetitionEntry))
+    session.execute(delete(PairwiseVote))
+    session.execute(delete(Competition))
     session.commit()
 
     logger.info("All data cleared.")
@@ -122,6 +130,44 @@ def create_mock_posts(session, base_dir):
             logger.info(f"Added {len(posts_to_add)} new posts to the session.")
         else:
             logger.info("No new posts to add from posts.json.")
+
+
+def create_mock_competition_posts(session: Session, base_dir):
+    competition = Competition(
+        category="Nature",
+        description="Finnish summer.",
+        start_time=datetime.now(),
+        vote_start_time=datetime.now() + timedelta(hours=24),
+        end_time=datetime.now() + timedelta(hours=48),
+    )
+    session.add(competition)
+    session.commit()
+    session.refresh(competition)
+
+    all_users = session.execute(select(User)).scalars().all()
+
+    if not all_users:
+        logger.warning("No users available to assign posts to.")
+    else:
+        posts_json_path = base_dir / "posts.json"
+        with open(posts_json_path) as f:
+            posts_data = json.load(f)
+
+        for idx, assigned_user in enumerate(all_users):
+            post_to_add = Post(**posts_data[idx], owner_id=assigned_user.id)
+            session.add(post_to_add)
+            session.commit()
+            session.refresh(post_to_add)
+
+            comp_entry = CompetitionEntry(
+                competition_id=competition.id,
+                post_id=post_to_add.id,
+                owner_id=assigned_user.id,
+            )
+            session.add(comp_entry)
+            session.commit()
+
+        logger.info("Added post/entry to each user in the competition")
 
 
 def create_mock_follower_relations(session, max_relations_per_user: int = 10):

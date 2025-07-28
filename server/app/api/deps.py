@@ -6,7 +6,9 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from pydantic import ValidationError
+from sqlalchemy import select
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import NoResultFound
 
 
 from app.core import security
@@ -14,6 +16,7 @@ from app.db.session import SessionLocal
 from app.core.config import settings
 from app.models.user import User
 from app.schemas.utils import TokenPayload
+from app.models.competition import Competition, CompetitionStatus
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_STR}/auth/login/access-token"
@@ -52,6 +55,35 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+def get_competition_by_status(
+    session: Session, status: CompetitionStatus
+) -> Competition:
+    try:
+        statement = select(Competition).where(Competition.status == status)
+        competition = session.execute(statement).scalar_one()
+    except NoResultFound:
+        raise HTTPException(
+            status_code=404, detail=f"Active (status='{status}') competition not found"
+        )
+    return competition
+
+
+def get_voting_competition(session: SessionDep) -> Competition:
+    return get_competition_by_status(session=session, status=CompetitionStatus.VOTING)
+
+
+CurrentVotingCompetition = Annotated[Competition, Depends(get_voting_competition)]
+
+
+def get_capturing_competition(session: SessionDep) -> Competition:
+    return get_competition_by_status(
+        session=session, status=CompetitionStatus.CAPTURING
+    )
+
+
+CurrentCapturingCompetition = Annotated[Competition, Depends(get_capturing_competition)]
 
 
 def get_current_active_superuser(current_user: CurrentUser) -> User:

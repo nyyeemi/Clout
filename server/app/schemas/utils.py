@@ -11,3 +11,8 @@ class Token(BaseModel):
 # Contents of JWT token
 class TokenPayload(BaseModel):
     sub: str | None = None
+
+
+# Generic message
+class Message(BaseModel):
+    message: str

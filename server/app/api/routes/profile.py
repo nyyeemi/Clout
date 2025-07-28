@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 from sqlalchemy import and_, select
 from app.api.deps import SessionDep, CurrentUser
-from app.models import User
 from app.schemas.user import (
     ProfileFollowerUser,
     ProfileFollowerUsers,

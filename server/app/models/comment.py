@@ -14,7 +14,6 @@ from app.models.base import Base
 
 if TYPE_CHECKING:
     from .user import User
-    from .post import Post
     # from .like import Like
 
 

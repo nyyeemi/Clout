@@ -4,3 +4,6 @@ from .like import Like  # noqa
 from .post import Post  # noqa
 from .comment import Comment  # noqa
 from .user import User  # noqa
+from .competition import Competition  # noqa
+from .competition_entry import CompetitionEntry  # noqa
+from .pairwise_vote import PairwiseVote  # noqa

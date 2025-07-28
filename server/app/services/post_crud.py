@@ -15,6 +15,7 @@ def create_post(*, session: Session, post_in: PostCreate, owner_id: UUID) -> Pos
         caption=post_in.caption,
         owner_id=owner_id,
     )
+    # Initialize competition entry
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)
