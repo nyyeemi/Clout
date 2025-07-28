@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 import logging
 from pathlib import Path
@@ -136,9 +136,9 @@ def create_mock_competition_posts(session: Session, base_dir):
     competition = Competition(
         category="Nature",
         description="Finnish summer.",
-        start_time=datetime.now(),
-        vote_start_time=datetime.now() + timedelta(hours=24),
-        end_time=datetime.now() + timedelta(hours=48),
+        start_time=datetime.now(timezone.utc),
+        vote_start_time=datetime.now(timezone.utc) + timedelta(hours=24),
+        end_time=datetime.now(timezone.utc) + timedelta(hours=48),
     )
     session.add(competition)
     session.commit()

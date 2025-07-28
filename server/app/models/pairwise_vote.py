@@ -20,13 +20,13 @@ class PairwiseVote(Base):
     )
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     competition_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("competitions.id"), nullable=False
+        ForeignKey("competitions.id", ondelete="CASCADE"), nullable=False
     )
     winner_entry_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("competition_entries.id"), nullable=False
+        ForeignKey("competition_entries.id", ondelete="CASCADE"), nullable=False
     )
     loser_entry_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("competition_entries.id"), nullable=False
+        ForeignKey("competition_entries.id", ondelete="CASCADE"), nullable=False
     )
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False

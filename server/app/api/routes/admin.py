@@ -1,27 +1,87 @@
-from typing import Annotated, Any, Literal
+from datetime import datetime, timezone
+from typing import Annotated, Literal
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from app.api.deps import (
+    CurrentUser,
+    CurrentVotingCompetition,
     SessionDep,
     get_capturing_competition,
-    get_competition_by_status,
     get_current_active_superuser,
     get_voting_competition,
 )
 from app.models.competition_entry import CompetitionEntry
 
 from app.schemas.competition import (
+    CompetitionCreate,
     CompetitionEntriesAdmin,
     CompetitionReadAdmin,
     CompetitionsReadAdmin,
+    PairwiseVotesReadAdmin,
 )
 from app.models.competition import Competition, CompetitionStatus
+from app.models.pairwise_vote import PairwiseVote
+from app.schemas.posts import PostCreate, PostPublic
+from app.services import post_crud as crud
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+class CompetitionFilterParams(BaseModel):
+    skip: int = Field(0, ge=0)
+    limit: int = Field(100, gt=0)
+    sort_order: Literal["asc", "desc"] = "desc"
+
+
+@router.get(
+    "/competition",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=CompetitionsReadAdmin,
+)
+def read_competitions(
+    session: SessionDep,
+    filters: Annotated[CompetitionFilterParams, Depends()],
+) -> CompetitionsReadAdmin:
+    """
+    Read all competitions.
+    """
+    order_column = (
+        Competition.created_at.asc()
+        if filters.sort_order == "asc"
+        else Competition.created_at.desc()
+    )
+
+    statement = (
+        select(Competition)
+        .order_by(order_column)
+        .offset(filters.skip)
+        .limit(filters.limit)
+    )
+    competitions = session.scalars(statement).all()
+    return CompetitionsReadAdmin(data=competitions, count=len(competitions))
+
+
+@router.get(
+    "/competition/current",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=CompetitionsReadAdmin,
+)
+def read_current_competition(session: SessionDep) -> CompetitionsReadAdmin:
+    """
+    Read current competition (capturing and voting)
+    """
+    capturing_competition = get_capturing_competition(session=session)
+    voting_competition = get_voting_competition(session=session)
+
+    competitions = [
+        c for c in [capturing_competition, voting_competition] if c is not None
+    ]
+
+    return CompetitionsReadAdmin(data=competitions, count=len(competitions))
 
 
 class EntryFilterParams(BaseModel):
@@ -39,7 +99,7 @@ class EntryFilterParams(BaseModel):
 def read_entries(
     competition_id: uuid.UUID,
     session: SessionDep,
-    filters: Annotated[EntryFilterParams, Query()],
+    filters: Annotated[EntryFilterParams, Depends()],
 ) -> CompetitionEntriesAdmin:
     """
     Read all entries from specific competition
@@ -70,56 +130,97 @@ def read_entries(
     return CompetitionEntriesAdmin(data=entries, count=len(entries))
 
 
-class CompetitionFilterParams(BaseModel):
-    skip: int = Field(0, ge=0)
-    limit: int = Field(100, gt=0)
+class VoteFilterParams(BaseModel):
+    skip: int = Query(0, ge=0)
+    limit: int = Query(100, gt=0)
     sort_order: Literal["asc", "desc"] = "desc"
 
 
 @router.get(
-    "/competition",
+    "competition/{competition_id}/votes",
     dependencies=[Depends(get_current_active_superuser)],
-    response_model=CompetitionsReadAdmin,
+    response_model=PairwiseVotesReadAdmin,
 )
-def read_competitions(
+def get_pairwise_votes_by_competition_id(
+    competition_id: uuid.UUID,
     session: SessionDep,
-    filters: Annotated[CompetitionFilterParams, Depends()],
-) -> Any:
+    filters: Annotated[VoteFilterParams, Depends()],
+) -> PairwiseVotesReadAdmin:
     """
-    Read all finished competitions.
+    Read pairwise votes by competition id
     """
-    order_column = (
-        Competition.created_at.asc()
+
+    order = (
+        PairwiseVote.created_at.asc()
         if filters.sort_order == "asc"
-        else Competition.created_at.desc()
+        else PairwiseVote.created_at.desc()
     )
 
     statement = (
-        select(Competition)
-        .order_by(order_column)
+        select(PairwiseVote)
+        .where(PairwiseVote.competition_id == competition_id)
+        .order_by(order)
         .offset(filters.skip)
         .limit(filters.limit)
     )
-    competitions = session.scalars(statement).all()
-    return CompetitionsReadAdmin(data=competitions, count=len(competitions))
+
+    votes = session.execute(statement).scalars().all()
+
+    return PairwiseVotesReadAdmin(data=votes, count=len(votes))
 
 
-'''
-@router.get(
-    "/current",
+@router.post(
+    "/competition",
     dependencies=[Depends(get_current_active_superuser)],
     response_model=CompetitionReadAdmin,
 )
-def read_current_competition(session: SessionDep) -> CompetitionsReadAdmin:
+def create_competition(
+    session: SessionDep, competition_in: CompetitionCreate
+) -> CompetitionReadAdmin:
+    now = datetime.now(timezone.utc)
+
+    if now < competition_in.start_time:
+        status = CompetitionStatus.PENDING
+    elif competition_in.start_time <= now < competition_in.vote_start_time:
+        status = CompetitionStatus.CAPTURING
+    elif competition_in.vote_start_time <= now < competition_in.end_time:
+        status = CompetitionStatus.VOTING
+    else:
+        status = CompetitionStatus.FINISHED
+
+    new_competition = Competition(
+        category=competition_in.category,
+        description=competition_in.description,
+        start_time=competition_in.start_time,
+        vote_start_time=competition_in.vote_start_time,
+        end_time=competition_in.end_time,
+        status=status,
+    )
+
+    session.add(new_competition)
+    session.commit()
+    session.refresh(new_competition)
+
+    return new_competition
+
+
+@router.post("/post", response_model=PostPublic)
+def create_post_for_voting(
+    session: SessionDep,
+    current_user: CurrentUser,
+    current_competition: CurrentVotingCompetition,
+    post_in: PostCreate,
+) -> PostPublic:
     """
-    Read current competition (status should be capturing or voting)
+    Create post and competition entry.
     """
-    competition = get_competition_by_status(session=session)
+    post = crud.create_post(session=session, post_in=post_in, owner_id=current_user.id)
+    competition_entry = CompetitionEntry(
+        competition_id=current_competition.id,
+        owner_id=current_user.id,
+        post_id=post.id,
+    )
+    session.add(competition_entry)
+    session.commit()
 
-    capturing_competition = get_capturing_competition(session=session)
-    voting_competition = get_voting_competition(session=session)
-
-    competitions = [c for c in [capturing_competition,voting_competition] if c is not None]
-
-    return competition
-'''
+    return post
