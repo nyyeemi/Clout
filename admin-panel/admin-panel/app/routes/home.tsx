@@ -1,6 +1,10 @@
 import type { Route } from "./+types/home";
 import { Dashboard } from "../dashboard/dashboard";
-import { redirect, type LoaderFunctionArgs } from "react-router";
+import { redirect, useNavigate, type LoaderFunctionArgs } from "react-router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "~/redux/store/store";
+import { logoutAndReset } from "~/redux/slices/authSlice";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,14 +13,17 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function loader({ request }: LoaderFunctionArgs) {
-  const isLoggedIn = Boolean(localStorage.getItem("token"));
-  if (!isLoggedIn) {
-    throw redirect("/login");
-  }
-  return null;
-}
-
 export default function Home() {
+  const navigate = useNavigate();
+  const token = useSelector((state: RootState) => state.auth.accessToken);
+
+  useEffect(() => {
+    //localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      logoutAndReset();
+    }
+  }, [navigate]);
+
   return <Dashboard />;
 }

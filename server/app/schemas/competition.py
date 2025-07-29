@@ -3,6 +3,8 @@ from typing import Literal
 import uuid
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
+from app.models.competition import CompetitionStatus
+
 
 class Competition: ...
 
@@ -53,7 +55,8 @@ class CompetitionEntryAdmin(BaseModel):
     comparisons: int
 
     class Config:
-        orm_mode = True
+        # orm_mode = True
+        from_attributes = True
 
 
 class CompetitionEntriesAdmin(BaseModel):
@@ -66,18 +69,18 @@ class CompetitionReadAdmin(BaseModel):
     category: str
     description: str
     created_at: datetime
-    status: Literal["capturing", "voting", "finished", "pending"]
+    status: CompetitionStatus
     start_time: datetime
     vote_start_time: datetime
     end_time: datetime
     competition_number: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CompetitionsReadAdmin(BaseModel):
-    data: list[CompetitionEntriesAdmin]
+    data: list[CompetitionReadAdmin]
     count: int
 
 

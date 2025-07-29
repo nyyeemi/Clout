@@ -5,7 +5,6 @@ import {
 } from "~/redux/api/endpoints/competitions";
 
 export function Dashboard() {
-  /*
   const {
     data,
     isLoading,
@@ -18,7 +17,7 @@ export function Dashboard() {
   const feedPosts = useMemo(
     () => data?.pages?.flatMap((page) => page.data) || [],
     [data]
-  );*/
+  );
 
   return (
     <div className="flex min-h-screen">

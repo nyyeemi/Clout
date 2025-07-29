@@ -44,7 +44,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
         if (sort_by) params.append("sort_by", sort_by.toString());
         if (sort_order) params.append("sort_order", sort_order.toString());
 
-        return `competition/?${params.toString()}`;
+        return `admin/competition/?${params.toString()}`;
       },
       infiniteQueryOptions: {
         initialPageParam: {
@@ -90,7 +90,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
         if (sort_by) params.append("sort_by", sort_by.toString());
         if (sort_order) params.append("sort_order", sort_order.toString());
 
-        return `competition/${competition_id}/entries?${params.toString()}`;
+        return `admin/competition/${competition_id}/entries?${params.toString()}`;
       },
       infiniteQueryOptions: {
         initialPageParam: {
