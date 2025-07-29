@@ -26,6 +26,7 @@ from app.models.competition import Competition, CompetitionStatus
 from app.models.pairwise_vote import PairwiseVote
 from app.schemas.posts import PostCreate, PostPublic
 from app.services import post_crud as crud
+from app.schemas.utils import Message
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -204,6 +205,29 @@ def create_competition(
     return new_competition
 
 
+@router.delete(
+    "/competition/{competition_id}",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=Message,
+)
+def delete_competition(
+    competition_id: uuid.UUID,
+    session: SessionDep,
+    current_user: CurrentUser,
+) -> Message:
+    """
+    Delete competition
+    """
+    competition = session.get(Competition, competition_id)
+    if not competition:
+        raise HTTPException(status_code=404, detail="Competition not found")
+
+    session.delete(competition)
+    session.commit()
+
+    return Message(message="Deleted successfully.")
+
+
 @router.post("/post", response_model=PostPublic)
 def create_post_for_voting(
     session: SessionDep,
@@ -224,3 +248,47 @@ def create_post_for_voting(
     session.commit()
 
     return post
+
+
+@router.delete(
+    "/entry/{entry_id}",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=Message,
+)
+def delete_competition_entry(
+    entry_id: uuid.UUID,
+    session: SessionDep,
+) -> Message:
+    """
+    Delete specific competition entry
+    """
+    entry = session.get(CompetitionEntry, entry_id)
+    if not entry:
+        raise HTTPException(status_code=404, detail="Competition entry not found")
+
+    session.delete(entry)
+    session.commit()
+
+    return Message(message="Deleted successfully.")
+
+
+@router.delete(
+    "/vote/{vote_id}",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=Message,
+)
+def delete_pairwise_vote(
+    vote_id: uuid.UUID,
+    session: SessionDep,
+) -> Message:
+    """
+    Delete a specific pairwise vote.
+    """
+    vote = session.get(PairwiseVote, vote_id)
+    if not vote:
+        raise HTTPException(status_code=404, detail="Vote not found")
+
+    session.delete(vote)
+    session.commit()
+
+    return Message(message="Deleted successfully.")
