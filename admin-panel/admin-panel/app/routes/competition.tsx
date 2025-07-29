@@ -13,7 +13,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home() {
+export default function Competition() {
   const navigate = useNavigate();
   const token = useSelector((state: RootState) => state.auth.accessToken);
 

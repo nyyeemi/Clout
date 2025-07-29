@@ -7,6 +7,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
+import { NavLink } from "react-router";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID" }, //, width: 250 },
@@ -64,17 +65,43 @@ export function Dashboard() {
     <div className="flex flex-col h-screen">
       <div className="flex flex-1 overflow-hidden">
         <aside className="flex flex-col h-screen w-45 bg-stone-950 text-white p-4 border-r border-r-neutral-700">
-          <h2 className="text-2xl font-semibold mb-4">Clout Admin</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-left">Clout Admin</h2>
 
-          <nav className="flex flex-col justify-between flex-1">
+          <nav className="flex flex-col justify-between flex-1 ">
             {/* Top group */}
             <div>
-              <a
-                href="/dashboard"
-                className="hover:bg-stone-700 p-2 rounded block"
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  `block rounded p-2 hover:bg-stone-700 ${isActive ? "bg-stone-800" : ""}`
+                }
               >
                 Dashboard
-              </a>
+              </NavLink>
+              <NavLink
+                to="/posts"
+                className={({ isActive }) =>
+                  `block rounded p-2 hover:bg-stone-700 ${isActive ? "bg-stone-800" : ""}`
+                }
+              >
+                Posts
+              </NavLink>
+              <NavLink
+                to="/users"
+                className={({ isActive }) =>
+                  `block rounded p-2 hover:bg-stone-700 ${isActive ? "bg-stone-800" : ""}`
+                }
+              >
+                Users
+              </NavLink>
+              <NavLink
+                to="/competition"
+                className={({ isActive }) =>
+                  `block rounded p-2 hover:bg-stone-700 ${isActive ? "bg-stone-800" : ""}`
+                }
+              >
+                Competitions
+              </NavLink>
             </div>
 
             {/* Bottom group */}
