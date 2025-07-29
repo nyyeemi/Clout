@@ -6,8 +6,9 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const username = formData.get("username");
   const password = formData.get("password");
+  const token = await login({ username, password }).unwrap();
 
-  if () {
+  if (token) {
     localStorage.setItem("token", "mock-token");
     return redirect("/dashboard");
   }
@@ -16,10 +17,10 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Login() {
-  const [login, { isLoading, isError }] = useLoginMutation();
+  //const [login, { isLoading, isError }] = useLoginMutation();
 
-  const token = await login({username, password}).unwrap();
-  
+  //const token = await login({username, password}).unwrap();
+
   return (
     <main className="bg-stone-900 min-h-screen flex items-center justify-center p-6">
       <form
