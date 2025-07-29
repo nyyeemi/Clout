@@ -40,6 +40,7 @@ class VotePair(BaseModel):
     entry_2: PostMinimal
 
 
+### ADMIN SCHEMAS ###
 class CompetitionEntryAdmin(BaseModel):
     id: uuid.UUID
     competition_id: uuid.UUID
@@ -65,7 +66,7 @@ class CompetitionReadAdmin(BaseModel):
     category: str
     description: str
     created_at: datetime
-    status: Literal["capturing", "voting", "finished"]
+    status: Literal["capturing", "voting", "finished", "pending"]
     start_time: datetime
     vote_start_time: datetime
     end_time: datetime
@@ -78,3 +79,28 @@ class CompetitionReadAdmin(BaseModel):
 class CompetitionsReadAdmin(BaseModel):
     data: list[CompetitionEntriesAdmin]
     count: int
+
+
+class PairwiseVoteReadAdmin(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    competition_id: uuid.UUID
+    winner_entry_id: uuid.UUID
+    loser_entry_id: uuid.UUID
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class PairwiseVotesReadAdmin(BaseModel):
+    data: list[PairwiseVoteReadAdmin]
+    count: int
+
+
+class CompetitionCreate(BaseModel):
+    category: str
+    description: str
+    start_time: datetime
+    vote_start_time: datetime
+    end_time: datetime

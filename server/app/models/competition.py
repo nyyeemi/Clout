@@ -22,6 +22,7 @@ from sqlalchemy import Enum
 
 
 class CompetitionStatus(enum.Enum):
+    PENDING = "pending"
     CAPTURING = "capturing"
     VOTING = "voting"
     FINISHED = "finished"
@@ -41,7 +42,7 @@ class Competition(Base):
     status: Mapped[CompetitionStatus] = mapped_column(
         Enum(CompetitionStatus, name="competition_status"),
         nullable=False,
-        default=CompetitionStatus.CAPTURING,
+        default=CompetitionStatus.PENDING,
     )
     start_time: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False

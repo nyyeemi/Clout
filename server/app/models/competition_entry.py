@@ -23,9 +23,11 @@ class CompetitionEntry(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     competition_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("competitions.id"), nullable=False
+        ForeignKey("competitions.id", ondelete="CASCADE"), nullable=False
     )
-    post_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("posts.id"), nullable=False)
+    post_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("posts.id", ondelete="CASCADE"), nullable=False
+    )
     owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
 
     mu: Mapped[float] = mapped_column(Float, default=25.0, nullable=False)
