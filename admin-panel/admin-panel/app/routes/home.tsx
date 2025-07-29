@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     //localStorage.getItem("token");
     if (!token) {
-      navigate("/login");
+      navigate("/");
       logoutAndReset();
     }
   }, [navigate]);
