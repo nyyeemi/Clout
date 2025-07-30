@@ -1,15 +1,16 @@
-import type { Route } from "./+types/home";
-import { Dashboard } from "../dashboard/dashboard";
-import { redirect, useNavigate, type LoaderFunctionArgs } from "react-router";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "~/redux/store/store";
-import { logoutAndReset } from "~/redux/slices/authSlice";
+import {useEffect} from 'react';
+
+import {useSelector} from 'react-redux';
+import {type LoaderFunctionArgs, redirect, useNavigate} from 'react-router';
+import {logoutAndReset} from '~/redux/slices/authSlice';
+import type {RootState} from '~/redux/store/store';
+
+import type {Route} from './+types/home';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Admin Dashboard" },
-    { name: "description", content: "Welcome to clout enterprises. " },
+    {title: 'Admin Dashboard'},
+    {name: 'description', content: 'Welcome to clout enterprises. '},
   ];
 }
 
@@ -24,15 +25,13 @@ export default function Home() {
         </h1>
         <div className="flex justify-center gap-4">
           <button
-            onClick={() => navigate("/competition")}
-            className="bg-primary hover:text-white text-neutral-400 px-6 py-3 rounded-xl text-sm font-medium transition"
-          >
+            onClick={() => navigate('/competition')}
+            className="bg-primary hover:text-white text-neutral-400 px-6 py-3 rounded-xl text-sm font-medium transition">
             Competitions
           </button>
           <button
-            onClick={() => navigate("/settings")}
-            className="bg-secondary  hover:text-neutral-50 text-neutral-400 px-6 py-3 rounded-xl text-sm font-medium transition"
-          >
+            onClick={() => navigate('/settings')}
+            className="bg-secondary  hover:text-neutral-50 text-neutral-400 px-6 py-3 rounded-xl text-sm font-medium transition">
             Settings
           </button>
         </div>

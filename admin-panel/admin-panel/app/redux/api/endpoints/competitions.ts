@@ -1,5 +1,5 @@
-import type { RootState } from "../../store/store";
-import { apiSlice } from "../apiSlice";
+import type {RootState} from '../../store/store';
+import {apiSlice} from '../apiSlice';
 
 type CustomUser = {
   id: string;
@@ -18,14 +18,14 @@ type CustomUser = {
 type GeneralPageParam = {
   skip: number;
   limit: number;
-  sort_by?: "mu" | "upvotes" | "downvotes" | "sigma" | "comparisons";
-  sort_order?: "asc" | "desc";
+  sort_by?: 'mu' | 'upvotes' | 'downvotes' | 'sigma' | 'comparisons';
+  sort_order?: 'asc' | 'desc';
 };
 
 type VotePageParam = {
   skip: number;
   limit: number;
-  sort_order?: "asc" | "desc";
+  sort_order?: 'asc' | 'desc';
 };
 
 type CompetitionEntry = {
@@ -46,7 +46,7 @@ type CompetitionEntryResponse = {
 };
 
 type CompetitionsResponse = {
-  data: CompetitionEntry[];
+  data: CompetitionResponse[];
   count: number;
 };
 
@@ -58,9 +58,9 @@ type CreateCompetitionPayload = {
   end_time: string;
 };
 
-type CompetitionStatus = "pending" | "capturing" | "voting" | "finished";
+type CompetitionStatus = 'pending' | 'capturing' | 'voting' | 'finished';
 
-type CompetitionResponse = {
+export type CompetitionResponse = {
   id: string;
   category: string;
   description: string;
@@ -125,13 +125,13 @@ type PostResponseType = {
 };
 
 export const competitionsApi = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getCompetitions: builder.infiniteQuery<
       CompetitionsResponse,
       void,
       GeneralPageParam
     >({
-      query: ({ pageParam: { skip, limit, sort_by, sort_order } }) => {
+      query: ({pageParam: {skip, limit, sort_by, sort_order}}) => {
         const params = new URLSearchParams();
         if (skip) params.append("skip", skip.toString());
         if (limit) params.append("limit", limit.toString());
@@ -144,8 +144,8 @@ export const competitionsApi = apiSlice.injectEndpoints({
         initialPageParam: {
           limit: 20,
           skip: 0,
-          sort_by: "mu",
-          sort_order: "desc",
+          sort_by: 'mu',
+          sort_order: 'desc',
         },
         getNextPageParam: (lastPage, allPages, lastPageParam) => {
           if (lastPage.count < lastPageParam.limit) {
@@ -155,7 +155,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
 
           if (!lastPost) {
             console.warn(
-              "No last data found on the last page, stopping pagination."
+              'No last data found on the last page, stopping pagination.',
             );
             return undefined;
           }
@@ -168,7 +168,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
           };
         },
       },
-      providesTags: ["Competitions"],
+      providesTags: ['Competitions'],
     }),
 
     getCompetitionEntries: builder.infiniteQuery<
@@ -177,7 +177,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
       GeneralPageParam
     >({
       query: ({
-        pageParam: { skip, limit, sort_by, sort_order },
+        pageParam: {skip, limit, sort_by, sort_order},
         queryArg: competition_id,
       }) => {
         const params = new URLSearchParams();
@@ -192,8 +192,8 @@ export const competitionsApi = apiSlice.injectEndpoints({
         initialPageParam: {
           limit: 100,
           skip: 0,
-          sort_by: "mu",
-          sort_order: "desc",
+          sort_by: 'mu',
+          sort_order: 'desc',
         },
         getNextPageParam: (lastPage, allPages, lastPageParam) => {
           if (lastPage.count < lastPageParam.limit) {
@@ -203,7 +203,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
 
           if (!lastPost) {
             console.warn(
-              "No last data found on the last page, stopping pagination."
+              'No last data found on the last page, stopping pagination.',
             );
             return undefined;
           }
@@ -216,35 +216,35 @@ export const competitionsApi = apiSlice.injectEndpoints({
           };
         },
       },
-      providesTags: ["Entries"],
+      providesTags: ['Entries'],
     }),
 
     getCurrentCompetition: builder.query<CompetitionsResponse, void>({
-      query: () => "admin/competitions/current",
+      query: () => 'admin/competitions/current',
     }),
 
     createCompetition: builder.mutation<
       CompetitionResponse,
       CreateCompetitionPayload
     >({
-      query: (newCompetition) => ({
-        url: "admin/competitions",
-        method: "POST",
+      query: newCompetition => ({
+        url: 'admin/competitions',
+        method: 'POST',
         body: newCompetition,
       }),
-      invalidatesTags: ["Competitions"],
+      invalidatesTags: ['Competitions'],
     }),
 
     updateCompetition: builder.mutation<
       CompetitionResponse,
       CompetitionUpdatePayload
     >({
-      query: ({ competition_id, body }) => ({
+      query: ({competition_id, body}) => ({
         url: `admin/competitions/${competition_id}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: body,
       }),
-      invalidatesTags: ["Competitions"],
+      invalidatesTags: ['Competitions'],
     }),
     getCompetitionVotes: builder.infiniteQuery<
       CompetitionVoteResponse,
@@ -252,13 +252,13 @@ export const competitionsApi = apiSlice.injectEndpoints({
       VotePageParam
     >({
       query: ({
-        pageParam: { skip, limit, sort_order },
+        pageParam: {skip, limit, sort_order},
         queryArg: competition_id,
       }) => {
         const params = new URLSearchParams();
-        if (skip) params.append("offset", skip.toString());
-        if (limit) params.append("limit", limit.toString());
-        if (sort_order) params.append("sort_order", sort_order.toString());
+        if (skip) params.append('offset', skip.toString());
+        if (limit) params.append('limit', limit.toString());
+        if (sort_order) params.append('sort_order', sort_order.toString());
 
         return `admin/competitions/${competition_id}/votes?${params.toString()}`;
       },
@@ -266,7 +266,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
         initialPageParam: {
           limit: 20,
           skip: 0,
-          sort_order: "desc",
+          sort_order: 'desc',
         },
         getNextPageParam: (lastPage, allPages, lastPageParam) => {
           if (lastPage.count < lastPageParam.limit) {
@@ -276,7 +276,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
 
           if (!lastPost) {
             console.warn(
-              "No last data found on the last page, stopping pagination."
+              'No last data found on the last page, stopping pagination.',
             );
             return undefined;
           }
@@ -288,37 +288,37 @@ export const competitionsApi = apiSlice.injectEndpoints({
           };
         },
       },
-      providesTags: ["Votes"],
+      providesTags: ['Votes'],
     }),
 
     deleteCompetition: builder.mutation<Message, string>({
-      query: (competitionId) => ({
+      query: competitionId => ({
         url: `admin/competitions/${competitionId}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Competitions"],
+      invalidatesTags: ['Competitions'],
     }),
     createPost: builder.mutation<PostResponseType, Partial<PostRequestType>>({
-      query: (body) => ({
-        url: "admin/posts/",
-        method: "POST",
+      query: body => ({
+        url: 'admin/posts/',
+        method: 'POST',
         body,
       }),
-      invalidatesTags: ["Entries"],
+      invalidatesTags: ['Entries'],
     }),
     deleteEntry: builder.mutation<Message, string>({
-      query: (entryId) => ({
+      query: entryId => ({
         url: `admin/entries/${entryId}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Entries"],
+      invalidatesTags: ['Entries'],
     }),
     deleteVote: builder.mutation<Message, string>({
-      query: (voteId) => ({
+      query: voteId => ({
         url: `admin/votes/${voteId}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Votes"],
+      invalidatesTags: ['Votes'],
     }),
   }),
 });

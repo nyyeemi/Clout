@@ -139,7 +139,7 @@ class VoteFilterParams(BaseModel):
 
 
 @router.get(
-    "competitions/{competition_id}/votes",
+    "/competitions/{competition_id}/votes",
     dependencies=[Depends(get_current_active_superuser)],
     response_model=PairwiseVotesReadAdmin,
 )
