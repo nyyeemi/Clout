@@ -216,6 +216,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
           };
         },
       },
+      providesTags: ["Entries"],
     }),
 
     getCurrentCompetition: builder.query<CompetitionsResponse, void>({
@@ -287,32 +288,34 @@ export const competitionsApi = apiSlice.injectEndpoints({
           };
         },
       },
+      providesTags: ["Votes"],
     }),
+
     deleteCompetition: builder.mutation<Message, string>({
       query: (competitionId) => ({
-        url: `/competitions/${competitionId}`,
+        url: `admin/competitions/${competitionId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Competitions"],
     }),
     createPost: builder.mutation<PostResponseType, Partial<PostRequestType>>({
       query: (body) => ({
-        url: "posts/",
+        url: "admin/posts/",
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Posts"],
+      invalidatesTags: ["Entries"],
     }),
     deleteEntry: builder.mutation<Message, string>({
       query: (entryId) => ({
-        url: `/entries/${entryId}`,
+        url: `admin/entries/${entryId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Entries"],
     }),
     deleteVote: builder.mutation<Message, string>({
       query: (voteId) => ({
-        url: `/votes/${voteId}`,
+        url: `admin/votes/${voteId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Votes"],
