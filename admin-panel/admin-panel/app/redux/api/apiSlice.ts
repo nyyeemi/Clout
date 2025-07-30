@@ -15,6 +15,8 @@ export const apiSlice = createApi({
     "Following",
     "ProfilePosts",
     "Competitions",
+    "Entries",
+    "Votes",
   ],
   endpoints: () => ({}),
 });

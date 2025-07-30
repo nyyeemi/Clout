@@ -1,10 +1,30 @@
 import type { RootState } from "../../store/store";
 import { apiSlice } from "../apiSlice";
 
+type CustomUser = {
+  id: string;
+  username: string;
+  first_name?: string;
+  last_name?: string;
+  email: string;
+  bio?: string;
+  num_followers: number;
+  num_following: number;
+  profile_picture_url: string;
+  num_posts: number;
+  is_followed_by_current_user?: boolean;
+};
+
 type GeneralPageParam = {
   skip: number;
   limit: number;
   sort_by?: "mu" | "upvotes" | "downvotes" | "sigma" | "comparisons";
+  sort_order?: "asc" | "desc";
+};
+
+type VotePageParam = {
+  skip: number;
+  limit: number;
   sort_order?: "asc" | "desc";
 };
 
@@ -64,6 +84,44 @@ type CompetitionUpdate = {
 type CompetitionUpdatePayload = {
   competition_id: string;
   body: CompetitionUpdate;
+};
+
+type CompetitionVote = {
+  id: string;
+  user_id: string;
+  competition_id: string;
+  winner_entry_id: string;
+  loser_entry_id: string;
+  created_at: string;
+};
+
+type CompetitionVoteResponse = {
+  data: CompetitionVote[];
+  count: number;
+};
+
+type Message = {
+  message: string;
+};
+
+type PostRequestType = {
+  image_url: string;
+  thumbnail_url: string;
+  caption: string;
+  is_visible: boolean;
+};
+
+type PostResponseType = {
+  id: string;
+  owner: CustomUser;
+  image_url: string;
+  thumbnail_url: string | null;
+  caption: string | null;
+  created_at: string;
+  is_visible: boolean;
+  num_likes: number;
+  num_comments: number;
+  is_liked_by_current_user: boolean;
 };
 
 export const competitionsApi = apiSlice.injectEndpoints({
@@ -187,6 +245,78 @@ export const competitionsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Competitions"],
     }),
+    getCompetitionVotes: builder.infiniteQuery<
+      CompetitionVoteResponse,
+      string,
+      VotePageParam
+    >({
+      query: ({
+        pageParam: { skip, limit, sort_order },
+        queryArg: competition_id,
+      }) => {
+        const params = new URLSearchParams();
+        if (skip) params.append("offset", skip.toString());
+        if (limit) params.append("limit", limit.toString());
+        if (sort_order) params.append("sort_order", sort_order.toString());
+
+        return `admin/competitions/${competition_id}/votes?${params.toString()}`;
+      },
+      infiniteQueryOptions: {
+        initialPageParam: {
+          limit: 20,
+          skip: 0,
+          sort_order: "desc",
+        },
+        getNextPageParam: (lastPage, allPages, lastPageParam) => {
+          if (lastPage.count < lastPageParam.limit) {
+            return undefined;
+          }
+          const lastPost = lastPage.data.at(-1);
+
+          if (!lastPost) {
+            console.warn(
+              "No last data found on the last page, stopping pagination."
+            );
+            return undefined;
+          }
+
+          return {
+            limit: lastPageParam.limit,
+            skip: lastPageParam.skip + lastPage.count,
+            sort_order: lastPageParam.sort_order,
+          };
+        },
+      },
+    }),
+    deleteCompetition: builder.mutation<Message, string>({
+      query: (competitionId) => ({
+        url: `/competitions/${competitionId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Competitions"],
+    }),
+    createPost: builder.mutation<PostResponseType, Partial<PostRequestType>>({
+      query: (body) => ({
+        url: "posts/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Posts"],
+    }),
+    deleteEntry: builder.mutation<Message, string>({
+      query: (entryId) => ({
+        url: `/entries/${entryId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Entries"],
+    }),
+    deleteVote: builder.mutation<Message, string>({
+      query: (voteId) => ({
+        url: `/votes/${voteId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Votes"],
+    }),
   }),
 });
 
@@ -196,4 +326,9 @@ export const {
   useGetCurrentCompetitionQuery,
   useCreateCompetitionMutation,
   useUpdateCompetitionMutation,
+  useGetCompetitionVotesInfiniteQuery,
+  useDeleteCompetitionMutation,
+  useCreatePostMutation,
+  useDeleteEntryMutation,
+  useDeleteVoteMutation,
 } = competitionsApi;
