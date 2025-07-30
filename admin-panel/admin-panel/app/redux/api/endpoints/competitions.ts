@@ -258,5 +258,8 @@ export const {
   useGetCompetitionsInfiniteQuery,
   useGetCompetitionEntriesInfiniteQuery,
   useGetCompetitionVotesInfiniteQuery,
-  useDeleteCompetitionMutation
+  useDeleteCompetitionMutation,
+  useCreatePostMutation,
+  useDeleteEntryMutation,
+  useDeleteVoteMutation
 } = competitionsApi;
