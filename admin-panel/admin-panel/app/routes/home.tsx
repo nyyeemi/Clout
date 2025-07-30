@@ -15,15 +15,6 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const navigate = useNavigate();
-  const token = useSelector((state: RootState) => state.auth.accessToken);
-
-  useEffect(() => {
-    //localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      logoutAndReset();
-    }
-  }, [navigate, token]);
 
   return (
     <div className="flex flex-1 h-screen p-4 items-center justify-center bg-neutral-950 px-4">

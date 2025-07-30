@@ -6,14 +6,17 @@ import {
   Scripts,
   ScrollRestoration,
   useLocation,
+  useNavigate,
 } from "react-router";
 
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import store from "./redux/store/store";
+import store, { type RootState } from "./redux/store/store";
 import Sidebar from "./sidebar/sidebar";
+import { useEffect } from "react";
+import { logoutAndReset } from "./redux/slices/authSlice";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -47,19 +50,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  return (
+    <Provider store={store}>
+      <CustomLayout />
+    </Provider>
+  );
+}
+
+export function CustomLayout() {
   const location = useLocation();
 
   const hideSidebarRoutes = ["/login"];
 
   const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+  const navigate = useNavigate();
+  const token = useSelector((state: RootState) => state.auth.accessToken);
+
+  useEffect(() => {
+    //localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      logoutAndReset();
+    }
+  }, [navigate, token]);
 
   return (
-    <Provider store={store}>
-      <div className="flex">
-        {!hideSidebar && <Sidebar />}
-        <Outlet />
-      </div>
-    </Provider>
+    <div className="flex">
+      {!hideSidebar && <Sidebar />}
+      <Outlet />
+    </div>
   );
 }
 

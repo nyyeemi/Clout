@@ -20,16 +20,6 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Competition() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const token = useSelector((state: RootState) => state.auth.accessToken);
-
-  useEffect(() => {
-    //localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      logoutAndReset();
-    }
-  }, [navigate, token]);
 
   return (
     <div>
