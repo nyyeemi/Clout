@@ -20,7 +20,7 @@ export default function Competition() {
   useEffect(() => {
     //localStorage.getItem("token");
     if (!token) {
-      navigate("/");
+      navigate("/login");
       logoutAndReset();
     }
   }, [navigate, token]);

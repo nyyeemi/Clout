@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import { Provider } from "react-redux";
@@ -46,10 +47,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const location = useLocation();
+
+  const hideSidebarRoutes = ["/login"];
+
+  const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+
   return (
     <Provider store={store}>
       <div className="flex">
-        <Sidebar />
+        {!hideSidebar && <Sidebar />}
         <Outlet />
       </div>
     </Provider>
