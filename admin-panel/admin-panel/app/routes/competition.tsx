@@ -1,10 +1,13 @@
 import {useMemo, useState} from 'react';
 
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {DataGrid} from '@mui/x-data-grid';
 import type {GridColDef, GridRowId} from '@mui/x-data-grid';
 import {useNavigate} from 'react-router';
 import {
   type CompetitionResponse,
+  useDeleteCompetitionMutation,
   useGetCompetitionsInfiniteQuery,
   useUpdateCompetitionMutation,
 } from '~/redux/api/endpoints/competitions';
@@ -60,8 +63,12 @@ const columns: GridColDef[] = [
 
 export default function Competition() {
   const navigate = useNavigate();
-  const [selectedId, setSelectedId] = useState<GridRowId>();
+  const [selectedId, setSelectedId] = useState<GridRowId>('');
+  const [pages, setPages] = useState(new Set([0]));
+  const [page, setPage] = useState(0);
   const [updateCompetition] = useUpdateCompetitionMutation();
+  const [deleteCompetition, {isLoading: isMutationLoading}] =
+    useDeleteCompetitionMutation();
 
   const {
     data,
@@ -107,6 +114,19 @@ export default function Competition() {
     return newRow;
   };
 
+  const handlePageChange = async (newPage: number) => {
+    setPage(newPage);
+
+    if (hasNextPage && newPage > page) {
+      setPages(prev => new Set([...prev, newPage]));
+      await fetchNextPage();
+    }
+  };
+
+  const handleCompetitionDelete = () => {
+    deleteCompetition(selectedId.toString());
+  };
+
   return (
     <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden">
       {/* Large table on top */}
@@ -149,7 +169,34 @@ export default function Competition() {
             border: 0,
           }}
           processRowUpdate={handleUpdate}
+          hideFooter
         />
+      </div>
+      <div className="flex justify-end items-center rounded border border-stone-700 py-1 px-1">
+        {selectedId && (
+          <>
+            <button
+              className="bg-blue-700 disabled:bg-blue-950 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
+              onClick={() => handleCompetitionDelete()}
+              disabled={isMutationLoading}>
+              Delete selected
+            </button>
+          </>
+        )}
+
+        <p className="text-xs text-neutral-100 px-4">Page {page + 1}</p>
+        <button
+          className=" disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 0}>
+          <ChevronLeftIcon />
+        </button>
+        <button
+          className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
+          onClick={() => handlePageChange(page + 1)}
+          disabled={!hasNextPage && pages.size === page}>
+          <ChevronRightIcon />
+        </button>
       </div>
     </main>
   );

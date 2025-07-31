@@ -1,47 +1,48 @@
-import type { Route } from "./+types/home";
-import { useNavigate, useParams } from "react-router";
-import { useMemo, useState } from "react";
+import {useMemo, useState} from 'react';
+
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {DataGrid, type GridColDef, type GridRowId} from '@mui/x-data-grid';
+import {skipToken} from '@reduxjs/toolkit/query';
+import {useNavigate, useParams} from 'react-router';
 import {
   useDeleteEntryMutation,
   useGetCompetitionEntriesInfiniteQuery,
-} from "~/redux/api/endpoints/competitions";
-import { skipToken } from "@reduxjs/toolkit/query";
-import { DataGrid, type GridColDef, type GridRowId } from "@mui/x-data-grid";
+} from '~/redux/api/endpoints/competitions';
 
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import type {Route} from './+types/home';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Admin Dashboard | Competition Entries" },
-    { name: "description", content: "Welcome to clout enterprises. " },
+    {title: 'Admin Dashboard | Competition Entries'},
+    {name: 'description', content: 'Welcome to clout enterprises. '},
   ];
 }
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "competition_id", headerName: "Competition ID", flex: 1 },
-  { field: "post_id", headerName: "Post ID", flex: 1 },
-  { field: "owner_id", headerName: "Owner ID", flex: 1 },
-  { field: "mu", headerName: "Mu", type: "number", flex: 0.5 },
-  { field: "sigma", headerName: "Sigma", type: "number", flex: 0.5 },
-  { field: "upvotes", headerName: "Upvotes", type: "number", flex: 0.5 },
-  { field: "downvotes", headerName: "Downvotes", type: "number", flex: 0.5 },
+  {field: 'id', headerName: 'ID', flex: 1},
+  {field: 'competition_id', headerName: 'Competition ID', flex: 1},
+  {field: 'post_id', headerName: 'Post ID', flex: 1},
+  {field: 'owner_id', headerName: 'Owner ID', flex: 1},
+  {field: 'mu', headerName: 'Mu', type: 'number', flex: 0.5},
+  {field: 'sigma', headerName: 'Sigma', type: 'number', flex: 0.5},
+  {field: 'upvotes', headerName: 'Upvotes', type: 'number', flex: 0.5},
+  {field: 'downvotes', headerName: 'Downvotes', type: 'number', flex: 0.5},
   {
-    field: "comparisons",
-    headerName: "Comparisons",
-    type: "number",
+    field: 'comparisons',
+    headerName: 'Comparisons',
+    type: 'number',
     flex: 0.5,
   },
 ];
 
 export default function Entries() {
-  const { id } = useParams();
+  const {id} = useParams();
   const [pages, setPages] = useState(new Set([0]));
   const [page, setPage] = useState(0);
 
   const navigate = useNavigate();
-  const [selectedId, setSelectedId] = useState<GridRowId>("");
+  const [selectedId, setSelectedId] = useState<GridRowId>('');
 
   const {
     data,
@@ -52,7 +53,7 @@ export default function Entries() {
     refetch,
   } = useGetCompetitionEntriesInfiniteQuery(id ? id : skipToken);
 
-  const [deleteEntry, { isLoading: isMutationLoading }] =
+  const [deleteEntry, {isLoading: isMutationLoading}] =
     useDeleteEntryMutation();
 
   const entryList = useMemo(() => data?.pages[page]?.data || [], [data, page]);
@@ -65,7 +66,7 @@ export default function Entries() {
     setPage(newPage);
 
     if (hasNextPage && newPage > page) {
-      setPages((prev) => new Set([...prev, newPage]));
+      setPages(prev => new Set([...prev, newPage]));
       await fetchNextPage();
     }
   };
@@ -78,8 +79,7 @@ export default function Entries() {
         <button
           className="bg-blue-700 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
           onClick={refetch}
-          disabled={isLoading}
-        >
+          disabled={isLoading}>
           Refresh
         </button>
       </div>
@@ -88,7 +88,7 @@ export default function Entries() {
           rows={entryList}
           columns={columns}
           checkboxSelection={false}
-          onRowSelectionModelChange={(newSelection) => {
+          onRowSelectionModelChange={newSelection => {
             const id = Array.from(newSelection.ids)[0];
             setSelectedId(id);
           }}
@@ -106,8 +106,7 @@ export default function Entries() {
             <button
               className="bg-blue-700 disabled:bg-blue-950 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
               onClick={() => handleEntryDeleteClick()}
-              disabled={isMutationLoading}
-            >
+              disabled={isMutationLoading}>
               Delete selected
             </button>
           </>
@@ -117,15 +116,13 @@ export default function Entries() {
         <button
           className=" disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
           onClick={() => handlePageChange(page - 1)}
-          disabled={page === 0}
-        >
+          disabled={page === 0}>
           <ChevronLeftIcon />
         </button>
         <button
           className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
           onClick={() => handlePageChange(page + 1)}
-          disabled={!hasNextPage && pages.size === page}
-        >
+          disabled={!hasNextPage && pages.size === page}>
           <ChevronRightIcon />
         </button>
       </div>
