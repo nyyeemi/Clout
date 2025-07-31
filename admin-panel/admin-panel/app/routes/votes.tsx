@@ -1,9 +1,10 @@
 import {useMemo} from 'react';
 
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import {DataGrid} from '@mui/x-data-grid';
 import type {GridColDef} from '@mui/x-data-grid';
 import {skipToken} from '@reduxjs/toolkit/query';
-import {useParams} from 'react-router';
+import {useNavigate, useParams} from 'react-router';
 import {useGetCompetitionVotesInfiniteQuery} from '~/redux/api/endpoints/competitions';
 
 import type {Route} from './+types/home';
@@ -29,6 +30,7 @@ const columns: GridColDef[] = [
 
 export default function Votes() {
   const {id} = useParams();
+  const navigate = useNavigate();
 
   const {
     data,
@@ -48,7 +50,13 @@ export default function Votes() {
     <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden h-screen">
       {/* Large table on top */}
       <div className="flex gap-4 pb-2 justify-between">
+        <button
+          className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
+          onClick={() => navigate(-1)}>
+          <ChevronLeftIcon />
+        </button>
         <h2 className=" font-semibold bg-stone-900">Vote pairs</h2>
+
         <button
           className="bg-blue-700 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
           onClick={refetch}

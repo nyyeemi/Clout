@@ -73,7 +73,12 @@ export default function Entries() {
 
   return (
     <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden h-screen">
-      <div className="flex gap-4 pb-2 justify-between">
+      <header className="flex gap-4 pb-2 justify-between">
+        <button
+          className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
+          onClick={() => navigate(-1)}>
+          <ChevronLeftIcon />
+        </button>
         <h2 className=" font-semibold bg-stone-900">Competition Entries</h2>
 
         <button
@@ -82,7 +87,7 @@ export default function Entries() {
           disabled={isLoading}>
           Refresh
         </button>
-      </div>
+      </header>
       <div className="flex-1 overflow-hidden rounded border border-stone-700">
         <DataGrid
           rows={entryList}
