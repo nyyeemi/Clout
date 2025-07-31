@@ -133,10 +133,10 @@ export const competitionsApi = apiSlice.injectEndpoints({
     >({
       query: ({pageParam: {skip, limit, sort_by, sort_order}}) => {
         const params = new URLSearchParams();
-        if (skip) params.append("skip", skip.toString());
-        if (limit) params.append("limit", limit.toString());
-        if (sort_by) params.append("sort_by", sort_by.toString());
-        if (sort_order) params.append("sort_order", sort_order.toString());
+        if (skip) params.append('skip', skip.toString());
+        if (limit) params.append('limit', limit.toString());
+        if (sort_by) params.append('sort_by', sort_by.toString());
+        if (sort_order) params.append('sort_order', sort_order.toString());
 
         return `admin/competitions/?${params.toString()}`;
       },
@@ -181,10 +181,10 @@ export const competitionsApi = apiSlice.injectEndpoints({
         queryArg: competition_id,
       }) => {
         const params = new URLSearchParams();
-        if (skip) params.append("skip", skip.toString());
-        if (limit) params.append("limit", limit.toString());
-        if (sort_by) params.append("sort_by", sort_by.toString());
-        if (sort_order) params.append("sort_order", sort_order.toString());
+        if (skip) params.append('skip', skip.toString());
+        if (limit) params.append('limit', limit.toString());
+        if (sort_by) params.append('sort_by', sort_by.toString());
+        if (sort_order) params.append('sort_order', sort_order.toString());
 
         return `admin/competitions/${competition_id}/entries?${params.toString()}`;
       },

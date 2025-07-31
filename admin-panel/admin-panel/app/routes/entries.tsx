@@ -1,10 +1,10 @@
 import {useMemo, useState} from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {DataGrid, type GridColDef, type GridRowId} from '@mui/x-data-grid';
 import {skipToken} from '@reduxjs/toolkit/query';
 import {useNavigate, useParams} from 'react-router';
+import {Footer} from '~/components/footer';
 import {
   useDeleteEntryMutation,
   useGetCompetitionEntriesInfiniteQuery,
@@ -40,7 +40,6 @@ export default function Entries() {
   const {id} = useParams();
   const [pages, setPages] = useState(new Set([0]));
   const [page, setPage] = useState(0);
-
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState<GridRowId>('');
 
@@ -60,15 +59,6 @@ export default function Entries() {
 
   const handleEntryDeleteClick = () => {
     deleteEntry(selectedId.toString());
-  };
-
-  const handlePageChange = async (newPage: number) => {
-    setPage(newPage);
-
-    if (hasNextPage && newPage > page) {
-      setPages(prev => new Set([...prev, newPage]));
-      await fetchNextPage();
-    }
   };
 
   return (
@@ -105,32 +95,17 @@ export default function Entries() {
           }}
         />
       </div>
-      <div className="flex justify-end items-center rounded border border-stone-700 py-1 px-1">
-        {selectedId && (
-          <>
-            <button
-              className="bg-blue-700 disabled:bg-blue-950 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
-              onClick={() => handleEntryDeleteClick()}
-              disabled={isMutationLoading}>
-              Delete selected
-            </button>
-          </>
-        )}
-
-        <p className="text-xs text-neutral-100 px-4">Page {page + 1}</p>
-        <button
-          className=" disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page === 0}>
-          <ChevronLeftIcon />
-        </button>
-        <button
-          className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100"
-          onClick={() => handlePageChange(page + 1)}
-          disabled={!hasNextPage && pages.size === page}>
-          <ChevronRightIcon />
-        </button>
-      </div>
+      <Footer
+        selectedId={selectedId}
+        hasNextPage={hasNextPage}
+        fetchNextPage={fetchNextPage}
+        isMutationLoading={isMutationLoading}
+        handleDelete={handleEntryDeleteClick}
+        page={page}
+        setPage={setPage}
+        pages={pages}
+        setPages={setPages}
+      />
     </main>
   );
 }
