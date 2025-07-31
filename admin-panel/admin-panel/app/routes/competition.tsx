@@ -2,6 +2,7 @@ import {useMemo, useState} from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Alert from '@mui/material/Alert';
 import {DataGrid} from '@mui/x-data-grid';
 import type {GridColDef, GridRowId} from '@mui/x-data-grid';
 import {useNavigate} from 'react-router';
@@ -66,6 +67,11 @@ export default function Competition() {
   const [selectedId, setSelectedId] = useState<GridRowId>('');
   const [pages, setPages] = useState(new Set([0]));
   const [page, setPage] = useState(0);
+  const [alert, setAlert] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
+
   const [updateCompetition] = useUpdateCompetitionMutation();
   const [deleteCompetition, {isLoading: isMutationLoading}] =
     useDeleteCompetitionMutation();
@@ -92,7 +98,7 @@ export default function Competition() {
     navigate(`/competitions/${selectedId}/votes`);
   };
 
-  const handleUpdate = (
+  const handleUpdate = async (
     newRow: CompetitionResponse,
     oldRow: CompetitionResponse,
   ) => {
@@ -109,8 +115,24 @@ export default function Competition() {
       }
     });
 
-    updateCompetition({competition_id: oldRow.id, body: changedFields});
+    if (Object.keys(changedFields).length === 0) {
+      return oldRow;
+    }
 
+    const updated = await updateCompetition({
+      competition_id: oldRow.id,
+      body: changedFields,
+    });
+
+    if ('error' in updated) {
+      setAlert({
+        type: 'error',
+        message: `Update failed`,
+      });
+      return oldRow;
+    }
+
+    setAlert({type: 'success', message: 'Edit successful.'});
     return newRow;
   };
 
@@ -129,6 +151,14 @@ export default function Competition() {
 
   return (
     <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden">
+      {alert && (
+        <Alert
+          severity={alert.type}
+          onClose={() => setAlert(null)}
+          sx={{mb: 2}}>
+          {alert.message}
+        </Alert>
+      )}
       {/* Large table on top */}
       <div className="flex gap-4 pb-2 justify-between">
         <h2 className=" font-semibold bg-stone-900">Competitions</h2>
