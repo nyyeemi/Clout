@@ -68,8 +68,6 @@ export default function Competition() {
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState<GridRowId>('');
-  const [pages, setPages] = useState(new Set([0]));
-  const [page, setPage] = useState(0);
   const [alert, setAlert] = useState<{
     type: 'success' | 'error';
     message: string;
