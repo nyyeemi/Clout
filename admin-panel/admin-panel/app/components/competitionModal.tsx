@@ -10,6 +10,8 @@ type CreateCompetitionPayload = {
   end_time: string;
 };
 
+const toUTCISOString = (value: string) => new Date(value).toISOString();
+
 export default function CompetitionModal({
   showAddForm,
   setShowAddForm,
@@ -34,7 +36,12 @@ export default function CompetitionModal({
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      start_time: toUTCISOString(formData.start_time),
+      vote_start_time: toUTCISOString(formData.vote_start_time),
+      end_time: toUTCISOString(formData.end_time),
+    });
     setShowAddForm(false);
   };
 

@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, field_validator
 
 from app.models.competition import CompetitionStatus
 
@@ -103,6 +103,13 @@ class CompetitionCreate(BaseModel):
     start_time: datetime
     vote_start_time: datetime
     end_time: datetime
+
+    @field_validator("start_time", "vote_start_time", "end_time")
+    @classmethod
+    def ensure_timezone(cls, v: datetime) -> datetime:
+        if v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
 
 
 class CompetitionUpdate(BaseModel):
