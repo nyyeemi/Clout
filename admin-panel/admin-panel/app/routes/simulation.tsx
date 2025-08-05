@@ -14,6 +14,7 @@ import {
   useGetCompetitionEntriesInfiniteQuery,
   useGetCurrentCompetitionQuery,
   useGetVotePairQuery,
+  useResetCurrentVotingEntriesMutation,
 } from '~/redux/api/endpoints/competitions';
 
 import type {Route} from './+types/home';
@@ -60,13 +61,12 @@ export default function Simulation() {
   } = useGetVotePairQuery();
 
   const [createVote] = useCreateVoteMutation();
+  const [createEntry] = useCreatePostMutation();
 
   console.log(votePair?.entry_1, votePair?.entry_2);
 
   const entry1 = votePair?.entry_1;
   const entry2 = votePair?.entry_2;
-
-  const [createEntry] = useCreatePostMutation();
 
   const votingCompetition = competitionData?.data.find(
     comp => comp.status === 'voting',
@@ -83,6 +83,7 @@ export default function Simulation() {
     votingCompetition?.id ? votingCompetition.id : skipToken,
   );
 
+  const [resetEntryData] = useResetCurrentVotingEntriesMutation();
   const [deleteEntry, {isLoading: isMutationLoading}] =
     useDeleteEntryMutation();
 
@@ -118,6 +119,10 @@ export default function Simulation() {
     }
   };
 
+  const resetEntries = () => {
+    resetEntryData();
+  };
+
   return (
     <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden h-screen">
       {alert && (
@@ -130,7 +135,7 @@ export default function Simulation() {
       )}
       <div className="flex gap-4 pb-2 justify-between">
         <h2 className=" font-semibold bg-stone-900">
-          Competition with category {votingCompetition?.category} and id{' '}
+          Competition with category {votingCompetition?.category} and id
           {votingCompetition?.id}
         </h2>
         <button
@@ -138,6 +143,12 @@ export default function Simulation() {
           onClick={() => setShowAddForm(prev => !prev)}>
           {showAddForm ? 'Cancel' : 'Add new'}
           <AddIcon fontSize="small" />
+        </button>
+        <button
+          className="bg-red-700 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
+          onClick={resetEntries}
+          disabled={isLoading}>
+          Reset
         </button>
       </div>
       <div className="flex justify-evenly">

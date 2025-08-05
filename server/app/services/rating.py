@@ -13,7 +13,7 @@ def sample_pair(
     all_entries: list[CompetitionEntry],
 ) -> tuple[CompetitionEntry, CompetitionEntry]:
     entries = sorted(all_entries, key=compute_ucb)
-    top_entries = entries[:20]
+    top_entries = entries[:5]
 
     if len(top_entries) < 2:
         raise ValueError("Need at least two entries to sample a unique pair.")

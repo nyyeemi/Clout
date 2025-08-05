@@ -335,6 +335,12 @@ export const competitionsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Entries', 'VotePair'],
     }),
+    resetCurrentVotingEntries: builder.mutation<Message, void>({
+      query: () => ({
+        url: 'admin/competitions/current/entries',
+        method: 'PATCH',
+      }),
+    }),
   }),
 });
 
@@ -371,4 +377,5 @@ export const {
   useDeleteVoteMutation,
   useGetVotePairQuery,
   useCreateVoteMutation,
+  useResetCurrentVotingEntriesMutation,
 } = competitionsApi;
