@@ -20,12 +20,14 @@ from app.schemas.competition import (
     CompetitionUpdate,
     CompetitionsReadAdmin,
     PairwiseVotesReadAdmin,
+    VotePairAdminResponse,
 )
 from app.models.competition import Competition, CompetitionStatus
 from app.models.pairwise_vote import PairwiseVote
 from app.schemas.posts import PostCreate, PostPublic
 from app.services import post_crud as crud
 from app.schemas.utils import Message
+from app.services.rating import sample_pair
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -179,6 +181,9 @@ def get_pairwise_votes_by_competition_id(
 def create_competition(
     session: SessionDep, competition_in: CompetitionCreate
 ) -> CompetitionReadAdmin:
+    """
+    Create new competition
+    """
     now = datetime.now(timezone.utc)
 
     if now < competition_in.start_time:
@@ -275,6 +280,28 @@ def delete_competition_entry(
     session.commit()
 
     return Message(message="Deleted successfully.")
+
+
+@router.get(
+    "/votepair",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=VotePairAdminResponse,
+)
+def read_entries_me(
+    session: SessionDep,
+    current_competition: CurrentVotingCompetition,
+) -> VotePairAdminResponse:
+    """
+    Get (NUMBER OF PAIRS) one pair of entries for voting.
+    """
+    statement = select(CompetitionEntry).where(
+        CompetitionEntry.competition_id == current_competition.id
+    )
+    all_entries = session.scalars(statement).all()
+
+    entry1, entry2 = sample_pair(all_entries=all_entries)
+
+    return VotePairAdminResponse(entry_1=entry1, entry_2=entry2)
 
 
 @router.delete(

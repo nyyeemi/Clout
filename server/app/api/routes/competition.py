@@ -1,5 +1,4 @@
 from typing import Any
-import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 
@@ -80,7 +79,9 @@ def read_latest_competition(session: SessionDep) -> CompetitionPublic:
     return competition
 
 
-@router.get("/vote", dependencies=[Depends(get_current_user)], response_model=VotePair)
+@router.get(
+    "/votepair", dependencies=[Depends(get_current_user)], response_model=VotePair
+)
 def read_entries_me(
     session: SessionDep,
     current_competition: CurrentVotingCompetition,
@@ -106,7 +107,7 @@ def create_vote(
     result_in: CreateVotePair,
 ) -> Any:
     """
-    Vote between one pair of posts.
+    Create vote between one pair of posts.
     """
     # get entries from db to orm objects
     winner = session.get(CompetitionEntry, result_in.winner_id)

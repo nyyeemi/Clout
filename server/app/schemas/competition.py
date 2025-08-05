@@ -124,3 +124,21 @@ class CompetitionUpdate(BaseModel):
     start_time: datetime | None = None
     vote_start_time: datetime | None = None
     end_time: datetime | None = None
+
+
+class EntryAdmin(BaseModel):
+    id: uuid.UUID
+    post: PostData
+    mu: float
+    sigma: float
+    downvotes: int
+    upvotes: int
+    comparisons: int
+
+    class Config:
+        from_attributes = True
+
+
+class VotePairAdminResponse(BaseModel):
+    entry_1: EntryAdmin
+    entry_2: EntryAdmin

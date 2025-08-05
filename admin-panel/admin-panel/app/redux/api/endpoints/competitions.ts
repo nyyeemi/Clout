@@ -319,8 +319,12 @@ export const competitionsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Votes'],
     }),
-    getVotePair: builder.query<VotePairType, void>({
+    /*getVotePair: builder.query<VotePairType, void>({
       query: () => 'competition/vote',
+      providesTags: ['VotePair'],
+    }),*/
+    getVotePair: builder.query<VotePairType, void>({
+      query: () => 'admin/votepair',
       providesTags: ['VotePair'],
     }),
     createVote: builder.mutation<Message, CreateVotePayload>({
@@ -342,6 +346,11 @@ export type CreateVotePayload = {
 type PostMinimal = {
   id: string;
   post: {image_url: string};
+  mu: number;
+  sigma: number;
+  downvotes: number;
+  upvotes: number;
+  comparisons: number;
 };
 
 type VotePairType = {

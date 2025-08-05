@@ -63,6 +63,9 @@ export default function Simulation() {
 
   console.log(votePair?.entry_1, votePair?.entry_2);
 
+  const entry1 = votePair?.entry_1;
+  const entry2 = votePair?.entry_2;
+
   const [createEntry] = useCreatePostMutation();
 
   const votingCompetition = competitionData?.data.find(
@@ -137,9 +140,15 @@ export default function Simulation() {
           <AddIcon fontSize="small" />
         </button>
       </div>
-      <div className="flex justify-evenly mt-4">
+      <div className="flex justify-evenly">
         <div className="flex flex-col items-center bg-stone-800 p-2 rounded-md">
-          <h3 className="py-1 text-xs">VotePair1 stats</h3>
+          <div className="py-1 text-xs flex-1 w-full">
+            <p>mu {entry1?.mu}</p>
+            <p>sigma {entry1?.sigma}</p>
+            <p>upvotes {entry1?.upvotes}</p>
+            <p>downvotes {entry1?.downvotes}</p>
+            <p>id {entry1?.id}</p>
+          </div>
           {!isLoadingPairs && (
             <img
               src={votePair?.entry_1.post.image_url}
@@ -163,7 +172,13 @@ export default function Simulation() {
 
         {/* Right Image */}
         <div className="flex flex-col items-center bg-stone-800 p-2 rounded-md">
-          <h3 className="py-1 text-xs">VotePair2 stats</h3>
+          <div className="py-1 text-xs flex-1 w-full">
+            <p>mu {entry2?.mu}</p>
+            <p>sigma {entry2?.sigma}</p>
+            <p>upvotes {entry2?.upvotes}</p>
+            <p>downvotes {entry2?.downvotes}</p>
+            <p>id {entry2?.id}</p>
+          </div>
           {!isLoadingPairs && (
             <img
               src={votePair?.entry_2.post.image_url}
