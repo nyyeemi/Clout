@@ -7,10 +7,13 @@ import {skipToken} from '@reduxjs/toolkit/query';
 import EntryModal, {type CreatePostPayload} from '~/components/entryModal';
 import {Footer} from '~/components/footer';
 import {
+  type CreateVotePayload,
   useCreatePostMutation,
+  useCreateVoteMutation,
   useDeleteEntryMutation,
   useGetCompetitionEntriesInfiniteQuery,
   useGetCurrentCompetitionQuery,
+  useGetVotePairQuery,
 } from '~/redux/api/endpoints/competitions';
 
 import type {Route} from './+types/home';
@@ -50,22 +53,21 @@ export default function Simulation() {
   } | null>(null);
 
   const {data: competitionData, isLoading} = useGetCurrentCompetitionQuery();
+  const {
+    data: votePair,
+    isLoading: isLoadingPairs,
+    refetch: refetchVotePairs,
+  } = useGetVotePairQuery();
+
+  const [createVote] = useCreateVoteMutation();
+
+  console.log(votePair?.entry_1, votePair?.entry_2);
+
   const [createEntry] = useCreatePostMutation();
 
   const votingCompetition = competitionData?.data.find(
     comp => comp.status === 'voting',
   );
-
-  const handleCreateEntry = async (data: CreatePostPayload) => {
-    try {
-      await createEntry(data).unwrap();
-      setAlert({type: 'success', message: 'Competition created!'});
-      //refetch(); // ADD THIS
-    } catch (err: any) {
-      const message = err?.data?.detail || 'Error creating competition';
-      setAlert({type: 'error', message});
-    }
-  };
 
   const {
     data: entriesData,
@@ -88,6 +90,29 @@ export default function Simulation() {
 
   const handleEntryDeleteClick = () => {
     deleteEntry(selectedId.toString());
+  };
+
+  const handleVoteClick = async (data: CreateVotePayload) => {
+    //refetchVotePairs();
+    /* cast vote here */
+    try {
+      const message = await createVote(data).unwrap();
+      setAlert({type: 'success', message: message.message});
+    } catch (err: any) {
+      const message = err?.data?.detail || 'Error casting vote';
+      setAlert({type: 'error', message});
+    }
+  };
+
+  const handleCreateEntry = async (data: CreatePostPayload) => {
+    try {
+      await createEntry(data).unwrap();
+      setAlert({type: 'success', message: 'Competition created!'});
+      //refetch(); // ADD THIS
+    } catch (err: any) {
+      const message = err?.data?.detail || 'Error creating competition';
+      setAlert({type: 'error', message});
+    }
   };
 
   return (
@@ -115,28 +140,46 @@ export default function Simulation() {
       <div className="flex justify-evenly mt-4">
         {/* Left Image */}
         <div className="flex flex-col items-center bg-stone-800 p-2 rounded-md">
-          <img
-            src="https://picsum.photos/seed/9cf2603f-852c-5321-a393-5c9885083598_post_2/1024/768"
-            alt="Image 1"
-            className="w-75 h-100 object-cover rounded-md"
-          />
+          {!isLoadingPairs && (
+            <img
+              src={votePair?.entry_1.post.image_url}
+              alt="Image 1"
+              className="w-75 h-100 object-cover rounded-md"
+            />
+          )}
           <button
             className="mt-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-1 rounded text-sm"
-            onClick={() => console.log('Voted for Image 1')}>
+            onClick={() =>
+              votePair
+                ? handleVoteClick({
+                    winner_id: votePair?.entry_1.id,
+                    loser_id: votePair?.entry_2.id,
+                  })
+                : () => console.log('Undefined votePair')
+            }>
             Vote
           </button>
         </div>
 
         {/* Right Image */}
         <div className="flex flex-col items-center bg-stone-800 p-2 rounded-md">
-          <img
-            src="https://picsum.photos/seed/9cf2603f-852c-5321-a393-5c9885083598_post_2/1024/768"
-            alt="Image 1"
-            className="w-75 h-100 object-cover rounded-md"
-          />
+          {!isLoadingPairs && (
+            <img
+              src={votePair?.entry_2.post.image_url}
+              alt="Image 1"
+              className="w-75 h-100 object-cover rounded-md"
+            />
+          )}
           <button
             className="mt-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-1 rounded text-sm"
-            onClick={() => console.log('Voted for Image 2')}>
+            onClick={() =>
+              votePair
+                ? handleVoteClick({
+                    winner_id: votePair?.entry_2.id,
+                    loser_id: votePair?.entry_1.id,
+                  })
+                : () => console.log('Undefined votePair')
+            }>
             Vote
           </button>
         </div>

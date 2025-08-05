@@ -15,7 +15,12 @@ from app.services.rating import sample_pair, update_rating
 from app.models.pairwise_vote import PairwiseVote
 
 from app.schemas.utils import Message
-from app.schemas.competition import CompetitionPublic, CompetitionsPublic, VotePair
+from app.schemas.competition import (
+    CompetitionPublic,
+    CompetitionsPublic,
+    CreateVotePair,
+    VotePair,
+)
 from app.models.competition import Competition, CompetitionStatus
 
 
@@ -98,18 +103,17 @@ def create_vote(
     session: SessionDep,
     current_user: CurrentUser,
     current_competition: CurrentVotingCompetition,
-    winner_id: uuid.UUID,
-    loser_id: uuid.UUID,
+    result_in: CreateVotePair,
 ) -> Any:
     """
     Vote between one pair of posts.
     """
     # get entries from db to orm objects
-    winner = session.get(CompetitionEntry, winner_id)
+    winner = session.get(CompetitionEntry, result_in.winner_id)
     if not winner:
         raise HTTPException(status_code=404, detail="Winner entry not found")
 
-    loser = session.get(CompetitionEntry, loser_id)
+    loser = session.get(CompetitionEntry, result_in.loser_id)
     if not loser:
         raise HTTPException(status_code=404, detail="Loser entry not found")
 

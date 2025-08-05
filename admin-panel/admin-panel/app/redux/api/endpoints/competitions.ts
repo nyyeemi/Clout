@@ -1,4 +1,3 @@
-import type {RootState} from '../../store/store';
 import {apiSlice} from '../apiSlice';
 
 type CustomUser = {
@@ -320,8 +319,35 @@ export const competitionsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Votes'],
     }),
+    getVotePair: builder.query<VotePairType, void>({
+      query: () => 'competition/vote',
+      providesTags: ['VotePair'],
+    }),
+    createVote: builder.mutation<Message, CreateVotePayload>({
+      query: body => ({
+        url: 'competition/vote',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Entries', 'VotePair'],
+    }),
   }),
 });
+
+export type CreateVotePayload = {
+  winner_id: string;
+  loser_id: string;
+};
+
+type PostMinimal = {
+  id: string;
+  post: {image_url: string};
+};
+
+type VotePairType = {
+  entry_1: PostMinimal;
+  entry_2: PostMinimal;
+};
 
 export const {
   useGetCompetitionsInfiniteQuery,
@@ -334,4 +360,6 @@ export const {
   useCreatePostMutation,
   useDeleteEntryMutation,
   useDeleteVoteMutation,
+  useGetVotePairQuery,
+  useCreateVoteMutation,
 } = competitionsApi;

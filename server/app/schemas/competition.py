@@ -38,6 +38,11 @@ class VotePair(BaseModel):
     entry_2: PostMinimal
 
 
+class CreateVotePair(BaseModel):
+    winner_id: uuid.UUID
+    loser_id: uuid.UUID
+
+
 ### ADMIN SCHEMAS ###
 class CompetitionEntryAdmin(BaseModel):
     id: uuid.UUID
