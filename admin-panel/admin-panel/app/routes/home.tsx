@@ -1,9 +1,4 @@
-import {useEffect} from 'react';
-
-import {useSelector} from 'react-redux';
-import {type LoaderFunctionArgs, redirect, useNavigate} from 'react-router';
-import {logoutAndReset} from '~/redux/slices/authSlice';
-import type {RootState} from '~/redux/store/store';
+import {useNavigate} from 'react-router';
 
 import type {Route} from './+types/home';
 

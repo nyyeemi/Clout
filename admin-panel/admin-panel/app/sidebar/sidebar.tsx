@@ -8,6 +8,7 @@ const Sidebar = () => {
     {name: 'Users', path: '/users'},
     {name: 'Profile', path: '/profile'},
     {name: 'Settings', path: '/settings'},
+    {name: 'Simulation', path: '/simulation'},
   ];
 
   return (

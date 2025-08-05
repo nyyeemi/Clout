@@ -2,7 +2,6 @@ import {useMemo, useState} from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import Alert from '@mui/material/Alert';
-import Modal from '@mui/material/Modal';
 import {DataGrid} from '@mui/x-data-grid';
 import type {GridColDef, GridRowId} from '@mui/x-data-grid';
 import {useNavigate} from 'react-router';

@@ -220,7 +220,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
     }),
 
     getCurrentCompetition: builder.query<CompetitionsResponse, void>({
-      query: () => 'admin/competitions/current',
+      query: () => 'admin/competitions/current/',
     }),
 
     createCompetition: builder.mutation<
