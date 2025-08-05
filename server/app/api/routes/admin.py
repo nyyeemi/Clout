@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
-from sqlalchemy import or_, select
+from sqlalchemy import or_, select, update
 
 from app.api.deps import (
     CurrentUser,
@@ -132,6 +132,32 @@ def read_entries(
     entries = session.execute(statement).scalars().all()
 
     return CompetitionEntriesAdmin(data=entries, count=len(entries))
+
+
+@router.patch(
+    "/competitions/currrent/entries",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=Message,
+)
+def reset_entries(session: SessionDep, current_competition: CurrentVotingCompetition):
+    """
+    Reset state for all entries from current competition
+    """
+    stmt = (
+        update(CompetitionEntry)
+        .where(CompetitionEntry.competition_id == current_competition.id)
+        .values(
+            mu=25,
+            sigma=8.333,
+            upvotes=0,
+            downvotes=0,
+            comparisons=0,
+        )
+    )
+    session.execute(stmt)
+    session.commit()
+
+    return Message(message="Entry states restored to default succesfully.")
 
 
 class VoteFilterParams(BaseModel):
