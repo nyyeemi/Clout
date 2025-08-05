@@ -3,15 +3,13 @@ from typing import Annotated, Literal
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from app.api.deps import (
     CurrentUser,
     CurrentVotingCompetition,
     SessionDep,
-    get_capturing_competition,
     get_current_active_superuser,
-    get_voting_competition,
 )
 from app.models.competition_entry import CompetitionEntry
 
@@ -76,12 +74,14 @@ def read_current_competition(session: SessionDep) -> CompetitionsReadAdmin:
     """
     Read current competition (capturing and voting)
     """
-    capturing_competition = get_capturing_competition(session=session)
-    voting_competition = get_voting_competition(session=session)
 
-    competitions = [
-        c for c in [capturing_competition, voting_competition] if c is not None
-    ]
+    statement = select(Competition).where(
+        or_(
+            Competition.status == CompetitionStatus.VOTING,
+            Competition.status == CompetitionStatus.CAPTURING,
+        )
+    )
+    competitions = session.scalars(statement).all()
 
     return CompetitionsReadAdmin(data=competitions, count=len(competitions))
 

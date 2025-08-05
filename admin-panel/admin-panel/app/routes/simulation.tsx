@@ -2,6 +2,7 @@ import {useMemo, useState} from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import {DataGrid, type GridColDef, type GridRowId} from '@mui/x-data-grid';
+import {skipToken} from '@reduxjs/toolkit/query';
 import {Footer} from '~/components/footer';
 import {
   useDeleteEntryMutation,
@@ -41,33 +42,43 @@ export default function Simulation() {
   const [page, setPage] = useState(0);
   const [selectedId, setSelectedId] = useState<GridRowId>('');
 
-  const {data, isLoading} = useGetCurrentCompetitionQuery();
+  const {data: competitionData, isLoading} = useGetCurrentCompetitionQuery();
 
-  console.log(data?.data);
+  const votingCompetition = competitionData?.data.find(
+    comp => comp.status === 'voting',
+  );
+  console.log(votingCompetition);
 
-  /*const {
-    data,
-    isLoading,
+  const {
+    data: entriesData,
+    isLoading: entriesIsLoading,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
     refetch,
-  } = useGetCompetitionEntriesInfiniteQuery(id ? id : skipToken);
-   
+  } = useGetCompetitionEntriesInfiniteQuery(
+    votingCompetition?.id ? votingCompetition.id : skipToken,
+  );
 
   const [deleteEntry, {isLoading: isMutationLoading}] =
     useDeleteEntryMutation();
 
-  const entryList = useMemo(() => data?.pages[page]?.data || [], [data, page]);
+  const entryList = useMemo(
+    () => entriesData?.pages[page]?.data || [],
+    [entriesData, page],
+  );
 
   const handleEntryDeleteClick = () => {
     deleteEntry(selectedId.toString());
-  };*/
+  };
 
   return (
-    <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden">
+    <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden h-screen">
       <div className="flex gap-4 pb-2 justify-between">
-        <h2 className=" font-semibold bg-stone-900">Competitions</h2>
+        <h2 className=" font-semibold bg-stone-900">
+          Competition with category {votingCompetition?.category} and id{' '}
+          {votingCompetition?.id}
+        </h2>
         <button
           className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100 items-center flex gap-1"
           onClick={() => console.log}>
@@ -103,35 +114,35 @@ export default function Simulation() {
             Vote
           </button>
         </div>
-        {/*<div className="flex-1 overflow-hidden rounded border border-stone-700">
-          <DataGrid
-            rows={entryList}
-            columns={columns}
-            checkboxSelection={false}
-            onRowSelectionModelChange={newSelection => {
-              const id = Array.from(newSelection.ids)[0];
-              setSelectedId(id);
-            }}
-            disableColumnMenu
-            disableColumnSorting
-            hideFooter
-            sx={{
-              border: 0,
-            }}
-          />
-        </div>
-        <Footer
-          selectedId={selectedId}
-          hasNextPage={hasNextPage}
-          fetchNextPage={fetchNextPage}
-          isMutationLoading={isMutationLoading}
-          handleDelete={handleEntryDeleteClick}
-          page={page}
-          setPage={setPage}
-          pages={pages}
-          setPages={setPages}
-        />*/}
       </div>
+      <div className="flex-1 overflow-hidden rounded border border-stone-700">
+        <DataGrid
+          rows={entryList}
+          columns={columns}
+          checkboxSelection={false}
+          onRowSelectionModelChange={newSelection => {
+            const id = Array.from(newSelection.ids)[0];
+            setSelectedId(id);
+          }}
+          disableColumnMenu
+          disableColumnSorting
+          hideFooter
+          sx={{
+            border: 0,
+          }}
+        />
+      </div>
+      <Footer
+        selectedId={selectedId}
+        hasNextPage={hasNextPage}
+        fetchNextPage={fetchNextPage}
+        isMutationLoading={isMutationLoading}
+        handleDelete={handleEntryDeleteClick}
+        page={page}
+        setPage={setPage}
+        pages={pages}
+        setPages={setPages}
+      />
     </main>
   );
 }
