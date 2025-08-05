@@ -12,14 +12,12 @@ def sample_pair(
     *,
     all_entries: list[CompetitionEntry],
 ) -> tuple[CompetitionEntry, CompetitionEntry]:
-    entries = sorted(all_entries, key=compute_ucb)
-    top_entries = entries[:5]
+    if len(all_entries) < 2:
+        raise ValueError("Need at least two entries.")
 
-    if len(top_entries) < 2:
-        raise ValueError("Need at least two entries to sample a unique pair.")
-
-    e1, e2 = random.sample(top_entries, k=2)
-    return (e1, e2)
+    samples = [(entry, random.gauss(entry.mu, entry.sigma)) for entry in all_entries]
+    top_two = sorted(samples, key=lambda x: x[1], reverse=True)[:2]
+    return top_two[0][0], top_two[1][0]
 
 
 def update_rating(
