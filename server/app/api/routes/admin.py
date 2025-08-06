@@ -401,10 +401,6 @@ def read_users(
     """
     Retrieve users.
     """
-
-    count_statement = select(func.count()).select_from(User)
-    count = session.execute(count_statement).scalar_one()
-
     statement = select(User).offset(filters.skip).limit(filters.limit)
     users = session.scalars(statement).all()
 
@@ -426,4 +422,4 @@ def read_users(
         )
         updated_user_list.append(account)
 
-    return UsersAdminResponse(data=updated_user_list, count=count)
+    return UsersAdminResponse(data=updated_user_list, count=len(updated_user_list))
