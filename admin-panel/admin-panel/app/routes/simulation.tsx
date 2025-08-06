@@ -101,7 +101,7 @@ export default function Simulation() {
     /* cast vote here */
     try {
       const message = await createVote(data).unwrap();
-      setAlert({type: 'success', message: message.message});
+      //setAlert({type: 'success', message: message.message});
     } catch (err: any) {
       const message = err?.data?.detail || 'Error casting vote';
       setAlert({type: 'error', message});
@@ -212,6 +212,13 @@ export default function Simulation() {
         </div>
       </div>
       <div className="flex-1 overflow-hidden rounded border border-stone-700">
+        <p className="text-xs p-2">
+          Votes cast:{' '}
+          {entryList
+            .map(e => e.comparisons)
+            .reduce((acc, current) => acc + current, 0) / 2}{' '}
+          out of {(20 * (20 - 1)) / 2} pair combinations
+        </p>
         <DataGrid
           rows={entryList}
           columns={columns}

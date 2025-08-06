@@ -319,6 +319,7 @@ def delete_competition_entry(
 def read_entries_me(
     session: SessionDep,
     current_competition: CurrentVotingCompetition,
+    current_user: CurrentUser,
 ) -> VotePairAdminResponse:
     """
     Get (NUMBER OF PAIRS) one pair of entries for voting.
@@ -328,7 +329,9 @@ def read_entries_me(
     )
     all_entries = session.scalars(statement).all()
 
-    entry1, entry2 = sample_pair(all_entries=all_entries)
+    entry1, entry2 = sample_pair(
+        session=session, all_entries=all_entries, user_id=current_user.id
+    )
 
     return VotePairAdminResponse(entry_1=entry1, entry_2=entry2)
 

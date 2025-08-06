@@ -1,4 +1,5 @@
 from typing import Any
+import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 
@@ -10,7 +11,7 @@ from app.api.deps import (
     get_current_user,
 )
 from app.models.competition_entry import CompetitionEntry
-from app.services.rating import sample_pair, update_rating
+from app.services.rating import normalize_pair, sample_pair, update_rating
 from app.models.pairwise_vote import PairwiseVote
 
 from app.schemas.utils import Message
@@ -85,6 +86,7 @@ def read_latest_competition(session: SessionDep) -> CompetitionPublic:
 def read_entries_me(
     session: SessionDep,
     current_competition: CurrentVotingCompetition,
+    current_user: CurrentUser,
 ) -> VotePair:
     """
     Get (NUMBER OF PAIRS) one pair of entries for voting.
@@ -94,7 +96,9 @@ def read_entries_me(
     )
     all_entries = session.scalars(statement).all()
 
-    entry1, entry2 = sample_pair(all_entries=all_entries)
+    entry1, entry2 = sample_pair(
+        session=session, all_entries=all_entries, user_id=current_user.id
+    )
 
     return VotePair(entry_1=entry1, entry_2=entry2)
 
@@ -134,12 +138,15 @@ def create_vote(
 
     # update pairwise vote table (create pairwise_vote)
     competition_id = current_competition.id
+    # avoids (A,B) vs (B,A) being treated as different
+    entry_id_1, entry_id_2 = normalize_pair(result_in.winner_id, result_in.loser_id)
 
     db_obj = PairwiseVote(
         user_id=current_user.id,
         competition_id=competition_id,
+        entry_id_1=entry_id_1,
+        entry_id_2=entry_id_2,
         winner_entry_id=winner.id,
-        loser_entry_id=loser.id,
     )
     session.add(db_obj)
     session.commit()
