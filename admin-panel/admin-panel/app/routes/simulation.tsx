@@ -124,7 +124,7 @@ export default function Simulation() {
   };
 
   return (
-    <main className="flex-1 flex flex-col bg-neutral-900 p-4 overflow-hidden h-screen">
+    <main className="flex-1 flex flex-col bg-neutral-900 pb-4 overflow-hidden h-screen">
       {alert && (
         <Alert
           severity={alert.type}
@@ -133,26 +133,28 @@ export default function Simulation() {
           {alert.message}
         </Alert>
       )}
-      <div className="flex gap-4 pb-2 justify-between">
-        <h2 className=" font-semibold bg-stone-900">
-          Competition with category {votingCompetition?.category} and id
-          {votingCompetition?.id}
-        </h2>
-        <button
-          className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100 items-center flex gap-1"
-          onClick={() => setShowAddForm(prev => !prev)}>
-          {showAddForm ? 'Cancel' : 'Add new'}
-          <AddIcon fontSize="small" />
-        </button>
-        <button
-          className="bg-red-700 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
-          onClick={resetEntries}
-          disabled={isLoading}>
-          Reset
-        </button>
+      <div className="py-2 border-b border-b-neutral-800">
+        <div className=" flex px-2 justify-between gap-4">
+          <h2 className=" font-semibold px-2">
+            Competition with category {votingCompetition?.category} and id
+            {votingCompetition?.id}
+          </h2>
+          <button
+            className="disabled:text-neutral-500 hover:bg-neutral-600 text-white font-medium text-xs px-2 py-1 rounded-md active:ring-1 active:ring-amber-600 transition-all duration-100 items-center flex gap-1"
+            onClick={() => setShowAddForm(prev => !prev)}>
+            {showAddForm ? 'Cancel' : 'Add new'}
+            <AddIcon fontSize="small" />
+          </button>
+          <button
+            className="bg-red-700 hover:bg-blue-800 text-white font-medium text-xs px-3 py-1 rounded-md active:ring-1 active:ring-blue-300 transition-all duration-100"
+            onClick={resetEntries}
+            disabled={isLoading}>
+            Reset
+          </button>
+        </div>
       </div>
       <div className="flex justify-evenly">
-        <div className="flex flex-col items-center bg-stone-800 p-2 rounded-md">
+        <div className="flex flex-col items-center  p-2 rounded-md">
           <div className="py-1 text-xs flex-1 w-full">
             <p>mu {entry1?.mu}</p>
             <p>sigma {entry1?.sigma}</p>
@@ -182,7 +184,7 @@ export default function Simulation() {
         </div>
 
         {/* Right Image */}
-        <div className="flex flex-col items-center bg-stone-800 p-2 rounded-md">
+        <div className="flex flex-col items-center p-2 rounded-md">
           <div className="py-1 text-xs flex-1 w-full">
             <p>mu {entry2?.mu}</p>
             <p>sigma {entry2?.sigma}</p>
