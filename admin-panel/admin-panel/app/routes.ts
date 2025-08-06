@@ -7,4 +7,5 @@ export default [
   route('competitions/:id/entries', 'routes/entries.tsx'),
   route('competitions/:id/votes', 'routes/votes.tsx'),
   route('simulation', 'routes/simulation.tsx'),
+  route('users', 'routes/users.tsx'),
 ] satisfies RouteConfig;

@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
-from sqlalchemy import or_, select, update
+from sqlalchemy import func, or_, select, update
 
 from app.api.deps import (
     CurrentUser,
@@ -28,6 +28,9 @@ from app.schemas.posts import PostCreate, PostPublic
 from app.services import post_crud as crud
 from app.schemas.utils import Message
 from app.services.rating import sample_pair
+from app.schemas.user import UserAdmin, UsersAdminResponse
+from app.models.user import User
+from app.services import follower_crud
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -376,3 +379,48 @@ def update_competition(
     session.refresh(competition)
 
     return competition
+
+
+class UserFilterParams(BaseModel):
+    skip: int = Field(0, ge=0)
+    limit: int = Field(100, gt=0)
+
+
+@router.get(
+    "/users",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=UsersAdminResponse,
+)
+def read_users(
+    session: SessionDep,
+    filters: Annotated[UserFilterParams, Depends()],
+) -> UsersAdminResponse:
+    """
+    Retrieve users.
+    """
+
+    count_statement = select(func.count()).select_from(User)
+    count = session.execute(count_statement).scalar_one()
+
+    statement = select(User).offset(filters.skip).limit(filters.limit)
+    users = session.scalars(statement).all()
+
+    updated_user_list = []
+    for user in users:
+        follower_count = follower_crud.get_follower_count(
+            session=session, user_id=user.id
+        )
+        following_count = follower_crud.get_following_count(
+            session=session, user_id=user.id
+        )
+
+        account = UserAdmin.model_validate(user).model_copy(
+            update={
+                "num_followers": follower_count,
+                "num_following": following_count,
+                "num_posts": len(user.posts),
+            }
+        )
+        updated_user_list.append(account)
+
+    return UsersAdminResponse(data=updated_user_list, count=count)

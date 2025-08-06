@@ -91,3 +91,29 @@ class ProfileFollowerUser(BaseModel):
 class ProfileFollowerUsers(BaseModel):
     data: list[ProfileFollowerUser]
     count: int
+
+
+# ADMIN SCHEMAS
+
+
+class UserAdmin(BaseModel):
+    id: uuid.UUID
+    is_active: bool
+    is_superuser: bool
+    first_name: str | None = Field(default=None, max_length=40)
+    last_name: str | None = Field(default=None, max_length=40)
+    username: str
+    email: EmailStr
+    bio: str | None = Field(default=None, max_length=500)
+    profile_picture_url: str | None = Field(default=None, max_length=500)
+    num_followers: int = 0
+    num_following: int = 0
+    num_posts: int = 0
+
+    class Config:
+        from_attributes = True
+
+
+class UsersAdminResponse(BaseModel):
+    data: list[UserAdmin]
+    count: int

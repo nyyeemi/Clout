@@ -220,7 +220,7 @@ export default function Competition() {
         selectedId={selectedId}
         hasNextPage={hasNextPage}
         fetchNextPage={fetchNextPage}
-        isMutationLoading={isMutationLoading}
+        isMutationLoading={isLoading}
         handleDelete={handleCompetitionDelete}
         page={page}
         setPage={setPage}

@@ -189,7 +189,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
       },
       infiniteQueryOptions: {
         initialPageParam: {
-          limit: 100,
+          limit: 6,
           skip: 0,
           sort_by: 'mu',
           sort_order: 'desc',
@@ -255,7 +255,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
         queryArg: competition_id,
       }) => {
         const params = new URLSearchParams();
-        if (skip) params.append('offset', skip.toString());
+        if (skip) params.append('skip', skip.toString());
         if (limit) params.append('limit', limit.toString());
         if (sort_order) params.append('sort_order', sort_order.toString());
 

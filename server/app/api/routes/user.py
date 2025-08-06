@@ -1,7 +1,6 @@
 from typing import Any
 import uuid
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
 from app.schemas.user import (
     Message,
@@ -10,7 +9,6 @@ from app.schemas.user import (
     UserPublic,
     UserUpdate,
     UserUpdateMe,
-    UsersPublic,
 )
 from app.services import user_crud as crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
@@ -19,25 +17,6 @@ from app.core.security import get_password_hash, verify_password
 from app.models.follower import Follower
 
 router = APIRouter(prefix="/users", tags=["users"])
-
-
-@router.get(
-    "/",
-    dependencies=[Depends(get_current_active_superuser)],
-    response_model=UsersPublic,
-)
-def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
-    """
-    Retrieve users.
-    """
-
-    count_statement = select(func.count()).select_from(User)
-    count = session.execute(count_statement).scalar_one()
-
-    statement = select(User).offset(skip).limit(limit)
-    users = session.scalars(statement).all()
-
-    return UsersPublic(data=users, count=count)
 
 
 @router.post(
