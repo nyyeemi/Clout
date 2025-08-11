@@ -6,6 +6,7 @@ from trueskill import Rating, rate_1vs1
 from app.models.competition_entry import CompetitionEntry
 from app.api.deps import SessionDep
 from app.models.pairwise_vote import PairwiseVote
+import time
 
 
 def compute_ucb(entry: CompetitionEntry, k=1.0):
@@ -49,13 +50,16 @@ def sample_pair(
         raise ValueError("Need at least two entries.")
 
     viewed_pairs = get_user_viewed_pairs(session=session, user_id=user_id)
-    max_attempts = 100
-
-    for _ in range(max_attempts):
+    max_attempts = 10000  # TODO: test and fix to be robust
+    start = time.perf_counter()
+    for i in range(max_attempts):
         entry1, entry2 = get_sampled_pair(all_entries)
         normalized_sampled_pair = normalize_pair(entry1.id, entry2.id)
 
         if normalized_sampled_pair not in viewed_pairs:
+            end = time.perf_counter()
+            print(f"Execution time: {end - start:.6f} seconds")
+            print(f"INFO --- Found pair after {i} iterations.")
             return entry1, entry2
 
     raise ValueError(

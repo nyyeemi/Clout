@@ -89,8 +89,9 @@ class PairwiseVoteReadAdmin(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID
     competition_id: uuid.UUID
+    entry_id_1: uuid.UUID
+    entry_id_2: uuid.UUID
     winner_entry_id: uuid.UUID
-    loser_entry_id: uuid.UUID
     created_at: datetime
 
     class Config:
