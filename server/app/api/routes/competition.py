@@ -24,7 +24,7 @@ from app.schemas.competition import (
 from app.models.competition import Competition, CompetitionStatus
 
 
-router = APIRouter(prefix="/competition", tags=["competitions"])
+router = APIRouter(prefix="/competitions", tags=["competitions"])
 
 
 @router.get(

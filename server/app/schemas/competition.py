@@ -9,8 +9,10 @@ class CompetitionPublic(BaseModel):
     category: str
     description: str
     start_time: datetime
+    vote_start_time: datetime
     end_time: datetime
     competition_number: int
+    status: CompetitionStatus
 
 
 class CompetitionsPublic(BaseModel):

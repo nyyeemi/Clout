@@ -23,6 +23,10 @@ import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
 import {ThemedIcon, ThemedText} from '../../components/ui/typography';
 import extendedMockImageList from '../../mock/mock';
 import {
+  PostMinimal,
+  useGetVotePairQuery,
+} from '../../redux/api/endpoints/competitions';
+import {
   setActiveVoteImages,
   setNextVoteImages,
   swapVoteImages,
@@ -57,13 +61,8 @@ export const VoteScreen = () => {
   const VOTE_THRESHOLD = -height * 0.2;
   const imagePairs: number = 10;
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    //TODO: Replace mockDatas with the api response
-    dispatch(setActiveVoteImages(extendedMockImageList));
-    dispatch(setNextVoteImages(extendedMockImageList));
-  }, [dispatch]);
+  const {data: imagePair, isLoading: isLoadingImagePair} =
+    useGetVotePairQuery();
 
   useEffect(() => {
     arrowTranslateY.value = withRepeat(
@@ -92,39 +91,7 @@ export const VoteScreen = () => {
     }
   }, [MAX_TRANSLATE_X, isFirstVisit, translateX]);
 
-  const activeVoteImages: ImageTuple[] = useSelector(
-    (state: RootState) => state.voteImage.activeVoteImages,
-    shallowEqual,
-  );
-
-  //TODO: switch if statement number (imagePairs) depending on how many image pairs coming from api response
-  if (currentIndex === imagePairs) {
-    dispatch(swapVoteImages());
-    //TODO: Replace mockData with the api response
-    dispatch(setNextVoteImages(extendedMockImageList));
-    setCurrentIndex(0);
-  }
-
-  const currentImages: ImageTuple | null = useMemo(() => {
-    if (activeVoteImages.length === 0) {
-      return null;
-    }
-
-    const nextIndex = currentIndex + 1;
-    const nextImages = activeVoteImages[nextIndex];
-
-    /*    if (nextImages) {
-      FastImage.preload([
-        {uri: nextImages[0].image_url},
-        {uri: nextImages[1].image_url},
-      ]);
-    }
-      */
-
-    return activeVoteImages[currentIndex] ?? null;
-  }, [currentIndex, activeVoteImages]);
-
-  const voteImage = (image: PostType) => {
+  const voteImage = (image: PostMinimal) => {
     console.log(`Voted: ${image.id} image!`);
     setHasVoted(true);
 
@@ -150,7 +117,7 @@ export const VoteScreen = () => {
   const createImageGesture = (
     translateY: SharedValue<number>,
     opacity: SharedValue<number>,
-    image: PostType,
+    image: PostMinimal,
   ) =>
     Gesture.Pan()
       .onBegin(() => {
@@ -190,12 +157,12 @@ export const VoteScreen = () => {
         }
       });
 
-  const leftImageGesture = currentImages
-    ? createImageGesture(leftTranslateY, leftOpacity, currentImages[0])
+  const leftImageGesture = !isLoadingImagePair
+    ? createImageGesture(leftTranslateY, leftOpacity, imagePair[0])
     : undefined;
 
-  const rightImageGesture = currentImages
-    ? createImageGesture(rightTranslateY, rightOpacity, currentImages[1])
+  const rightImageGesture = !isLoadingImagePair
+    ? createImageGesture(rightTranslateY, rightOpacity, imagePair[1])
     : undefined;
 
   //Handles the horizontal swiping when finger swipes from background
@@ -291,13 +258,13 @@ export const VoteScreen = () => {
 
   return (
     <SafeAreaView style={globalStyle.flex}>
-      {currentImages ? (
+      {!isLoadingImagePair ? (
         <GestureDetector gesture={backgroundGesture}>
           <View style={styles.container}>
             {leftImageGesture && (
               <GestureDetector gesture={leftImageGesture}>
                 <AnimatedImage
-                  source={{uri: currentImages[0].image_url}}
+                  source={{uri: imagePair?.entry_1.post.image_url}}
                   style={[styles.image, leftImageStyle]}
                   resizeMode={'cover'}
                 />
@@ -306,7 +273,7 @@ export const VoteScreen = () => {
             {rightImageGesture && (
               <GestureDetector gesture={rightImageGesture}>
                 <AnimatedImage
-                  source={{uri: currentImages?.[1].image_url}}
+                  source={{uri: imagePair?.entry_2.post.image_url}}
                   style={[styles.image, rightImageStyle]}
                   resizeMode={'cover'}
                 />
