@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import Alert from '@mui/material/Alert';
@@ -13,11 +13,13 @@ import {
   useDeleteEntryMutation,
   useGetCompetitionEntriesInfiniteQuery,
   useGetCurrentCompetitionQuery,
+  useGetStatsQuery,
   useGetVotePairQuery,
   useResetCurrentVotingEntriesMutation,
 } from '~/redux/api/endpoints/competitions';
 
 import type {Route} from './+types/home';
+import { API_URL } from '~/redux/api/utils';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -71,6 +73,8 @@ export default function Simulation() {
   const votingCompetition = competitionData?.data.find(
     comp => comp.status === 'voting',
   );
+
+  const {data: stats} = useGetStatsQuery();
 
   const {
     data: entriesData,
@@ -223,10 +227,8 @@ export default function Simulation() {
       <div className="flex-1 overflow-hidden rounded border border-stone-700">
         <p className="text-xs p-2">
           Votes cast:{' '}
-          {entryList
-            .map(e => e.comparisons)
-            .reduce((acc, current) => acc + current, 0) / 2}{' '}
-          out of {(20 * (20 - 1)) / 2} pair combinations
+          {stats?.votes_count}{' '}
+          out of {stats?.num_combinations} pair combinations
         </p>
         <DataGrid
           rows={entryList}

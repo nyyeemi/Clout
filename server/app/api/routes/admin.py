@@ -423,3 +423,34 @@ def read_users(
         updated_user_list.append(account)
 
     return UsersAdminResponse(data=updated_user_list, count=len(updated_user_list))
+
+
+class StatsResponse(BaseModel):
+    num_combinations: int
+    votes_count: int
+
+
+@router.get(
+    "/competitions/current/stats",
+    dependencies=[Depends(get_current_active_superuser)],
+)
+def read_current_competition_stats(
+    session: SessionDep,
+    current_competition: CurrentVotingCompetition,
+    current_user: CurrentUser,
+) -> StatsResponse:
+    count_stmt = (
+        select(func.count())
+        .select_from(CompetitionEntry)
+        .where(CompetitionEntry.competition_id == current_competition.id)
+    )
+    count = session.execute(count_stmt).scalar_one()
+    num_combinations = count * (count - 1) / 2
+
+    votes_count_stmt = (
+        select(func.count())
+        .select_from(PairwiseVote)
+        .where(PairwiseVote.user_id == current_user.id)
+    )
+    votes_count = session.execute(votes_count_stmt).scalar_one()
+    return StatsResponse(num_combinations=num_combinations, votes_count=votes_count)

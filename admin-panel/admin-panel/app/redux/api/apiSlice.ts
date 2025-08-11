@@ -18,6 +18,7 @@ export const apiSlice = createApi({
     'Entries',
     'Votes',
     'VotePair',
+    'Stats'
   ],
   endpoints: () => ({}),
 });

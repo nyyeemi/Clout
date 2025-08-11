@@ -333,7 +333,7 @@ export const competitionsApi = apiSlice.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['Entries', 'VotePair'],
+      invalidatesTags: ['Entries', 'VotePair', 'Stats'],
     }),
     resetCurrentVotingEntries: builder.mutation<Message, void>({
       query: () => ({
@@ -342,8 +342,17 @@ export const competitionsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Entries'],
     }),
+    getStats: builder.query<StatsResponse, void>({
+      query: () => 'admin/competitions/current/stats',
+      providesTags: ['Stats']
+    }),
   }),
 });
+
+type StatsResponse = {
+  num_combinations: number;
+  votes_count: number;
+}
 
 export type CreateVotePayload = {
   winner_id: string;
@@ -379,4 +388,5 @@ export const {
   useGetVotePairQuery,
   useCreateVoteMutation,
   useResetCurrentVotingEntriesMutation,
+  useGetStatsQuery,
 } = competitionsApi;
