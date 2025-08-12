@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Dimensions, Image, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, View} from 'react-native';
 
 import {faArrowUp} from '@fortawesome/free-solid-svg-icons';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -15,17 +16,13 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
-import globalStyle from '../../assets/styles/globalStyle';
-import {horizontalScale, verticalScale} from '../../assets/styles/scaling';
 import {ThemedIcon, ThemedText} from '../../components/ui/typography';
 import {
   PostMinimal,
   useCreateVoteMutation,
   useGetVotePairQuery,
 } from '../../redux/api/endpoints/competitions';
-import {styles} from './style';
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
@@ -47,6 +44,8 @@ export const VotePair = () => {
   const MAX_ROTATION = 60;
   const MAX_TRANSLATE_X = width * 0.6;
   const VOTE_THRESHOLD = -height * 0.2;
+
+  const tabBarHeight = useBottomTabBarHeight();
 
   const {
     data: imagePair,
@@ -195,8 +194,8 @@ export const VotePair = () => {
     });
 
   //scaled values describing how much image can move horizontally
-  const scaledTranslateX = horizontalScale(285);
-  const scaledTranslateX2 = horizontalScale(10);
+  const scaledTranslateX = 285;
+  const scaledTranslateX2 = 10;
 
   const leftImageStyle = useAnimatedStyle(() => ({
     opacity: leftOpacity.value,
@@ -245,8 +244,8 @@ export const VotePair = () => {
   }));
 
   //scaled values describing how much arrow can move horizontally
-  const scaledArrowTranslateY = verticalScale(10);
-  const scaledArrowTranslateY2 = verticalScale(0);
+  const scaledArrowTranslateY = 10;
+  const scaledArrowTranslateY2 = 0;
 
   const arrowStyle = useAnimatedStyle(() => ({
     transform: [{translateY: arrowTranslateY.value}],
@@ -262,7 +261,7 @@ export const VotePair = () => {
   const rightImageUrl = imagePair?.entry_2.post.image_url;
 
   return (
-    <SafeAreaView style={globalStyle.flex}>
+    <View style={{flex: 1}}>
       {!isLoadingImagePair ? (
         <GestureDetector gesture={backgroundGesture}>
           <View style={styles.container}>
@@ -297,6 +296,32 @@ export const VotePair = () => {
           <ThemedText>No more pictures</ThemedText>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
+
+const {width} = Dimensions.get('window');
+const IMAGE_WIDTH = width * 0.95;
+const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    //alignItems: 'center',
+  },
+  image: {
+    width: IMAGE_WIDTH,
+    height: IMAGE_HEIGHT,
+    marginHorizontal: 120,
+    borderRadius: 15,
+  },
+  arrowContainer: {
+    position: 'absolute',
+    bottom: 2,
+    alignSelf: 'center',
+    fontSize: 24,
+    alignItems: 'center',
+  },
+});

@@ -1,6 +1,6 @@
 import React from 'react';
-
 import {Pressable, Text} from 'react-native';
+
 import style from './style';
 
 type Props = {
@@ -13,7 +13,7 @@ const Button = ({
   title,
   isDisabled = false,
   onPress = () => {}, //default value is empty function
-}: Props): JSX.Element => {
+}: Props) => {
   return (
     <Pressable
       disabled={isDisabled}
