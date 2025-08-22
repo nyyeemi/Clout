@@ -135,7 +135,7 @@ def create_mock_posts(session, base_dir):
 def create_mock_competition_posts(session: Session, base_dir):
     competition = Competition(
         category="Nature",
-        description="Finnish summer.",
+        description="Capture the beauty of the natural world – from vast landscapes and dramatic skies to the smallest details of plants, animals, and seasons. Show us moments that highlight the power, peace, and diversity of nature.",
         start_time=datetime.now(timezone.utc),
         vote_start_time=datetime.now(timezone.utc) + timedelta(hours=24),
         end_time=datetime.now(timezone.utc) + timedelta(hours=48),

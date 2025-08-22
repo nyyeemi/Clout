@@ -452,7 +452,7 @@ def read_current_competition_stats(
         select(func.count())
         .select_from(PairwiseVote)
         .where(
-            CompetitionEntry.competition_id == current_competition.id,
+            PairwiseVote.competition_id == current_competition.id,
             PairwiseVote.user_id == current_user.id,
         )
     )

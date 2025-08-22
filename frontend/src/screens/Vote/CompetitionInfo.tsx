@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
@@ -8,6 +9,30 @@ import {useGetCurrentCompetitionQuery} from '../../redux/api/endpoints/competiti
 export const CompetitionInfo = () => {
   const {colors} = useTheme();
   const {data: competitionData} = useGetCurrentCompetitionQuery('voting');
+
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
+
+  function getTimeLeft() {
+    const now = new Date();
+    const midnightUTC = new Date(now);
+    midnightUTC.setUTCHours(24, 0, 0, 0);
+
+    const diff = midnightUTC.getTime() - now.getTime();
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(getTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <ThemedSafeAreaView style={styles.container}>
@@ -25,16 +50,19 @@ export const CompetitionInfo = () => {
       <View style={styles.statsContainer}>
         <View style={styles.statsRow}>
           <View style={[styles.statsBox, {backgroundColor: colors.card}]}>
+            <Title3Text style={{marginBottom: 30}}>Basic</Title3Text>
             <BodyText>
-              Your vote count: {competitionData?.user_votes_count}
+              Your votes: {competitionData?.user_votes_count}
               {'\n'}
-              All votes count: {competitionData?.all_votes_count}
+              All votes: {competitionData?.all_votes_count}
               {'\n'}
-              Number of competers: {competitionData?.competers_count}
+              Competers: {competitionData?.competers_count}
             </BodyText>
           </View>
           <View style={[styles.dailyStreak, {backgroundColor: colors.card}]}>
-            <Title3Text style={{color: colors.primary}}>Streak</Title3Text>
+            <Title3Text style={{color: colors.primary, marginBottom: 30}}>
+              Streak
+            </Title3Text>
             <View style={styles.emojiAndNumber}>
               <Text style={{fontSize: 30}}>🔥</Text>
               <Title3Text>50</Title3Text>
@@ -43,16 +71,18 @@ export const CompetitionInfo = () => {
         </View>
         <View style={styles.statsRow}>
           <View style={[styles.statsBox, {backgroundColor: colors.card}]}>
-            <BodyText>
-              Your vote count: {competitionData?.user_votes_count}
-              {'\n'}
-              All votes count: {competitionData?.all_votes_count}
-              {'\n'}
-              Number of competers: {competitionData?.competers_count}
-            </BodyText>
+            <Title3Text style={{marginBottom: 30}}>Time left</Title3Text>
+            <View style={styles.emojiAndNumber}>
+              <Text style={{fontSize: 30}}>⏰</Text>
+              <Title3Text>{timeLeft}</Title3Text>
+            </View>
           </View>
           <View style={[styles.statsBox, {backgroundColor: colors.card}]}>
-            <BodyText>Current position</BodyText>
+            <Title3Text style={{marginBottom: 30}}>Current position</Title3Text>
+            <View style={styles.emojiAndNumber}>
+              <Text style={{fontSize: 30}}>📶</Text>
+              <Title3Text>9</Title3Text>
+            </View>
           </View>
         </View>
       </View>
@@ -81,13 +111,13 @@ const styles = StyleSheet.create({
   },
   statsBox: {
     flex: 1,
-    borderRadius: 5,
-    padding: 5,
+    borderRadius: 20,
+    padding: 10,
   },
   dailyStreak: {
     flex: 1,
-    borderRadius: 5,
-    padding: 5,
+    borderRadius: 20,
+    padding: 10,
     //justifyContent: 'center',
   },
   emojiAndNumber: {
