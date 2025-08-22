@@ -5,7 +5,7 @@ import {
   faChevronLeft,
   faDraftingCompass,
 } from '@fortawesome/free-solid-svg-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   Directions,
   Gesture,
@@ -29,7 +29,10 @@ import {
 } from '../../redux/api/endpoints/competitions';
 
 export const PairwiseScreenVertical = () => {
+  const theme = useTheme();
   const navigation = useNavigation();
+  const route = useRoute();
+  console.log(route);
   const {colors} = useTheme();
   const {
     data: imagePair,
@@ -41,7 +44,17 @@ export const PairwiseScreenVertical = () => {
     useCreateVoteMutation();
 
   useEffect(() => {
-    navigation.setOptions({tabBarStyle: {display: 'none'}});
+    const parent = navigation.getParent(); // parent Tab navigator
+    parent?.setOptions({tabBarStyle: {display: 'none'}});
+
+    return () => {
+      parent?.setOptions({
+        tabBarStyle: {
+          backgroundColor: theme.colors.background,
+          display: 'flex',
+        },
+      }); // reset on unmount
+    };
   }, [navigation]);
 
   const offset = useSharedValue<number>(0);
@@ -229,26 +242,27 @@ export const PairwiseScreenVertical = () => {
           />
         </View>
       </GestureDetector>
-      <TouchableOpacity></TouchableOpacity>
-      <ThemedIcon
-        //color=}
-        icon={faChevronLeft}
-        size={20}
-        containerStyle={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          margin: 25,
-          padding: 10,
-          backgroundColor: colors.card,
-          borderRadius: 100,
-          shadowColor: 'black',
-          shadowOpacity: 0.9,
-          shadowRadius: 10,
-          shadowOffset: {width: -1, height: 0},
-          elevation: 10, // for Android
-        }}
-      />
+      <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()}>
+        <ThemedIcon
+          //color=}
+          icon={faChevronLeft}
+          size={20}
+          containerStyle={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            margin: 25,
+            padding: 10,
+            backgroundColor: colors.card,
+            borderRadius: 100,
+            shadowColor: 'black',
+            shadowOpacity: 0.9,
+            shadowRadius: 10,
+            shadowOffset: {width: -1, height: 0},
+            elevation: 10, // for Android
+          }}
+        />
+      </TouchableOpacity>
       <View
         style={{
           position: 'absolute',

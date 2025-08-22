@@ -34,6 +34,12 @@ export type FeedStackParamList = {
   ProfileStack: NavigatorScreenParams<ProfileStackParamList>;
 };
 
+export type VoteStackParamList = {
+  Vote: undefined;
+  Vertical: undefined;
+  Horizontal: undefined;
+};
+
 export const Routes = {
   Login: 'Login',
   Register: 'Register',
@@ -54,4 +60,5 @@ export const Routes = {
   Help: 'Help',
   SendFeedBack: 'SendFeedback',
   About: 'About',
+  VoteStack: 'VoteStack',
 } as const;

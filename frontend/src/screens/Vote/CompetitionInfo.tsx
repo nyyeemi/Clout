@@ -59,7 +59,7 @@ export const CompetitionInfo = () => {
               Competers: {competitionData?.competers_count}
             </BodyText>
           </View>
-          <View style={[styles.dailyStreak, {backgroundColor: colors.card}]}>
+          <View style={[styles.statsBox, {backgroundColor: colors.card}]}>
             <Title3Text style={{color: colors.primary, marginBottom: 30}}>
               Streak
             </Title3Text>
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 20,
     padding: 10,
+    aspectRatio: 1,
   },
   dailyStreak: {
     flex: 1,

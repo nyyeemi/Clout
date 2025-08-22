@@ -22,6 +22,7 @@ import {VoteScreen} from '../screens/Vote/VoteScreen';
 import {FeedStackNavigator} from './FeedStackNavigator';
 import {ProfileStackNavigator} from './ProfileStackNavigator';
 import {RootStackParamList, Routes} from './Routes';
+import {VoteStackNavigator} from './VoteStackNavigator';
 
 type tabBarIconProps = {
   route: RouteProp<RootStackParamList, keyof RootStackParamList>;
@@ -83,12 +84,13 @@ export const BottomTabNavigator = () => {
         tabBarButton: tabBarButton,
         tabBarStyle: {
           backgroundColor: theme.colors.background,
+          //display: route.name === 'Vote' ? 'none' : 'flex',
         },
         header: () => null,
         headerShown: false,
         tabBarShowLabel: false,
       })}>
-      <Tab.Screen name={Routes.Vote} component={VoteScreen} />
+      <Tab.Screen name={Routes.Vote} component={VoteStackNavigator} />
       <Tab.Screen name={Routes.Leaderboard} component={LeaderboardScreen} />
       <Tab.Screen
         name={Routes.Camera}
