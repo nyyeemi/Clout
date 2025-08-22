@@ -10,7 +10,10 @@ import {
 } from 'react-native';
 
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconStyle,
+} from '@fortawesome/react-native-fontawesome';
 import {useTheme} from '@react-navigation/native';
 
 type ThemedTextProps = TextProps & {
@@ -39,6 +42,7 @@ type ThemedIconProps = {
   color?: string;
   containerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  iconStyle?: FontAwesomeIconStyle;
   children?: string;
 };
 
@@ -48,6 +52,7 @@ export const ThemedIcon = ({
   color,
   containerStyle,
   textStyle,
+  iconStyle,
   children,
   ...props
 }: ThemedIconProps) => {
@@ -59,6 +64,7 @@ export const ThemedIcon = ({
         icon={icon}
         size={size}
         color={color ?? theme.colors.text}
+        style={iconStyle}
       />
       {children && <ThemedText style={textStyle}>{children}</ThemedText>}
     </View>
