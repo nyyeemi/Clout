@@ -19,12 +19,12 @@ export const VoteStackNavigator = () => {
         },
       })}>
       <VoteStack.Screen name={'Vote'} component={VoteScreen} />
-      <VoteStack.Screen
+      {/* <VoteStack.Screen
         name={'Horizontal'}
         component={VotePair}
         options={{headerShown: true, headerLargeTitle: true}}
       />
-      {/*  
+       
       <VoteStack.Screen
         name={'Vertical'}
         component={PairwiseScreenVertical}

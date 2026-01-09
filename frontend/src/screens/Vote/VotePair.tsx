@@ -87,8 +87,6 @@ export const VotePair = () => {
     console.log(`Voted: ${image.id} image!`);
     setHasVoted(true);
 
-    //TODO: API call for voting the image
-
     if (imagePair) {
       const payload = {
         winner_id: image.id,
@@ -194,8 +192,8 @@ export const VotePair = () => {
     });
 
   //scaled values describing how much image can move horizontally
-  const scaledTranslateX = 285;
-  const scaledTranslateX2 = 10;
+  const scaledTranslateX = 310;
+  const scaledTranslateX2 = 35;
 
   const leftImageStyle = useAnimatedStyle(() => ({
     opacity: leftOpacity.value,
