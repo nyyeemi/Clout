@@ -25,6 +25,7 @@ import {
 } from '../../redux/api/endpoints/competitions';
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
+const IMAGE_MARGIN = 6;
 
 export const VotePair = () => {
   const [hasVoted, setHasVoted] = useState(false);
@@ -41,11 +42,9 @@ export const VotePair = () => {
   const arrowTranslateY = useSharedValue(0);
 
   const {width, height} = Dimensions.get('window');
-  const MAX_ROTATION = 60;
-  const MAX_TRANSLATE_X = width * 0.6;
-  const VOTE_THRESHOLD = -height * 0.2;
 
-  const tabBarHeight = useBottomTabBarHeight();
+  const MAX_TRANSLATE_X = IMAGE_WIDTH / 2 + IMAGE_MARGIN;
+  const VOTE_THRESHOLD = -height * 0.2;
 
   const {
     data: imagePair,
@@ -192,8 +191,8 @@ export const VotePair = () => {
     });
 
   //scaled values describing how much image can move horizontally
-  const scaledTranslateX = 310;
-  const scaledTranslateX2 = 35;
+  const scaledTranslateX = IMAGE_WIDTH;
+  const scaledTranslateX2 = 0;
 
   const leftImageStyle = useAnimatedStyle(() => ({
     opacity: leftOpacity.value,
@@ -202,20 +201,18 @@ export const VotePair = () => {
         translateX: interpolate(
           translateX.value,
           [-MAX_TRANSLATE_X, MAX_TRANSLATE_X],
-          [-scaledTranslateX2, scaledTranslateX],
+          [-MAX_TRANSLATE_X, MAX_TRANSLATE_X],
           Extrapolation.CLAMP,
         ),
       },
       {translateY: leftTranslateY.value},
-      {
-        rotateY: `${interpolate(
-          translateX.value,
-          [-MAX_TRANSLATE_X, MAX_TRANSLATE_X],
-          [MAX_ROTATION, 0],
-          Extrapolation.CLAMP,
-        )}deg`,
-      },
     ],
+    borderWidth: interpolate(
+      leftTranslateY.value,
+      [0, -IMAGE_HEIGHT],
+      [0, 10],
+      Extrapolation.CLAMP,
+    ),
   }));
 
   const rightImageStyle = useAnimatedStyle(() => ({
@@ -225,20 +222,18 @@ export const VotePair = () => {
         translateX: interpolate(
           translateX.value,
           [-MAX_TRANSLATE_X, MAX_TRANSLATE_X],
-          [-scaledTranslateX, scaledTranslateX2],
+          [-MAX_TRANSLATE_X, MAX_TRANSLATE_X],
           Extrapolation.CLAMP,
         ),
       },
       {translateY: rightTranslateY.value},
-      {
-        rotateY: `${interpolate(
-          translateX.value,
-          [-MAX_TRANSLATE_X, MAX_TRANSLATE_X],
-          [0, -MAX_ROTATION],
-          Extrapolation.CLAMP,
-        )}deg`,
-      },
     ],
+    borderWidth: interpolate(
+      rightTranslateY.value,
+      [0, -IMAGE_HEIGHT],
+      [0, 10],
+      Extrapolation.CLAMP,
+    ),
   }));
 
   //scaled values describing how much arrow can move horizontally
@@ -312,8 +307,9 @@ export const styles = StyleSheet.create({
   image: {
     width: IMAGE_WIDTH,
     height: IMAGE_HEIGHT,
-    marginHorizontal: 120,
+    marginHorizontal: IMAGE_MARGIN,
     borderRadius: 15,
+    borderColor: '#28a745',
   },
   arrowContainer: {
     position: 'absolute',
