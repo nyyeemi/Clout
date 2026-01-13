@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func, select
@@ -19,9 +20,13 @@ from app.schemas.competition import (
     CompetitionsPublic,
     CreateVotePair,
     CurrentCompetitionStats,
+    LeaderboardEntry,
+    LeaderboardPublic,
     VotePair,
 )
 from app.models.competition import Competition, CompetitionStatus
+from app.models.user import User
+from app.models.post import Post
 
 
 router = APIRouter(prefix="/competitions", tags=["competitions"])
@@ -43,6 +48,52 @@ def read_competitions(session: SessionDep, skip: int = 0, limit: int = 100) -> A
     )
     competitions = session.scalars(statement).all()
     return CompetitionsPublic(data=competitions, count=len(competitions))
+
+
+@router.get(
+    "/leaderboard",
+    dependencies=[Depends(get_current_user)],
+    response_model=LeaderboardPublic,
+)
+def read_leaderboard(
+    session: SessionDep, competition_start_date: datetime, top_n: int = 100
+) -> Any:
+    """
+    Read leaderboard data given competition start time. Returns a list of top_n leaderboard entries,
+    and general information on the competition.
+    """
+    statement = select(Competition).where(
+        Competition.start_time == competition_start_date,
+        Competition.status == CompetitionStatus.FINISHED,
+    )
+    competition = session.execute(statement).scalar_one_or_none()
+
+    if competition is None:
+        raise HTTPException(
+            status_code=404, detail="No finished competition found on the timestamp."
+        )
+
+    statement = (
+        select(
+            User.username,
+            Post.image_url,
+        )
+        .select_from(CompetitionEntry)
+        .join(CompetitionEntry.post)
+        .join(Post.owner)
+        .where(CompetitionEntry.competition_id == competition.id)
+    )
+
+    statement = statement.order_by(CompetitionEntry.mu.desc()).limit(top_n)
+
+    rows = session.execute(statement).all()
+
+    leaderboard = [
+        LeaderboardEntry(username=username, image_url=image_url)
+        for username, image_url in rows
+    ]
+
+    return LeaderboardPublic(competition=competition, leaderboard=leaderboard)
 
 
 @router.get(

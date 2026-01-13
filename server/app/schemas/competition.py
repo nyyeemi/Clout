@@ -5,6 +5,17 @@ from pydantic import BaseModel, HttpUrl, field_validator
 from app.models.competition import CompetitionStatus
 
 
+class CompetitionBase(BaseModel):
+    category: str
+    description: str
+    start_time: datetime
+    end_time: datetime
+    competition_number: int
+
+    class Config:
+        from_attributes = True
+
+
 class CompetitionPublic(BaseModel):
     category: str
     description: str
@@ -53,6 +64,20 @@ class VotePair(BaseModel):
 class CreateVotePair(BaseModel):
     winner_id: uuid.UUID
     loser_id: uuid.UUID
+
+
+# Leaderboard schemas
+class LeaderboardEntry(BaseModel):
+    username: str
+    image_url: str
+
+    class Config:
+        from_attributes = True
+
+
+class LeaderboardPublic(BaseModel):
+    competition: CompetitionBase
+    leaderboard: list[LeaderboardEntry]
 
 
 ### ADMIN SCHEMAS ###
