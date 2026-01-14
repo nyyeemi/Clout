@@ -1,15 +1,19 @@
 import {StyleSheet, Text, View} from 'react-native';
 
-import {BodyText, Title3Text} from '../../components/ui/typography';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+
+import {BodyText, ThemedIcon, Title3Text} from '../../components/ui/typography';
 import {useTheme} from '../../hooks/useTheme';
 
 type InfoBoxProps = {
   title: string;
-  icon: any;
+  icon?: any;
   mainInfo: string | number | undefined;
   footerText: string;
   aspectRatio: number;
   size?: 'body' | 'title';
+  hasIcon?: boolean;
+  category?: string;
 };
 
 export const InfoBox = ({
@@ -19,6 +23,8 @@ export const InfoBox = ({
   footerText,
   aspectRatio,
   size = 'title',
+  hasIcon = false,
+  category,
 }: InfoBoxProps) => {
   const {colors} = useTheme();
 
@@ -31,8 +37,9 @@ export const InfoBox = ({
         {backgroundColor: colors.card, aspectRatio: aspectRatio},
       ]}>
       <Title3Text style={{color: colors.primary}}>{title}</Title3Text>
+      {category && <Title3Text variant="heavy">{category}</Title3Text>}
       <View style={styles.emojiAndText}>
-        <Text style={{fontSize: 30}}>🔥 {icon}</Text>
+        {hasIcon && <ThemedIcon icon={icon} />}
         <MainInfo>{mainInfo}</MainInfo>
       </View>
       <BodyText>{footerText}</BodyText>

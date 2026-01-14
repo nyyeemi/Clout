@@ -36,8 +36,7 @@ export type FeedStackParamList = {
 
 export type VoteStackParamList = {
   Vote: undefined;
-  Vertical: undefined;
-  Horizontal: undefined;
+  Info: undefined;
 };
 
 export const Routes = {
@@ -61,4 +60,5 @@ export const Routes = {
   SendFeedBack: 'SendFeedback',
   About: 'About',
   VoteStack: 'VoteStack',
+  Info: 'Info',
 } as const;
