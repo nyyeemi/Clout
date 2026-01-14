@@ -34,7 +34,7 @@ const tabBarIcon = ({route, color, size}: tabBarIconProps) => {
   let icon: IconDefinition = faHouse;
   //console.log(`Tab: ${route.name}, Focused: ${focused}`);
 
-  if (route.name === Routes.Vote) {
+  if (route.name === Routes.VoteStack) {
     icon = faHouse;
   } else if (route.name === Routes.Leaderboard) {
     icon = faAward;
@@ -90,7 +90,7 @@ export const BottomTabNavigator = () => {
         headerShown: false,
         tabBarShowLabel: false,
       })}>
-      <Tab.Screen name={Routes.Vote} component={VoteStackNavigator} />
+      <Tab.Screen name={Routes.VoteStack} component={VoteStackNavigator} />
       <Tab.Screen name={Routes.Leaderboard} component={LeaderboardScreen} />
       <Tab.Screen
         name={Routes.Camera}

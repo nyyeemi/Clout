@@ -4,7 +4,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Leaderboard: undefined;
-  Vote: undefined;
+  VoteStack: undefined;
   Camera: undefined;
   Feed: undefined;
   FeedStack: undefined;
