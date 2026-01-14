@@ -37,6 +37,26 @@ export type CreateVotePayload = {
   loser_id: string;
 };
 
+type CompetitionBase = {
+  category: string;
+  description: string;
+  start_time: string;
+  end_time: string;
+  competition_number: number;
+};
+
+type LeaderboardEntryType = {
+  username: string;
+  image_url: string;
+};
+
+export type LeaderboardType = {
+  competition: CompetitionBase;
+  leaderboard: LeaderboardEntryType[];
+  participant_count: number;
+  current_user_rank: number | null;
+};
+
 export const competitionsApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getVotePair: builder.query<VotePairType, void>({
