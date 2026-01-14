@@ -6,10 +6,14 @@ import Toast from 'react-native-toast-message';
 import globalStyle from '../../assets/styles/globalStyle';
 import {ThemedView} from '../../components/ui/themed-view';
 import {ThemedText} from '../../components/ui/typography';
+import {
+  useGetFinishedCompetitionsQuery,
+  useGetLeaderboardQuery,
+} from '../../redux/api/endpoints/competitions';
 
 // adjust if needed
 
-export const LeaderboardScreen = (): JSX.Element => {
+export const LeaderboardScreen = () => {
   useFocusEffect(
     useCallback(() => {
       Toast.show({
@@ -18,6 +22,11 @@ export const LeaderboardScreen = (): JSX.Element => {
       });
     }, []),
   );
+
+  const {data: finishedCompetitions} = useGetFinishedCompetitionsQuery();
+
+  console.log('kisat jotka loppunu:', finishedCompetitions);
+  //const{data} = useGetLeaderboardQuery()
 
   return (
     // eslint-disable-next-line react-native/no-inline-styles

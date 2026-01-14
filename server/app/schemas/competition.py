@@ -29,8 +29,15 @@ class CompetitionPublic(BaseModel):
         from_attributes = True
 
 
+class CompetitionPublicWithID(CompetitionPublic):
+    id: uuid.UUID
+
+    class Config:
+        from_attributes = True
+
+
 class CompetitionsPublic(BaseModel):
-    data: list[CompetitionPublic]
+    data: list[CompetitionPublicWithID]
     count: int
 
 

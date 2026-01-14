@@ -45,6 +45,17 @@ type CompetitionBase = {
   competition_number: number;
 };
 
+type CompetitionType = CompetitionBase & {
+  vote_start_time: string;
+  status: CompetitionStatus;
+  id: string;
+};
+
+type CompetitionsType = {
+  data: CompetitionType[];
+  count: number;
+};
+
 type LeaderboardEntryType = {
   username: string;
   image_url: string;
@@ -78,6 +89,14 @@ export const competitionsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['VotePair', 'Stats'],
     }),
+    getFinishedCompetitions: builder.query<CompetitionsType, void>({
+      query: () => `competitions/`,
+      providesTags: ['Competitions'],
+    }),
+    getLeaderboard: builder.query<LeaderboardType, number>({
+      query: competition_id => `competitions/${competition_id}/leaderboard`,
+      providesTags: ['Leaderboard'],
+    }),
   }),
 });
 
@@ -85,4 +104,6 @@ export const {
   useGetVotePairQuery,
   useGetCurrentCompetitionQuery,
   useCreateVoteMutation,
+  useGetLeaderboardQuery,
+  useGetFinishedCompetitionsQuery,
 } = competitionsApi;
