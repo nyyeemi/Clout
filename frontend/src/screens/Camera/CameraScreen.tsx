@@ -27,13 +27,6 @@ import Reanimated, {
   useAnimatedProps,
   useSharedValue,
 } from 'react-native-reanimated';
-import {
-  Camera,
-  CameraDevice,
-  CameraProps,
-  useCameraDevices,
-  useCameraPermission,
-} from 'react-native-vision-camera';
 
 import Input from '../../components/Input/Input';
 import {Spinner} from '../../components/Spinner/Spinner';
@@ -43,7 +36,11 @@ import {useCreatePostMutation} from '../../redux/api/endpoints/posts';
 import {setNotification} from '../../redux/slices/dispatchers/notificationDispatcher';
 import {Style} from './style';
 
-Reanimated.addWhitelistedNativeProps({zoom: true});
+export const CameraScreen = () => {
+  return <View></View>;
+};
+
+/*Reanimated.addWhitelistedNativeProps({zoom: true});
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 
 export const CameraScreen = () => {
@@ -272,7 +269,7 @@ export const CameraScreen = () => {
       )}
     </View>
   );
-};
+};*/
 
 const styles = StyleSheet.create({
   inputContainer: {
