@@ -9,7 +9,7 @@ import {ThemedText} from '../../components/ui/typography';
 
 // adjust if needed
 
-export const LeaderboardScreen = (): JSX.Element => {
+export const LeaderboardScreen = () => {
   useFocusEffect(
     useCallback(() => {
       Toast.show({

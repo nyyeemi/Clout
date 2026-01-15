@@ -19,7 +19,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import RNFS from 'react-native-fs';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Reanimated, {
   Extrapolation,
@@ -27,13 +26,6 @@ import Reanimated, {
   useAnimatedProps,
   useSharedValue,
 } from 'react-native-reanimated';
-import {
-  Camera,
-  CameraDevice,
-  CameraProps,
-  useCameraDevices,
-  useCameraPermission,
-} from 'react-native-vision-camera';
 
 import Input from '../../components/Input/Input';
 import {Spinner} from '../../components/Spinner/Spinner';
@@ -43,10 +35,14 @@ import {useCreatePostMutation} from '../../redux/api/endpoints/posts';
 import {setNotification} from '../../redux/slices/dispatchers/notificationDispatcher';
 import {Style} from './style';
 
-Reanimated.addWhitelistedNativeProps({zoom: true});
+export const CameraScreen = () => {
+  return <View></View>;
+};
+
+/*Reanimated.addWhitelistedNativeProps({zoom: true});
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 
-export const CameraScreen = (): JSX.Element => {
+export const CameraScreen = () => {
   const zoomOffset = useSharedValue(0);
   const [flashMode, setFlashMode] = useState<'on' | 'off' | 'auto'>('off');
   const [cameraType, setCameraType] = useState<'back' | 'front'>('back');
@@ -272,7 +268,7 @@ export const CameraScreen = (): JSX.Element => {
       )}
     </View>
   );
-};
+};*/
 
 const styles = StyleSheet.create({
   inputContainer: {
