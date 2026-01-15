@@ -46,7 +46,7 @@ import {Style} from './style';
 Reanimated.addWhitelistedNativeProps({zoom: true});
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 
-export const CameraScreen = (): JSX.Element => {
+export const CameraScreen = () => {
   const zoomOffset = useSharedValue(0);
   const [flashMode, setFlashMode] = useState<'on' | 'off' | 'auto'>('off');
   const [cameraType, setCameraType] = useState<'back' | 'front'>('back');
