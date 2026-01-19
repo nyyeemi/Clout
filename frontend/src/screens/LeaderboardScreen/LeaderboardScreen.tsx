@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
 
 import {skipToken} from '@reduxjs/toolkit/query';
@@ -24,6 +24,7 @@ const LEADERBOARD_OFFSET = 4; // on which index lb starts
 
 export const LeaderboardScreen = () => {
   const {colors} = useTheme();
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
   /*
     useFocusEffect(
     useCallback(() => {
@@ -36,6 +37,7 @@ export const LeaderboardScreen = () => {
 */
 
   const {data: finishedCompetitions} = useGetFinishedCompetitionsQuery();
+  console.log('Finished comps', finishedCompetitions);
 
   const mockId = finishedCompetitions?.data[0].id;
 
@@ -43,6 +45,15 @@ export const LeaderboardScreen = () => {
   console.log('Leaderboard data: ', data, error);
 
   const leaderboardData = data?.leaderboard.slice(LEADERBOARD_OFFSET - 1) ?? []; // omit top 3
+
+  if (mockId === undefined || !data) {
+    return (
+      <View>
+        <Title3Text>No competition found.</Title3Text>
+      </View>
+    );
+  }
+
   const renderItem = ({
     item,
     index,
@@ -68,17 +79,6 @@ export const LeaderboardScreen = () => {
         ListHeaderComponent={<PodiumView podiumData={podiumData} />}
         renderItem={renderItem}
       />
-
-      {/*<View
-        style={{
-          backgroundColor: colors.card,
-          flex: 1,
-          borderTopEndRadius: 30,
-          borderTopStartRadius: 30,
-          marginTop: 64,
-          paddingTop: 16,
-          paddingHorizontal: 16,
-        }}></View> */}
     </ThemedSafeAreaView>
   );
 };
