@@ -56,7 +56,7 @@ type CompetitionsType = {
   count: number;
 };
 
-type LeaderboardEntryType = {
+export type LeaderboardEntryType = {
   username: string;
   image_url: string;
 };
