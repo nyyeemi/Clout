@@ -1,20 +1,15 @@
-import React, {useCallback} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
 
-import {useFocusEffect} from '@react-navigation/native';
 import {skipToken} from '@reduxjs/toolkit/query';
 import {FlashList} from '@shopify/flash-list';
 import {Image} from 'expo-image';
-import Toast from 'react-native-toast-message';
 
 import globalStyle from '../../assets/styles/globalStyle';
-import {ProfilePicture} from '../../components/ProfilePicture/ProfilePicture';
-import {ThemedSafeAreaView, ThemedView} from '../../components/ui/themed-view';
+import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {
   HeadlineText,
   LargeTitleText,
-  ThemedText,
-  Title1Text,
   Title3Text,
 } from '../../components/ui/typography';
 import {useTheme} from '../../hooks/useTheme';
@@ -23,13 +18,14 @@ import {
   useGetFinishedCompetitionsQuery,
   useGetLeaderboardQuery,
 } from '../../redux/api/endpoints/competitions';
+import style from '../LoginScreen/style';
 
 const LEADERBOARD_OFFSET = 4; // on which index lb starts
 
 export const LeaderboardScreen = () => {
   const {colors} = useTheme();
-
-  useFocusEffect(
+  /*
+    useFocusEffect(
     useCallback(() => {
       Toast.show({
         type: 'success',
@@ -37,6 +33,7 @@ export const LeaderboardScreen = () => {
       });
     }, []),
   );
+*/
 
   const {data: finishedCompetitions} = useGetFinishedCompetitionsQuery();
 
@@ -56,13 +53,15 @@ export const LeaderboardScreen = () => {
     return <LeaderboardItem data={item} index={index + LEADERBOARD_OFFSET} />;
   };
 
+  const podiumData = data?.leaderboard.slice(0, 3) ?? [];
+  console.log('kolmeparast', podiumData);
+
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <ThemedSafeAreaView style={[globalStyle.flex, {}]}>
       <LargeTitleText variant="heavy">
         {data?.competition.category}
       </LargeTitleText>
-      <HeadlineText>{data?.competition.description}</HeadlineText>
 
       <View
         style={{
@@ -76,7 +75,7 @@ export const LeaderboardScreen = () => {
         }}>
         <FlashList
           data={leaderboardData}
-          ListHeaderComponent={<PodiumView />}
+          ListHeaderComponent={<PodiumView podiumData={podiumData} />}
           renderItem={renderItem}
         />
       </View>
@@ -106,6 +105,57 @@ const LeaderboardItem = ({data, index}: LeaderBoardItemProps) => {
   );
 };
 
+type PodiumViewProps = {
+  podiumData: LeaderboardEntryType[];
+};
+
+const PodiumView = ({podiumData}: PodiumViewProps) => {
+  const firstPlace = podiumData[0];
+  const secondPlace = podiumData[1];
+  const thirdPlace = podiumData[2];
+
+  return (
+    <View style={styles.podiumColumnContainer}>
+      <View style={styles.winnerContainer}>
+        <Image
+          source={{
+            uri: firstPlace.image_url,
+          }}
+          style={styles.winnerImage}
+        />
+        <HeadlineText>1. {firstPlace.username}</HeadlineText>
+      </View>
+      <View style={styles.podiumRowContainer}>
+        <View style={styles.winnerContainer}>
+          <Image
+            source={{
+              uri: secondPlace.image_url,
+            }}
+            style={styles.secondAndThirdPlaceImage}
+          />
+          <HeadlineText>2. {secondPlace.username}</HeadlineText>
+        </View>
+
+        <View style={styles.winnerContainer}>
+          <Image
+            source={{
+              uri: thirdPlace.image_url,
+            }}
+            style={styles.secondAndThirdPlaceImage}
+          />
+          <HeadlineText>3. {thirdPlace.username}</HeadlineText>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const {width} = Dimensions.get('window');
+const WINNER_IMAGE_WIDTH = width * 0.5;
+const WINNER_IMAGE_HEIGHT = (WINNER_IMAGE_WIDTH / 3) * 4;
+const PODIUM_IMAGE_WIDTH = width * 0.25;
+const PODIUM_IMAGE_HEIGHT = (PODIUM_IMAGE_WIDTH / 3) * 4;
+
 const styles = StyleSheet.create({
   leaderboardItemContainer: {
     flexDirection: 'row',
@@ -121,32 +171,26 @@ const styles = StyleSheet.create({
     margin: 6,
     borderRadius: 9,
   },
-  podiumContainer: {
+  podiumColumnContainer: {
+    flexDirection: 'column',
+    flex: 1,
+    marginTop: 10,
+    gap: 20,
+  },
+  podiumRowContainer: {
     flexDirection: 'row',
     flex: 1,
+    justifyContent: 'space-around',
+  },
+  winnerContainer: {alignItems: 'center'},
+  winnerImage: {
+    width: WINNER_IMAGE_WIDTH,
+    height: WINNER_IMAGE_HEIGHT,
+    borderRadius: 5,
+  },
+  secondAndThirdPlaceImage: {
+    width: PODIUM_IMAGE_WIDTH,
+    height: PODIUM_IMAGE_HEIGHT,
+    borderRadius: 5,
   },
 });
-
-type PodiumViewProps = {};
-
-const PodiumView = () => {
-  return (
-    <View style={styles.podiumContainer}>
-      <Image
-        source={{
-          uri: 'https://picsum.photos/seed/9cf2603f-852c-5321-a393-5c9885083598_post_2/400/300',
-        }}
-      />
-      <Image
-        source={{
-          uri: 'https://picsum.photos/seed/9cf2603f-852c-5321-a393-5c9885083598_post_2/400/300',
-        }}
-      />
-      <Image
-        source={{
-          uri: 'https://picsum.photos/seed/9cf2603f-852c-5321-a393-5c9885083598_post_2/400/300',
-        }}
-      />
-    </View>
-  );
-};
