@@ -63,7 +63,13 @@ export const LeaderboardScreen = () => {
         {data?.competition.category}
       </LargeTitleText>
 
-      <View
+      <FlashList
+        data={leaderboardData}
+        ListHeaderComponent={<PodiumView podiumData={podiumData} />}
+        renderItem={renderItem}
+      />
+
+      {/*<View
         style={{
           backgroundColor: colors.card,
           flex: 1,
@@ -72,13 +78,7 @@ export const LeaderboardScreen = () => {
           marginTop: 64,
           paddingTop: 16,
           paddingHorizontal: 16,
-        }}>
-        <FlashList
-          data={leaderboardData}
-          ListHeaderComponent={<PodiumView podiumData={podiumData} />}
-          renderItem={renderItem}
-        />
-      </View>
+        }}></View> */}
     </ThemedSafeAreaView>
   );
 };
@@ -92,10 +92,7 @@ const LeaderboardItem = ({data, index}: LeaderBoardItemProps) => {
   const {colors} = useTheme();
   return (
     <View
-      style={[
-        styles.leaderboardItemContainer,
-        {backgroundColor: colors.background},
-      ]}>
+      style={[styles.leaderboardItemContainer, {backgroundColor: colors.card}]}>
       <View style={{flexDirection: 'row', gap: 16}}>
         <Title3Text variant="heavy">{index.toString()}</Title3Text>
         <HeadlineText variant="medium">{data.username}</HeadlineText>
@@ -160,10 +157,11 @@ const styles = StyleSheet.create({
   leaderboardItemContainer: {
     flexDirection: 'row',
     paddingLeft: 16,
-    marginVertical: 2,
+    marginVertical: 3,
     borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginHorizontal: 16,
   },
   itemImage: {
     width: 50,
@@ -172,10 +170,12 @@ const styles = StyleSheet.create({
     borderRadius: 9,
   },
   podiumColumnContainer: {
+    //backgroundColor: 'red',
     flexDirection: 'column',
     flex: 1,
     marginTop: 10,
     gap: 20,
+    marginBottom: 24,
   },
   podiumRowContainer: {
     flexDirection: 'row',
