@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import {useFocusEffect} from '@react-navigation/native';
 import {skipToken} from '@reduxjs/toolkit/query';
@@ -8,20 +8,27 @@ import {Image} from 'expo-image';
 import Toast from 'react-native-toast-message';
 
 import globalStyle from '../../assets/styles/globalStyle';
+import {ProfilePicture} from '../../components/ProfilePicture/ProfilePicture';
 import {ThemedSafeAreaView, ThemedView} from '../../components/ui/themed-view';
 import {
   HeadlineText,
   LargeTitleText,
   ThemedText,
+  Title1Text,
+  Title3Text,
 } from '../../components/ui/typography';
+import {useTheme} from '../../hooks/useTheme';
 import {
+  LeaderboardEntryType,
   useGetFinishedCompetitionsQuery,
   useGetLeaderboardQuery,
 } from '../../redux/api/endpoints/competitions';
 
-// adjust if needed
+const LEADERBOARD_OFFSET = 4; // on which index lb starts
 
 export const LeaderboardScreen = () => {
+  const {colors} = useTheme();
+
   useFocusEffect(
     useCallback(() => {
       Toast.show({
@@ -33,13 +40,21 @@ export const LeaderboardScreen = () => {
 
   const {data: finishedCompetitions} = useGetFinishedCompetitionsQuery();
 
-  console.log('kisat jotka loppunu:', finishedCompetitions);
   const mockId = finishedCompetitions?.data[0].id;
 
   const {data, error} = useGetLeaderboardQuery(mockId ? mockId : skipToken);
   console.log('Leaderboard data: ', data, error);
-  //const leaderboardData = [];
-  const renderItem = useCallback(() => <LeaderboardItem />, []);
+
+  const leaderboardData = data?.leaderboard.slice(LEADERBOARD_OFFSET - 1) ?? []; // omit top 3
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: LeaderboardEntryType;
+    index: number;
+  }) => {
+    return <LeaderboardItem data={item} index={index + LEADERBOARD_OFFSET} />;
+  };
 
   return (
     // eslint-disable-next-line react-native/no-inline-styles
@@ -49,28 +64,68 @@ export const LeaderboardScreen = () => {
       </LargeTitleText>
       <HeadlineText>{data?.competition.description}</HeadlineText>
 
-      <Image
-        style={{width: 256, height: 512}}
-        source={data?.leaderboard[0].image_url}
-      />
-
       <View
         style={{
-          backgroundColor: 'gray',
+          backgroundColor: colors.card,
           flex: 1,
           borderTopEndRadius: 30,
           borderTopStartRadius: 30,
           marginTop: 64,
-        }}></View>
-
-      {/*<FlashList
-        data={[leaderboardData]}
-        ListHeaderComponent={<PodiumView />}
-        renderItem={renderItem}
-      />*/}
+          paddingTop: 16,
+          paddingHorizontal: 16,
+        }}>
+        <FlashList
+          data={leaderboardData}
+          ListHeaderComponent={<PodiumView />}
+          renderItem={renderItem}
+        />
+      </View>
     </ThemedSafeAreaView>
   );
 };
+
+type LeaderBoardItemProps = {
+  data: LeaderboardEntryType;
+  index: number;
+};
+
+const LeaderboardItem = ({data, index}: LeaderBoardItemProps) => {
+  const {colors} = useTheme();
+  return (
+    <View
+      style={[
+        styles.leaderboardItemContainer,
+        {backgroundColor: colors.background},
+      ]}>
+      <View style={{flexDirection: 'row', gap: 16}}>
+        <Title3Text variant="heavy">{index.toString()}</Title3Text>
+        <HeadlineText variant="medium">{data.username}</HeadlineText>
+      </View>
+      <Image style={styles.itemImage} source={data.image_url} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  leaderboardItemContainer: {
+    flexDirection: 'row',
+    paddingLeft: 16,
+    marginVertical: 2,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  itemImage: {
+    width: 50,
+    height: 50,
+    margin: 6,
+    borderRadius: 9,
+  },
+  podiumContainer: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+});
 
 type PodiumViewProps = {};
 
@@ -95,17 +150,3 @@ const PodiumView = () => {
     </View>
   );
 };
-
-type LeaderBoardProps = {};
-
-const LeaderboardItem = () => {
-  return <></>;
-};
-
-const styles = StyleSheet.create({
-  leaderboardItemContainer: {},
-  podiumContainer: {
-    flexDirection: 'row',
-    flex: 1,
-  },
-});
