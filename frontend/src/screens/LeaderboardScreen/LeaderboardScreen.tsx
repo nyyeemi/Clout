@@ -1,13 +1,17 @@
-import React, {useState} from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Modal, StyleSheet, View} from 'react-native';
+import {Pressable} from 'react-native';
 
 import {skipToken} from '@reduxjs/toolkit/query';
 import {FlashList} from '@shopify/flash-list';
 import {Image} from 'expo-image';
 
 import globalStyle from '../../assets/styles/globalStyle';
+import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
+import {Spinner} from '../../components/Spinner/Spinner';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {
+  FootnoteText,
   HeadlineText,
   LargeTitleText,
   Title3Text,
@@ -24,7 +28,7 @@ const LEADERBOARD_OFFSET = 4; // on which index lb starts
 
 export const LeaderboardScreen = () => {
   const {colors} = useTheme();
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   /*
     useFocusEffect(
     useCallback(() => {
@@ -36,23 +40,53 @@ export const LeaderboardScreen = () => {
   );
 */
 
-  const {data: finishedCompetitions} = useGetFinishedCompetitionsQuery();
-  console.log('Finished comps', finishedCompetitions);
+  useEffect(() => console.log(selectedImage), []);
 
-  const mockId = finishedCompetitions?.data[0].id;
+  const {
+    data: finishedCompetitions,
+    isLoading: isLoadingComps,
+    isError: isErrorComps,
+  } = useGetFinishedCompetitionsQuery();
 
-  const {data, error} = useGetLeaderboardQuery(mockId ? mockId : skipToken);
-  console.log('Leaderboard data: ', data, error);
+  const firstCompId = finishedCompetitions?.data?.[0]?.id;
 
-  const leaderboardData = data?.leaderboard.slice(LEADERBOARD_OFFSET - 1) ?? []; // omit top 3
+  const {
+    data: leaderboard,
+    isLoading: isLoadingLeaderboard,
+    isError: isErrorLeaderboard,
+    error: leaderboardError,
+  } = useGetLeaderboardQuery(firstCompId ?? skipToken);
 
-  if (mockId === undefined || !data) {
+  if (isLoadingComps || (firstCompId && isLoadingLeaderboard)) {
+    return <Spinner />;
+  }
+
+  if (isErrorComps || isErrorLeaderboard) {
     return (
       <View>
-        <Title3Text>No competition found.</Title3Text>
+        <Title3Text>Error loading data. Please try again.</Title3Text>
       </View>
     );
   }
+
+  if (!finishedCompetitions?.data || finishedCompetitions.data.length === 0) {
+    return (
+      <View>
+        <Title3Text>No competitions found.</Title3Text>
+      </View>
+    );
+  }
+
+  if (!leaderboard) {
+    return (
+      <View>
+        <Title3Text>Leaderboard currently unavailable.</Title3Text>
+      </View>
+    );
+  }
+
+  const leaderboardData =
+    leaderboard.leaderboard.slice(LEADERBOARD_OFFSET - 1) ?? [];
 
   const renderItem = ({
     item,
@@ -61,17 +95,22 @@ export const LeaderboardScreen = () => {
     item: LeaderboardEntryType;
     index: number;
   }) => {
-    return <LeaderboardItem data={item} index={index + LEADERBOARD_OFFSET} />;
+    return (
+      <LeaderboardItem
+        data={item}
+        index={index + LEADERBOARD_OFFSET}
+        onImageLongPress={url => setSelectedImage(url)}
+      />
+    );
   };
 
-  const podiumData = data?.leaderboard.slice(0, 3) ?? [];
-  console.log('kolmeparast', podiumData);
+  const podiumData = leaderboard?.leaderboard.slice(0, 3) ?? [];
 
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <ThemedSafeAreaView style={[globalStyle.flex, {}]}>
       <LargeTitleText variant="heavy">
-        {data?.competition.category}
+        {leaderboard?.competition.category}
       </LargeTitleText>
 
       <FlashList
@@ -79,6 +118,29 @@ export const LeaderboardScreen = () => {
         ListHeaderComponent={<PodiumView podiumData={podiumData} />}
         renderItem={renderItem}
       />
+
+      <Modal
+        visible={!!selectedImage}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setSelectedImage(null)}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setSelectedImage(null)}>
+          <View style={styles.modalContent}>
+            {selectedImage && (
+              <Image
+                source={selectedImage}
+                style={styles.fullImage}
+                contentFit="contain"
+              />
+            )}
+            <FootnoteText style={{color: 'white', marginTop: 10}}>
+              Tap anywhere to close
+            </FootnoteText>
+          </View>
+        </Pressable>
+      </Modal>
     </ThemedSafeAreaView>
   );
 };
@@ -86,18 +148,27 @@ export const LeaderboardScreen = () => {
 type LeaderBoardItemProps = {
   data: LeaderboardEntryType;
   index: number;
+  onImageLongPress: (url: string) => void;
 };
 
-const LeaderboardItem = ({data, index}: LeaderBoardItemProps) => {
+const LeaderboardItem = ({
+  data,
+  index,
+  onImageLongPress,
+}: LeaderBoardItemProps) => {
   const {colors} = useTheme();
+
   return (
     <View
       style={[styles.leaderboardItemContainer, {backgroundColor: colors.card}]}>
-      <View style={{flexDirection: 'row', gap: 16}}>
+      <View style={{flexDirection: 'row', gap: 16, alignItems: 'center'}}>
         <Title3Text variant="heavy">{index.toString()}</Title3Text>
         <HeadlineText variant="medium">{data.username}</HeadlineText>
       </View>
-      <Image style={styles.itemImage} source={data.image_url} />
+
+      <OpacityPressable onLongPress={() => onImageLongPress(data.image_url)}>
+        <Image style={styles.itemImage} source={{uri: data.image_url}} />
+      </OpacityPressable>
     </View>
   );
 };
@@ -192,5 +263,35 @@ const styles = StyleSheet.create({
     width: PODIUM_IMAGE_WIDTH,
     height: PODIUM_IMAGE_HEIGHT,
     borderRadius: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darken background
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '90%',
+    height: '70%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+  },
+  itemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+  },
+  leaderboardItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    marginVertical: 4,
+    borderRadius: 12,
   },
 });
