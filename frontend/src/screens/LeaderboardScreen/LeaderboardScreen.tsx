@@ -1,5 +1,6 @@
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Modal, StyleSheet, View} from 'react-native';
+import {Pressable} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -9,8 +10,10 @@ import {Image} from 'expo-image';
 
 import globalStyle from '../../assets/styles/globalStyle';
 import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
+import {Spinner} from '../../components/Spinner/Spinner';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
 import {
+  FootnoteText,
   HeadlineText,
   LargeTitleText,
   Title3Text,
@@ -22,12 +25,15 @@ import {
   useGetFinishedCompetitionsQuery,
   useGetLeaderboardQuery,
 } from '../../redux/api/endpoints/competitions';
+import {LeaderboardItem} from './LeaderboardItem';
+import {LeaderboardModal} from './LeaderboardModal';
 import {PodiumView} from './PodiumView';
 
 const LEADERBOARD_OFFSET = 4; // on which index lb starts
 
 export const LeaderboardScreen = () => {
   const {colors} = useTheme();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const navigation =
     useNavigation<StackNavigationProp<LeaderboardStackParamList>>();
   /*
@@ -41,14 +47,52 @@ export const LeaderboardScreen = () => {
   );
 */
 
-  const {data: finishedCompetitions} = useGetFinishedCompetitionsQuery();
+  const {
+    data: finishedCompetitions,
+    isLoading: isLoadingComps,
+    isError: isErrorComps,
+  } = useGetFinishedCompetitionsQuery();
 
-  const mockId = finishedCompetitions?.data[0].id;
+  const firstCompId = finishedCompetitions?.data?.[0]?.id;
 
-  const {data, error} = useGetLeaderboardQuery(mockId ? mockId : skipToken);
-  console.log('Leaderboard data: ', data, error);
+  const {
+    data: leaderboard,
+    isLoading: isLoadingLeaderboard,
+    isError: isErrorLeaderboard,
+    error: leaderboardError,
+  } = useGetLeaderboardQuery(firstCompId ?? skipToken);
 
-  const leaderboardData = data?.leaderboard.slice(LEADERBOARD_OFFSET - 1) ?? []; // omit top 3
+  if (isLoadingComps || (firstCompId && isLoadingLeaderboard)) {
+    return <Spinner />;
+  }
+
+  if (isErrorComps || isErrorLeaderboard) {
+    return (
+      <View>
+        <Title3Text>Error loading data. Please try again.</Title3Text>
+      </View>
+    );
+  }
+
+  if (!finishedCompetitions?.data || finishedCompetitions.data.length === 0) {
+    return (
+      <View>
+        <Title3Text>No competitions found.</Title3Text>
+      </View>
+    );
+  }
+
+  if (!leaderboard) {
+    return (
+      <View>
+        <Title3Text>Leaderboard currently unavailable.</Title3Text>
+      </View>
+    );
+  }
+
+  const leaderboardData =
+    leaderboard.leaderboard.slice(LEADERBOARD_OFFSET - 1) ?? [];
+
   const renderItem = ({
     item,
     index,
@@ -60,12 +104,13 @@ export const LeaderboardScreen = () => {
       <LeaderboardItem
         data={item}
         index={index + LEADERBOARD_OFFSET}
+        onImagePress={url => setSelectedImage(url)}
         handleNavigate={handleNavigate}
       />
     );
   };
 
-  const podiumData = data?.leaderboard.slice(0, 3) ?? [];
+  const podiumData = leaderboard?.leaderboard.slice(0, 3) ?? [];
 
   const handleNavigate = (username: string) => {
     navigation.navigate(Routes.ProfileStack, {
@@ -74,19 +119,11 @@ export const LeaderboardScreen = () => {
     });
   };
 
-  if (mockId === undefined || !data) {
-    return (
-      <View>
-        <Title3Text>No competition found.</Title3Text>
-      </View>
-    );
-  }
-
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <ThemedSafeAreaView style={[globalStyle.flex, {}]}>
       <LargeTitleText variant="heavy">
-        {data?.competition.category}
+        {leaderboard?.competition.category}
       </LargeTitleText>
 
       <FlashList
@@ -97,60 +134,10 @@ export const LeaderboardScreen = () => {
         renderItem={renderItem}
       />
 
-      {/*<View
-        style={{
-          backgroundColor: colors.card,
-          flex: 1,
-          borderTopEndRadius: 30,
-          borderTopStartRadius: 30,
-          marginTop: 64,
-          paddingTop: 16,
-          paddingHorizontal: 16,
-        }}></View> */}
+      <LeaderboardModal
+        onRequestClose={() => setSelectedImage(null)}
+        selectedImage={selectedImage}
+      />
     </ThemedSafeAreaView>
   );
 };
-
-type LeaderBoardItemProps = {
-  data: LeaderboardEntryType;
-  index: number;
-  handleNavigate: (username: string) => void;
-};
-
-const LeaderboardItem = ({
-  data,
-  index,
-  handleNavigate,
-}: LeaderBoardItemProps) => {
-  const {colors} = useTheme();
-  return (
-    <View
-      style={[styles.leaderboardItemContainer, {backgroundColor: colors.card}]}>
-      <View style={{flexDirection: 'row', gap: 16}}>
-        <Title3Text variant="heavy">{index.toString()}.</Title3Text>
-        <OpacityPressable onPress={() => handleNavigate(data.username)}>
-          <HeadlineText variant="medium">{data.username}</HeadlineText>
-        </OpacityPressable>
-      </View>
-      <Image style={styles.itemImage} source={data.image_url} />
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  leaderboardItemContainer: {
-    flexDirection: 'row',
-    paddingLeft: 16,
-    marginVertical: 3,
-    borderRadius: 9,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginHorizontal: 16,
-  },
-  itemImage: {
-    width: 50,
-    height: 50,
-    margin: 6,
-    borderRadius: 9,
-  },
-});
