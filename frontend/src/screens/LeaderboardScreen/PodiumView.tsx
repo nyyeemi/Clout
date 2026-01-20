@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 
 import {skipToken} from '@reduxjs/toolkit/query';
 import {Image} from 'expo-image';
@@ -22,9 +22,6 @@ export const PodiumView = ({podiumData, handleNavigate}: PodiumViewProps) => {
     useGetProfilePictureByUsernameQuery(
       firstPlace.username ? firstPlace.username : skipToken,
     );
-
-  console.log('profilepicture:', profile_picture_url);
-  console.log('error', error);
 
   return (
     <View style={styles.podiumColumnContainer}>

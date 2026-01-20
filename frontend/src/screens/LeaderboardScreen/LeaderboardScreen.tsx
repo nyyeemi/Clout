@@ -1,23 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, Modal, StyleSheet, View} from 'react-native';
-import {Pressable} from 'react-native';
+import React, {useState} from 'react';
+import {View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {skipToken} from '@reduxjs/toolkit/query';
 import {FlashList} from '@shopify/flash-list';
-import {Image} from 'expo-image';
 
 import globalStyle from '../../assets/styles/globalStyle';
-import {OpacityPressable} from '../../components/OpacityPressable/OpacityPressable';
 import {Spinner} from '../../components/Spinner/Spinner';
 import {ThemedSafeAreaView} from '../../components/ui/themed-view';
-import {
-  FootnoteText,
-  HeadlineText,
-  LargeTitleText,
-  Title3Text,
-} from '../../components/ui/typography';
+import {LargeTitleText, Title3Text} from '../../components/ui/typography';
 import {useTheme} from '../../hooks/useTheme';
 import {LeaderboardStackParamList, Routes} from '../../navigation/Routes';
 import {

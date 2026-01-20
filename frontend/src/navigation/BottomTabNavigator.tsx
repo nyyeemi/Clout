@@ -37,7 +37,7 @@ const tabBarIcon = ({route, color, size}: tabBarIconProps) => {
 
   if (route.name === Routes.VoteStack) {
     icon = faHouse;
-  } else if (route.name === Routes.Leaderboard) {
+  } else if (route.name === Routes.LeaderboardStack) {
     icon = faAward;
   } else if (route.name === Routes.Camera) {
     icon = faCamera;

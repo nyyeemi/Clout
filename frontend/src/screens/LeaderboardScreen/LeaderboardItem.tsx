@@ -9,12 +9,14 @@ type LeaderBoardItemProps = {
   data: LeaderboardEntryType;
   index: number;
   onImagePress: (url: string) => void;
+  handleNavigate: (username: string) => void;
 };
 
 export const LeaderboardItem = ({
   data,
   index,
   onImagePress,
+  handleNavigate,
 }: LeaderBoardItemProps) => {
   const {colors} = useTheme();
 
@@ -23,7 +25,9 @@ export const LeaderboardItem = ({
       style={[styles.leaderboardItemContainer, {backgroundColor: colors.card}]}>
       <View style={{flexDirection: 'row', gap: 16, alignItems: 'center'}}>
         <Title3Text variant="heavy">{index.toString()}</Title3Text>
-        <HeadlineText variant="medium">{data.username}</HeadlineText>
+        <OpacityPressable onPress={() => handleNavigate(data.username)}>
+          <HeadlineText variant="medium">{data.username}</HeadlineText>
+        </OpacityPressable>
       </View>
 
       <OpacityPressable onPress={() => onImagePress(data.image_url)}>
