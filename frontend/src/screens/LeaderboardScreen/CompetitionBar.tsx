@@ -47,6 +47,9 @@ export const CompetitionBar = ({
       renderItem={renderItem}
       horizontal={true}
       showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingBottom: 8,
+      }}
     />
   );
 };

@@ -44,6 +44,7 @@ export const LeaderboardScreen = () => {
     data: finishedCompetitions,
     isLoading: isLoadingComps,
     isError: isErrorComps,
+    refetch: refetchCompetitions,
   } = useGetFinishedCompetitionsQuery();
 
   const activeCompetitionId =
@@ -54,6 +55,7 @@ export const LeaderboardScreen = () => {
     isLoading: isLoadingLeaderboard,
     isError: isErrorLeaderboard,
     error: leaderboardError,
+    refetch: refetchLeaderboard,
   } = useGetLeaderboardQuery(activeCompetitionId ?? skipToken);
 
   if (isLoadingComps || (activeCompetitionId && isLoadingLeaderboard)) {
@@ -113,12 +115,16 @@ export const LeaderboardScreen = () => {
     });
   };
 
-  return (
-    <ThemedSafeAreaView style={[globalStyle.flex, {}]}>
-      <LargeTitleText variant="heavy">
-        {leaderboard?.competition.category}
-      </LargeTitleText>
+  const refresh = () => {
+    refetchCompetitions();
+    refetchLeaderboard();
+  };
 
+  return (
+    <ThemedSafeAreaView style={{flex: 1}}>
+      <LargeTitleText style={{padding: 8}} variant="heavy">
+        Leaderboard
+      </LargeTitleText>
       <CompetitionBar
         selectedId={activeCompetitionId ?? ''}
         competitions={finishedCompetitions.data}
@@ -135,6 +141,8 @@ export const LeaderboardScreen = () => {
                 onImagePress={url => setSelectedImage(url)}
               />
             }
+            refreshing={isLoadingComps || isLoadingLeaderboard}
+            onRefresh={refresh}
             renderItem={renderItem}
           />
 
