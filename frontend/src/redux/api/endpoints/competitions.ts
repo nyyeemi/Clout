@@ -45,7 +45,7 @@ type CompetitionBase = {
   competition_number: number;
 };
 
-type CompetitionType = CompetitionBase & {
+export type CompetitionType = CompetitionBase & {
   vote_start_time: string;
   status: CompetitionStatus;
   id: string;

@@ -42,7 +42,7 @@ def read_competitions(session: SessionDep, skip: int = 0, limit: int = 100) -> A
     statement = (
         select(Competition)
         .where(Competition.status == CompetitionStatus.FINISHED)
-        .order_by(Competition.created_at.desc())
+        .order_by(Competition.start_time.desc())
         .offset(skip)
         .limit(limit)
     )
