@@ -7,7 +7,7 @@ import {Image, ImageProps} from 'expo-image';
 type ProfilePictureProps = Omit<ImageProps, 'source'> & {
   uri: string | undefined;
   style?: StyleProp<ImageStyle>;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'minimal' | 'small' | 'medium' | 'large';
 };
 
 export const ProfilePicture = ({
@@ -29,6 +29,12 @@ export const ProfilePicture = ({
 };
 
 const styles = StyleSheet.create({
+  minimalImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 25,
+    borderWidth: StyleSheet.hairlineWidth * 3,
+  },
   smallImage: {
     width: 50,
     height: 50,
@@ -51,6 +57,7 @@ const styles = StyleSheet.create({
 });
 
 const lookupTable = {
+  minimal: styles.minimalImage,
   small: styles.smallImage,
   medium: styles.mediumImage,
   large: styles.largeImage,
