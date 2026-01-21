@@ -1,8 +1,9 @@
-import {Modal, Pressable, StyleSheet, View} from 'react-native';
+import {Dimensions, Modal, Pressable, StyleSheet, View} from 'react-native';
 
 import {Image} from 'expo-image';
 
 import {FootnoteText} from '../../components/ui/typography';
+import {useTheme} from '../../hooks/useTheme';
 
 type LeaderboardModalProps = {
   onRequestClose: () => void;
@@ -13,6 +14,7 @@ export const LeaderboardModal = ({
   onRequestClose,
   selectedImage,
 }: LeaderboardModalProps) => {
+  const {colors} = useTheme();
   return (
     <Modal
       visible={!!selectedImage}
@@ -25,10 +27,11 @@ export const LeaderboardModal = ({
             <Image
               source={selectedImage}
               style={styles.fullImage}
-              contentFit="contain"
+              contentFit="cover"
             />
           )}
-          <FootnoteText style={{color: 'white', marginTop: 10}}>
+          <FootnoteText
+            style={[{color: colors.textSecondary}, styles.footNote]}>
             Tap anywhere to close
           </FootnoteText>
         </View>
@@ -36,6 +39,10 @@ export const LeaderboardModal = ({
     </Modal>
   );
 };
+
+const {width} = Dimensions.get('window');
+const IMAGE_WIDTH = width * 0.95;
+const IMAGE_HEIGHT = (IMAGE_WIDTH / 3) * 4;
 
 const styles = StyleSheet.create({
   modalOverlay: {
@@ -51,8 +58,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fullImage: {
-    width: '100%',
-    height: '100%',
+    width: IMAGE_WIDTH,
+    height: IMAGE_HEIGHT,
     borderRadius: 12,
   },
   itemImage: {
@@ -68,4 +75,5 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     borderRadius: 12,
   },
+  footNote: {marginTop: 30},
 });

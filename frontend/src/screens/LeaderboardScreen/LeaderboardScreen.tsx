@@ -112,7 +112,6 @@ export const LeaderboardScreen = () => {
   };
 
   return (
-    // eslint-disable-next-line react-native/no-inline-styles
     <ThemedSafeAreaView style={[globalStyle.flex, {}]}>
       <LargeTitleText variant="heavy">
         {leaderboard?.competition.category}
@@ -121,7 +120,11 @@ export const LeaderboardScreen = () => {
       <FlashList
         data={leaderboardData}
         ListHeaderComponent={
-          <PodiumView podiumData={podiumData} handleNavigate={handleNavigate} />
+          <PodiumView
+            podiumData={podiumData}
+            handleNavigate={handleNavigate}
+            onImagePress={url => setSelectedImage(url)}
+          />
         }
         renderItem={renderItem}
       />

@@ -14,9 +14,14 @@ import {useGetProfilePictureByUsernameQuery} from '../../redux/api/endpoints/use
 type PodiumViewProps = {
   podiumData: LeaderboardEntryType[];
   handleNavigate: (username: string) => void;
+  onImagePress: (url: string) => void;
 };
 
-export const PodiumView = ({podiumData, handleNavigate}: PodiumViewProps) => {
+export const PodiumView = ({
+  podiumData,
+  handleNavigate,
+  onImagePress,
+}: PodiumViewProps) => {
   const {colors} = useTheme();
   const firstPlace = podiumData[0];
   const secondPlace = podiumData[1];
@@ -30,12 +35,14 @@ export const PodiumView = ({podiumData, handleNavigate}: PodiumViewProps) => {
     <View style={styles.podiumColumnContainer}>
       <View style={styles.winnerContainer}>
         <View>
-          <Image
-            source={{
-              uri: firstPlace.image_url,
-            }}
-            style={styles.winnerImage}
-          />
+          <OpacityPressable onPress={() => onImagePress(firstPlace.image_url)}>
+            <Image
+              source={{
+                uri: firstPlace.image_url,
+              }}
+              style={styles.winnerImage}
+            />
+          </OpacityPressable>
           <View style={styles.numberOne}>
             <CloudBadge
               size={NUMBER_ONE}
@@ -56,12 +63,15 @@ export const PodiumView = ({podiumData, handleNavigate}: PodiumViewProps) => {
       <View style={styles.podiumRowContainer}>
         <View style={styles.winnerContainer}>
           <View>
-            <Image
-              source={{
-                uri: secondPlace.image_url,
-              }}
-              style={styles.secondAndThirdPlaceImage}
-            />
+            <OpacityPressable
+              onPress={() => onImagePress(secondPlace.image_url)}>
+              <Image
+                source={{
+                  uri: secondPlace.image_url,
+                }}
+                style={styles.secondAndThirdPlaceImage}
+              />
+            </OpacityPressable>
             <View style={styles.numberTwoAndThree}>
               <CloudBadge
                 size={NUMBER_TWO_AND_THREE}
@@ -80,12 +90,15 @@ export const PodiumView = ({podiumData, handleNavigate}: PodiumViewProps) => {
 
         <View style={styles.winnerContainer}>
           <View>
-            <Image
-              source={{
-                uri: thirdPlace.image_url,
-              }}
-              style={styles.secondAndThirdPlaceImage}
-            />
+            <OpacityPressable
+              onPress={() => onImagePress(thirdPlace.image_url)}>
+              <Image
+                source={{
+                  uri: thirdPlace.image_url,
+                }}
+                style={styles.secondAndThirdPlaceImage}
+              />
+            </OpacityPressable>
             <View style={styles.numberTwoAndThree}>
               <CloudBadge
                 size={NUMBER_TWO_AND_THREE}
