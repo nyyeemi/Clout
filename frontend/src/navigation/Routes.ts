@@ -4,13 +4,14 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Leaderboard: undefined;
-  Vote: undefined;
+  VoteStack: undefined;
   Camera: undefined;
   Feed: undefined;
   FeedStack: undefined;
   BottomTabNavigator: undefined;
   ProfileStack: NavigatorScreenParams<ProfileStackParamList>;
   Profile: {userId: number};
+  LeaderboardStack: undefined;
 };
 
 export type ProfileStackParamList = {
@@ -39,10 +40,16 @@ export type VoteStackParamList = {
   Info: undefined;
 };
 
+export type LeaderboardStackParamList = {
+  Leaderboard: undefined;
+  ProfileStack: NavigatorScreenParams<ProfileStackParamList>;
+};
+
 export const Routes = {
   Login: 'Login',
   Register: 'Register',
   Leaderboard: 'Leaderboard',
+  LeaderboardStack: 'LeaderboardStack',
   Vote: 'Vote',
   Camera: 'Camera',
   Feed: 'Feed',

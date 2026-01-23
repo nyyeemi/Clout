@@ -1,18 +1,13 @@
 import React from 'react';
-import {
-  Image,
-  ImageProps,
-  ImageStyle,
-  StyleProp,
-  StyleSheet,
-} from 'react-native';
+import {ImageStyle, StyleProp, StyleSheet} from 'react-native';
 
 import {useTheme} from '@react-navigation/native';
+import {Image, ImageProps} from 'expo-image';
 
 type ProfilePictureProps = Omit<ImageProps, 'source'> & {
   uri: string | undefined;
   style?: StyleProp<ImageStyle>;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'minimal' | 'small' | 'medium' | 'large';
 };
 
 export const ProfilePicture = ({
@@ -26,7 +21,7 @@ export const ProfilePicture = ({
   return (
     <Image
       source={{uri}}
-      resizeMode="cover"
+      contentFit="cover"
       style={[lookupTable[size], {borderColor: colors.border}, style]}
       {...imageProps}
     />
@@ -34,6 +29,12 @@ export const ProfilePicture = ({
 };
 
 const styles = StyleSheet.create({
+  minimalImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 25,
+    borderWidth: StyleSheet.hairlineWidth * 3,
+  },
   smallImage: {
     width: 50,
     height: 50,
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
 });
 
 const lookupTable = {
+  minimal: styles.minimalImage,
   small: styles.smallImage,
   medium: styles.mediumImage,
   large: styles.largeImage,

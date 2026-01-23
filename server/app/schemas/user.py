@@ -61,6 +61,14 @@ class UsersPublic(BaseModel):
     count: int
 
 
+# This is used only in leaderboard for getting profilepicture for winner.
+class Profilepicture(BaseModel):
+    profile_picture_url: str | None = Field(default=None, max_length=500)
+
+    class Config:
+        from_attributes = True
+
+
 # Generic message
 class Message(BaseModel):
     message: str

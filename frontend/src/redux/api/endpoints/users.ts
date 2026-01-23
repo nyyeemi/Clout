@@ -8,6 +8,10 @@ import {
   UpdateUserPayload,
 } from '../../../types/types';
 
+type ProfilepictureResponse = {
+  profile_picture_url: string;
+};
+
 export const usersApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getUsersMe: builder.query<CustomUser, void>({
@@ -57,6 +61,9 @@ export const usersApi = apiSlice.injectEndpoints({
         method: 'DELETE',
       }),
     }),
+    getProfilePictureByUsername: builder.query<ProfilepictureResponse, string>({
+      query: username => `users/${username}/profilepicture`,
+    }),
   }),
 });
 
@@ -67,4 +74,5 @@ export const {
   useUpdateUserMeMutation,
   useUpdatePasswordMutation,
   useDeleteAccountMutation,
+  useGetProfilePictureByUsernameQuery,
 } = usersApi;

@@ -1,5 +1,5 @@
-from datetime import datetime
 from typing import Any
+import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func, select
 
@@ -42,7 +42,7 @@ def read_competitions(session: SessionDep, skip: int = 0, limit: int = 100) -> A
     statement = (
         select(Competition)
         .where(Competition.status == CompetitionStatus.FINISHED)
-        .order_by(Competition.created_at.desc())
+        .order_by(Competition.start_time.desc())
         .offset(skip)
         .limit(limit)
     )
@@ -52,29 +52,27 @@ def read_competitions(session: SessionDep, skip: int = 0, limit: int = 100) -> A
 
 # TODO: refactor and check performance, current implementation repeats queries for no reason
 @router.get(
-    "/leaderboard",
+    "/{competition_id}/leaderboard",
     dependencies=[Depends(get_current_user)],
     response_model=LeaderboardPublic,
 )
 def read_leaderboard(
     session: SessionDep,
+    competition_id: uuid.UUID,
     current_user: CurrentUser,
-    competition_start_date: datetime,
     top_n: int = 100,
 ) -> Any:
     """
     Read leaderboard data given competition start time. Returns a list of top_n leaderboard entries,
     and general information on the competition.
     """
-    statement = select(Competition).where(
-        Competition.start_time == competition_start_date,
-        Competition.status == CompetitionStatus.FINISHED,
-    )
-    competition = session.execute(statement).scalar_one_or_none()
+    competition = session.get(Competition, competition_id)
 
     if competition is None:
+        raise HTTPException(status_code=404, detail="Competition with id not found.")
+    if competition.status != CompetitionStatus.FINISHED:
         raise HTTPException(
-            status_code=404, detail="No finished competition found on the timestamp."
+            status_code=404, detail="Competition status is not finished."
         )
 
     statement = (

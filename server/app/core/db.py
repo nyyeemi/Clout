@@ -18,7 +18,7 @@ from app.models.follower import Follower
 from app.models.comment import Comment
 from app.models.like import Like
 from app.models.competition_entry import CompetitionEntry
-from app.models.competition import Competition
+from app.models.competition import Competition, CompetitionStatus
 from app.models.pairwise_vote import PairwiseVote
 
 logging.basicConfig(level=logging.INFO)
@@ -139,6 +139,7 @@ def create_mock_competition_posts(session: Session, base_dir):
         start_time=datetime.now(timezone.utc),
         vote_start_time=datetime.now(timezone.utc) + timedelta(hours=24),
         end_time=datetime.now(timezone.utc) + timedelta(hours=48),
+        status=CompetitionStatus.FINISHED,
     )
     session.add(competition)
     session.commit()

@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-  StyleProp,
-  ViewStyle,
   Pressable,
   PressableProps,
+  StyleProp,
   StyleSheet,
+  ViewStyle,
 } from 'react-native';
 
 type OpacityPressableProps = Omit<PressableProps, 'style'> & {

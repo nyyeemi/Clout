@@ -1,9 +1,11 @@
 from typing import Any
 import uuid
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from app.schemas.user import (
     Message,
+    Profilepicture,
     UpdatePassword,
     UserCreate,
     UserPublic,
@@ -11,7 +13,12 @@ from app.schemas.user import (
     UserUpdateMe,
 )
 from app.services import user_crud as crud
-from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
+from app.api.deps import (
+    CurrentUser,
+    SessionDep,
+    get_current_active_superuser,
+    get_current_user,
+)
 from app.models import User
 from app.core.security import get_password_hash, verify_password
 from app.models.follower import Follower
@@ -143,6 +150,27 @@ def read_user_by_id(
             status_code=403,
             detail="The user doesn't have enough privileges",
         )
+    return user
+
+
+@router.get(
+    "/{username}/profilepicture",
+    dependencies=[Depends(get_current_user)],
+    response_model=Profilepicture,
+)
+def read_profilepicture_by_username(
+    username: str,
+    session: SessionDep,
+) -> Any:
+    """
+    Get a specific profilepicture by username.
+    """
+    stmt = select(User).where(User.username == username)
+    user = session.scalar(stmt)
+
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
     return user
 
 

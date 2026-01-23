@@ -1,16 +1,16 @@
 import React from 'react';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator} from '@react-navigation/stack';
 
+import {useTheme} from '../hooks/useTheme';
 import {CompetitionInfoScreen} from '../screens/Vote/CompetitionInfoScreen';
-import {PairwiseScreenVertical} from '../screens/Vote/PairwiseScreenVertical';
-import {VotePair} from '../screens/Vote/VotePair';
 import {VoteScreen} from '../screens/Vote/VoteScreen';
 import {VoteStackParamList} from './Routes';
 
-const VoteStack = createNativeStackNavigator<VoteStackParamList>();
+const VoteStack = createStackNavigator<VoteStackParamList>();
 
 export const VoteStackNavigator = () => {
+  const theme = useTheme();
   return (
     <VoteStack.Navigator
       screenOptions={({route}) => ({
@@ -23,14 +23,12 @@ export const VoteStackNavigator = () => {
       <VoteStack.Screen
         name={'Info'}
         component={CompetitionInfoScreen}
-        options={{headerShown: true}}
+        options={{
+          headerShown: true,
+          headerStyle: {backgroundColor: theme.colors.background},
+          headerBackButtonDisplayMode: 'minimal',
+        }}
       />
-
-      {/*<VoteStack.Screen
-        name={'Vertical'}
-        component={PairwiseScreenVertical}
-        //options={{tabBarStyle: {display: 'none'}}}
-      />*/}
     </VoteStack.Navigator>
   );
 };
